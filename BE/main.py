@@ -1,16 +1,17 @@
 # https://fastapi.tiangolo.com/tutorial/first-steps/
 
+import os
 import openai
 import uvicorn
-import yaml
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-config = yaml.safe_load(open('../config.yaml'))
 app = FastAPI()
-client = openai.OpenAI(api_key=config['KEYS']['openai'])
 
-assistant_id = config['KEYS']['assistant_id']
+openai.api_key = os.getenv('OPENAI_API_KEY')
+client = openai.OpenAI(api_key=openai.api_key)
+
+assistant_id = os.getenv('ASSISTANT_ID')
 
 
 class Message(BaseModel):

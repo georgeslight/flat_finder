@@ -3,16 +3,12 @@ from dotenv import load_dotenv
 import telebot
 import openai
 import requests
-import yaml
-from typing import Dict
 
 # Load environment variables from .env file
 load_dotenv()
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 openai.api_key = os.getenv('OPENAI_API_KEY')
-
-config = yaml.safe_load(open("../config.yaml"))
 
 # Creates a bot instance and passed the BOT_TOKEN to it
 bot = telebot.TeleBot(BOT_TOKEN)
