@@ -23,6 +23,48 @@ class Message(BaseModel):
     user_name: str
 
 
+dummy_user = {
+    "full_name": "Anna Schmidt",
+    "contact_number": "0123456789",
+    "email": "anna.schmidt@example.com",
+    "address": {
+        "street": "Example Street",
+        "house_number": 12,
+        "zip_code": 12345,
+        "city": "Munich",
+        "country": "Germany"
+    },
+    "date_of_birth": "1995-05-10",
+    "smoker": False,
+    "employment": {
+        "employment_type": "Full-time",
+        "employment_start_date": "2019-01",
+        "job_title": "Marketing Manager",
+        "current_employer": "XYZ Corp"
+    },
+    "average_monthly_net_income": 3500,
+    "reason_for_move": "Relocating for a new job",
+    "pets": False,
+    "commercial_use": False,
+    "guarantor": False,
+    "wohnberechtigungsschein": False,
+    "private_liability_insurance": True,
+    "apartment_preferences": {
+        "max_rent": 600,
+        "location": "Berlin",
+        "bezirk": [
+            "Mitte",
+            "Friedrichshain",
+            "Prenzlauer Berg",
+            ],
+        "min_size": 15,  # in square meters
+        "move_in_date": "2024-07-01",
+        "move_out_date": "2025-06-30",
+        "features": ["möbliert", "WLAN"]
+    }
+}
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
@@ -30,7 +72,6 @@ async def root():
 
 @app.post("/chat")
 async def post_message(user_message: Message):
-
     # add the message to the thread
     client.beta.threads.messages.create(
         thread_id=user_message.thread,
