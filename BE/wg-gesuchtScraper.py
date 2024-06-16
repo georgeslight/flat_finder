@@ -183,7 +183,7 @@ def scrap_wg_gesucht(i):
     driver.quit()
     with open('output.json', 'w', encoding='utf-8', ) as file:
         json.dump(json_file, file, ensure_ascii=False, indent=4)
-
+    return json_file
 
 if __name__ == "__main__":
     scrap_wg_gesucht(1)
