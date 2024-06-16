@@ -5,6 +5,9 @@ import openai
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="../.env")
 
 app = FastAPI()
 
