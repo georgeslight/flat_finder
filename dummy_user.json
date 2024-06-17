@@ -1,6 +1,5 @@
 {
     "full_name": "Anna Schmidt",
-    "contact_number": "0123456789",
     "email": "anna.schmidt@example.com",
     "address": {
         "street": "Example Street",
@@ -31,7 +30,8 @@
         "min_size": 15,
         "move_in_date": "2024-07-01",
         "move_out_date": "2025-06-30",
-        "features": ["möbliert", "WLAN"]
+        "features": ["möbliert", "WLAN"],
+        "zimmer": "s" //todo: change to "2-3"
     },
     "prompts": [
         "I am vegan",
@@ -47,5 +47,5 @@
         "I'm a student",
         "I like to watch movies",
         "I like to play board games"
-        ]
+        ] ok i wewan-to look for ana apppaaartamne with 2 to 3 room and 50qm and in a central place in beroin
 }
