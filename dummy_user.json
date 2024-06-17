@@ -1,0 +1,36 @@
+{
+    "full_name": "Anna Schmidt",
+    "contact_number": "0123456789",
+    "email": "anna.schmidt@example.com",
+    "address": {
+        "street": "Example Street",
+        "house_number": 12,
+        "zip_code": 12345,
+        "city": "Munich",
+        "country": "Germany"
+    },
+    "date_of_birth": "1995-05-10",
+    "smoker": false,
+    "employment": {
+        "employment_type": "Full-time",
+        "employment_start_date": "2019-01",
+        "job_title": "Marketing Manager",
+        "current_employer": "XYZ Corp"
+    },
+    "average_monthly_net_income": 3500,
+    "reason_for_move": "Relocating for a new job",
+    "pets": false,
+    "commercial_use": false,
+    "guarantor": false,
+    "wohnberechtigungsschein": false,
+    "private_liability_insurance": true,
+    "apartment_preferences": {
+        "max_rent": 800,
+        "location": "Berlin",
+        "bezirk": ["Mitte", "Friedrichshain", "Prenzlauer Berg"],
+        "min_size": 15,
+        "move_in_date": "2024-07-01",
+        "move_out_date": "2025-06-30",
+        "features": ["möbliert", "WLAN"]
+    }
+}
