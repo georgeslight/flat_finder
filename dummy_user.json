@@ -29,9 +29,7 @@
         "location": "Berlin",
         "bezirk": ["Mitte", "Friedrichshain", "Prenzlauer Berg"],
         "min_size": 15,
-        "move_in_date": "2024-07-01",
-        "move_out_date": "2025-06-30",
-        "features": ["möbliert", "WLAN"]
+        "ready_to_move_in": "2021-09"
     },
     "additional_info": [
         "Relocating for a new job.",
