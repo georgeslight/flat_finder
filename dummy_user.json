@@ -1,5 +1,7 @@
 {
+    "id": "123456",
     "full_name": "Anna Schmidt",
+    "phone_number": "+49123456789",
     "email": "anna.schmidt@example.com",
     "address": {
         "street": "Example Street",
@@ -17,9 +19,8 @@
         "current_employer": "XYZ Corp"
     },
     "average_monthly_net_income": 3500,
-    "reason_for_move": "Relocating for a new job",
     "pets": false,
-    "commercial_use": false,
+    "languages": ["English", "German"],
     "guarantor": false,
     "wohnberechtigungsschein": false,
     "private_liability_insurance": true,
@@ -30,22 +31,18 @@
         "min_size": 15,
         "move_in_date": "2024-07-01",
         "move_out_date": "2025-06-30",
-        "features": ["möbliert", "WLAN"],
-        "zimmer": "s" //todo: change to "2-3"
+        "features": ["möbliert", "WLAN"]
     },
-    "prompts": [
-        "I am vegan",
-        "I like swimming",
-        "I am a non smoker",
-        "I am a vegetarian",
-        "I like to cook",
-        "I like to read",
-        "I like to travel",
-        "I play Guitar",
-        "I like to play football",
-        "I like to play basketball",
-        "I'm a student",
-        "I like to watch movies",
-        "I like to play board games"
-        ] ok i wewan-to look for ana apppaaartamne with 2 to 3 room and 50qm and in a central place in beroin
+    "additional_info": [
+        "Relocating for a new job.",
+        "non-smoker",
+        "like vegan food",
+        "love jazz music",
+        "enjoy running",
+        "looking for a quiet place to work from home",
+        "speak English and German fluently",
+        "looking for a wg room with only female roommates",
+        "I rather have a fully furnished Room",
+        "I need fast internet connection for my job"
+    ]
 }

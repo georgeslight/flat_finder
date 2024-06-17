@@ -96,6 +96,7 @@ async def notify_apartment(user_data: UserData):
         try:
             gesamtmiete = int(apartment.get("Gesamtmiete", "0€").replace("€", "").strip())
             zimmergroesse = int(apartment.get("Zimmergröße", "0m²").replace("m²", "").strip())
+
         except ValueError:
             logger.warning(f"Skipping apartment with invalid data: {apartment}")
             continue
@@ -104,8 +105,9 @@ async def notify_apartment(user_data: UserData):
         if (
                 gesamtmiete <= user_preferences.max_rent and
                 apartment["Ort"] in user_preferences.bezirk and
-                zimmergroesse >= user_preferences.min_size and
-                all(feature in apartment["features"] for feature in user_preferences.features)
+                zimmergroesse >= user_preferences.min_size
+
+
         ):
             fitting_apartments.append(apartment)
 

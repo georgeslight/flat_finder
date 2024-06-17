@@ -4,7 +4,6 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 
 import json
 import time
@@ -32,6 +31,8 @@ def get_json_object():
         "frei ab": None,
         "frei bis": None,
         "Anzeige Datum": None,
+        "Wg-details": [],
+        "gesucht wird": [],
         "features": [],
         "tab_contents": []
     }
@@ -80,7 +81,7 @@ def retrieve_basic_details(driver, data):
 
 
 # Retrieve financial and operational details
-def retrieve_financial_details(driver, data):
+def retrieve_structural_data(driver, data):
     try:
         sections = driver.find_elements(By.CSS_SELECTOR, "div.col-xs-12.col-sm-6")
         for section in sections:
@@ -112,6 +113,42 @@ def retrieve_financial_details(driver, data):
 
     except Exception as e:
         print("An error occurred while retrieving financial details:", e)
+
+    # try:
+    #     sections2 = driver.find_elements(By.CSS_SELECTOR, "div.panel.section_panel")
+    #
+    #     for i in range(len(sections2)):
+    #         print(f"section index: {i}")
+    #         print(sections2[i].text)
+    # except Exception as e:
+    #     print("An error occurred while retrieving structural data:", e)
+    try:
+        sections2 = driver.find_elements(By.CSS_SELECTOR, "div.panel.section_panel")
+
+        wg_details_section = sections2[4].text.split("\n")
+        wg_details = []
+        gesucht_wird = []
+        collect_for_gesucht = False
+
+        for line in wg_details_section:
+            if "Die WG:" in line or "Sprache/n:" in line or "WG-Details" in line:
+                continue
+            if "Gesucht wird:" in line:
+                collect_for_gesucht = True
+                continue
+            if "Zimmer" in line:
+                continue
+
+            if collect_for_gesucht:
+                gesucht_wird.append(line.strip())
+            else:
+                wg_details.append(line.strip())
+
+        data["Wg-details"] = wg_details
+        data["gesucht wird"] = gesucht_wird
+
+    except Exception as e:
+        print("An error occurred while retrieving structural data:", e)
 
 
 # Retrieve utility details
@@ -159,17 +196,17 @@ def retrieve_ad_description_text(driver, data):
 
 
 # Main execution function
-def scrap_wg_gesucht(i):
+def scrap_wg_gesucht(entriesCount=1):
     driver = setup_driver()
     url = "https://www.wg-gesucht.de/wg-zimmer-in-Berlin.8.0.1.0.html"
     load_website_and_handle_cookies(driver, url)
 
-    for j in i:
+    for i in range(entriesCount):
         data = get_json_object()
-        data["ID"] = j + 1
-        interact_with_listing(driver, j, data)
+        data["ID"] = i + 1
+        interact_with_listing(driver, i, data)
         retrieve_basic_details(driver, data)
-        retrieve_financial_details(driver, data)
+        retrieve_structural_data(driver, data)
         retrieve_utility_details(driver, data)
         retrieve_ad_description_text(driver, data)
         data["Anzeige Datum"] = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -185,4 +222,4 @@ def scrap_wg_gesucht(i):
 
 
 if __name__ == "__main__":
-    scrap_wg_gesucht(1)
+    scrap_wg_gesucht()
