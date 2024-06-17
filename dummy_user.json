@@ -32,5 +32,20 @@
         "move_in_date": "2024-07-01",
         "move_out_date": "2025-06-30",
         "features": ["möbliert", "WLAN"]
-    }
+    },
+    "prompts": [
+        "I am vegan",
+        "I like swimming",
+        "I am a non smoker",
+        "I am a vegetarian",
+        "I like to cook",
+        "I like to read",
+        "I like to travel",
+        "I play Guitar",
+        "I like to play football",
+        "I like to play basketball",
+        "I'm a student",
+        "I like to watch movies",
+        "I like to play board games"
+        ]
 }
