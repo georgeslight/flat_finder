@@ -1,4 +1,3 @@
-
 import logging
 import os
 
@@ -13,7 +12,6 @@ from structural_filtering import filter_apartments, UserData
 load_dotenv(dotenv_path="../.env")
 
 app = FastAPI()
-
 
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 

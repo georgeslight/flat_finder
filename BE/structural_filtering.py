@@ -13,9 +13,6 @@ from pydantic import BaseModel
 
 load_dotenv(dotenv_path="../.env")
 
-
-
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -58,7 +55,6 @@ def load_apartments():
     except Exception as e:
         logger.error(f"Error loading apartments: {e}")
         return []
-
 
 
 def filter_apartments(user_data: UserData):

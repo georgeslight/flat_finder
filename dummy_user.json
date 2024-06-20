@@ -1,5 +1,5 @@
 {
-    "id": "123456",
+    "id": "66705a0ff42f00b05d3f2e5a",
     "full_name": "Anna Schmidt",
     "phone_number": "+49123456789",
     "email": "anna.schmidt@example.com",
@@ -11,7 +11,6 @@
         "country": "Germany"
     },
     "date_of_birth": "1995-05-10",
-    "smoker": false,
     "employment": {
         "employment_type": "Full-time",
         "employment_start_date": "2019-01",
@@ -19,11 +18,9 @@
         "current_employer": "XYZ Corp"
     },
     "average_monthly_net_income": 3500,
+    "smoker": false,
     "pets": false,
     "languages": ["English", "German"],
-    "guarantor": false,
-    "wohnberechtigungsschein": false,
-    "private_liability_insurance": true,
     "apartment_preferences": {
         "max_rent": 800,
         "location": "Berlin",
@@ -33,7 +30,6 @@
     },
     "additional_info": [
         "Relocating for a new job.",
-        "non-smoker",
         "like vegan food",
         "love jazz music",
         "enjoy running",

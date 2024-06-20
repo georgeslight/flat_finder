@@ -1,3 +1,6 @@
+from datetime import date
+from typing import List
+
 import openai
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -6,17 +9,25 @@ import requests
 import json
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
+from pydantic import BaseModel, EmailStr
 
 import os
+
 load_dotenv()
 
-mongo_client = MongoClient(os.getenv("MONGODB_CONN_STRING"))
-openai_Key = os.getenv('OPENAI_API_KEY')
-openAi_client = openai.OpenAI(api_key=openai_Key)
+mongo_conn_string = os.getenv("MONGODB_CONN_STRING")
+openai_key = os.getenv('OPENAI_API_KEY')
+mongo_db_data_api_key = os.getenv('MONGO_DB_DATA_API_KEY')
+mongo_index = os.getenv('INDEX_NAME')
+
+uri = os.getenv('MONGO_URI')
+mongo_client = MongoClient(uri, server_api=ServerApi('1'))
+openai_client = openai.OpenAI(api_key=openai_key)
+collection = mongo_client["Flat_Finder_DB"]["USER"]
 
 model = "text-embedding-3-small"
 
-# Send a ping to confirm a successful connection
+
 try:
     mongo_client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
@@ -30,7 +41,7 @@ payload = json.dumps({
     "database": "Flat_Finder_DB",
     "dataSource": "FlatFinderCluster",
     "projection": {
-        "_id": 1,
+        "_id": "166705a0ff42f00b05d3f2e5a",
         "full_name": 1,
 
     }
@@ -53,14 +64,116 @@ print(response.text)
 # atlas_collection = client["Flat_Finder_DB"]["USER"]
 # vector_search_index = os.getenv('INDEX_NAME')
 
+class Address(BaseModel):
+    street: str
+    house_number: int
+    zip_code: int
+    city: str
+    country: str
 
-def get_embedding(text):
-    embeddings = openAi_client.embeddings.create(input=[text], model=model).data[0].embedding
-    return embeddings
+
+class Employment(BaseModel):
+    employment_type: str
+    employment_start_date: str  # Format: "YYYY-MM"
+    job_title: str
+    current_employer: str
+
+
+class ApartmentPreferences(BaseModel):
+    max_rent: int
+    location: str
+    bezirk: List[str]
+    min_size: int
+    ready_to_move_in: str  # Format: "YYYY-MM"
+
+
+class User(BaseModel):
+    full_name: str
+    phone_number: str
+    email: EmailStr
+    address: Address
+    date_of_birth: date  # Format: "YYYY-MM-DD"
+    smoker: bool
+    employment: Employment
+    average_monthly_net_income: int
+    pets: bool
+    languages: List[str]
+    guarantor: bool
+    wohnberechtigungsschein: bool
+    private_liability_insurance: bool
+    apartment_preferences: ApartmentPreferences
+    additional_info: List[str]
+
+
+def get_embedding(text_list: List[str]) -> List[float]:
+    # Concatenate the list into a single string, as OpenAI embedding usually works with text input.
+    combined_text = " ".join(text_list)
+    responses = openai_client.embeddings.create(input=[combined_text], model=model)
+    return responses.data[0].embedding
+
+
+def save_user(users: User):
+    # Convert datetime.date to string in the user data
+    user_dict = users.dict()
+
+    # Convert date_of_birth to string
+    user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
+
+    # Convert additional_info embeddings
+    embedded_info = get_embedding(users.additional_info)
+    user_dict['additional_info_embedding'] = embedded_info
+
+    collection.insert_one(user_dict)
 
 
 # Creates embeddings and stores them as a new field
 
-user_data = "Relocating for a new job."
-print(get_embedding(user_data))
+user_data = {
+    "full_name": "Anna Schmidt",
+    "phone_number": "+49123456789",
+    "email": "anna.schmidt@example.com",
+    "address": {
+        "street": "Example Street",
+        "house_number": 12,
+        "zip_code": 12345,
+        "city": "Munich",
+        "country": "Germany"
+    },
+    "date_of_birth": "1995-05-10",
+    "smoker": False,
+    "employment": {
+        "employment_type": "Full-time",
+        "employment_start_date": "2019-01",
+        "job_title": "Marketing Manager",
+        "current_employer": "XYZ Corp"
+    },
+    "average_monthly_net_income": 3500,
+    "pets": False,
+    "languages": ["English", "German"],
+    "guarantor": False,
+    "wohnberechtigungsschein": False,
+    "private_liability_insurance": True,
+    "apartment_preferences": {
+        "max_rent": 800,
+        "location": "Berlin",
+        "bezirk": ["Mitte", "Friedrichshain", "Prenzlauer Berg"],
+        "min_size": 15,
+        "ready_to_move_in": "2021-09"
+    },
+    "additional_info": [
+        "Relocating for a new job.",
+        "non-smoker",
+        "like vegan food",
+        "love jazz music",
+        "enjoy running",
+        "looking for a quiet place to work from home",
+        "speak English and German fluently",
+        "looking for a wg room with only female roommates",
+        "I rather have a fully furnished Room",
+        "I need fast internet connection for my job"
+    ]
+}
+
+user = User(**user_data)
+save_user(user)
 
