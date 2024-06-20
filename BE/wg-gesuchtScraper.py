@@ -221,5 +221,6 @@ def scrap_wg_gesucht(entriesCount=1):
     return json_file
 
 
+
 if __name__ == "__main__":
     scrap_wg_gesucht()
