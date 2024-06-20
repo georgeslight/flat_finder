@@ -11,12 +11,7 @@
         "country": "Germany"
     },
     "date_of_birth": "1995-05-10",
-    "employment": {
-        "employment_type": "Full-time",
-        "employment_start_date": "2019-01",
-        "job_title": "Marketing Manager",
-        "current_employer": "XYZ Corp"
-    },
+    "employment":  "Full-time",
     "average_monthly_net_income": 3500,
     "smoker": false,
     "pets": false,

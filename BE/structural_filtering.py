@@ -25,13 +25,10 @@ class ApartmentPreferences(BaseModel):
     location: str
     bezirk: List[str]
     min_size: int
-    move_in_date: str
-    move_out_date: Optional[str] = None
-    features: List[str]
+    ready_to_move_in: str
 
 
 class UserData(BaseModel):
-    id: Optional[str] = None
     full_name: str
     phone_number: str
     email: str

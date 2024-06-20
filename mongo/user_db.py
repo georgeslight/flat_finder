@@ -27,38 +27,14 @@ collection = mongo_client["Flat_Finder_DB"]["USER"]
 
 model = "text-embedding-3-small"
 
-
 try:
     mongo_client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
 
-url = "https://eu-central-1.aws.data.mongodb-api.com/app/data-ujyxlkh/endpoint/data/v1/action/findOne"
 
-payload = json.dumps({
-    "collection": "USER",
-    "database": "Flat_Finder_DB",
-    "dataSource": "FlatFinderCluster",
-    "projection": {
-        "_id": "166705a0ff42f00b05d3f2e5a",
-        "full_name": 1,
-
-    }
-})
-headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Request-Headers': '*',
-    'api-key': os.getenv('MONGO_DB_DATA_API_KEY'),
-    'Accept': 'application/ejson'
-}
-
-response = requests.request("POST", url, headers=headers, data=payload)
-
-print(response.text)
-
-
-# # Define collection and index name
+# Define collection and index name
 # db_name = os.getenv('DB_NAME')
 # collection_name = os.getenv('USER_COLLECTION')
 # atlas_collection = client["Flat_Finder_DB"]["USER"]
@@ -70,13 +46,6 @@ class Address(BaseModel):
     zip_code: int
     city: str
     country: str
-
-
-class Employment(BaseModel):
-    employment_type: str
-    employment_start_date: str  # Format: "YYYY-MM"
-    job_title: str
-    current_employer: str
 
 
 class ApartmentPreferences(BaseModel):
@@ -94,13 +63,10 @@ class User(BaseModel):
     address: Address
     date_of_birth: date  # Format: "YYYY-MM-DD"
     smoker: bool
-    employment: Employment
+    employment_type: str
     average_monthly_net_income: int
     pets: bool
     languages: List[str]
-    guarantor: bool
-    wohnberechtigungsschein: bool
-    private_liability_insurance: bool
     apartment_preferences: ApartmentPreferences
     additional_info: List[str]
 
@@ -126,7 +92,7 @@ def save_user(users: User):
     collection.insert_one(user_dict)
 
 
-# Creates embeddings and stores them as a new field
+# EXAMPLE!!!
 
 user_data = {
     "full_name": "Anna Schmidt",
@@ -140,19 +106,11 @@ user_data = {
         "country": "Germany"
     },
     "date_of_birth": "1995-05-10",
-    "smoker": False,
-    "employment": {
-        "employment_type": "Full-time",
-        "employment_start_date": "2019-01",
-        "job_title": "Marketing Manager",
-        "current_employer": "XYZ Corp"
-    },
+    "employment_type": "Full-time",
     "average_monthly_net_income": 3500,
+    "smoker": False,
     "pets": False,
     "languages": ["English", "German"],
-    "guarantor": False,
-    "wohnberechtigungsschein": False,
-    "private_liability_insurance": True,
     "apartment_preferences": {
         "max_rent": 800,
         "location": "Berlin",
@@ -162,7 +120,6 @@ user_data = {
     },
     "additional_info": [
         "Relocating for a new job.",
-        "non-smoker",
         "like vegan food",
         "love jazz music",
         "enjoy running",
@@ -176,4 +133,3 @@ user_data = {
 
 user = User(**user_data)
 save_user(user)
-
