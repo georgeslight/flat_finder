@@ -11,17 +11,20 @@
         "country": "Germany"
     },
     "date_of_birth": "1995-05-10",
-    "employment":  "Full-time",
+    "employment_type": "Full-time",
     "average_monthly_net_income": 3500,
     "smoker": false,
-    "pets": false,
     "languages": ["English", "German"],
     "apartment_preferences": {
         "max_rent": 800,
         "location": "Berlin",
         "bezirk": ["Mitte", "Friedrichshain", "Prenzlauer Berg"],
         "min_size": 15,
-        "ready_to_move_in": "2021-09"
+        "ready_to_move_in": "2021-09",
+        "preferred_roommates_sex": "female",
+        "preferred_roommate_age": [25, 35],
+        "preferred_roommate_num": 2,
+        "smoking_ok": false
     },
     "additional_info": [
         "Relocating for a new job.",
