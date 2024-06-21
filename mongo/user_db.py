@@ -116,6 +116,16 @@ def get_user(user_id: str):
     return None
 
 
+def get_all_user():
+    user_collection = collection.find()
+    users = []
+    for user_x in user_collection:
+        if user_collection:
+            user_x['date_of_birth'] = date.fromisoformat(user_x['date_of_birth'])
+            users.append(User(**user_x))
+    return users
+
+
 # ------------------------------------------------------------- #
 
 # EXAMPLES!!!
@@ -239,7 +249,8 @@ updated_user_data_new = {
 
 updated_user_old = User(**update_user_data_old)
 updated_user = User(**updated_user_data_new)
-save_user(updated_user_old)
-update_user(updated_user)
+#save_user(updated_user_old)
+#update_user(updated_user)
 
 print(get_user("1"))
+print(get_all_user())
