@@ -67,7 +67,6 @@ class User(BaseModel):
     smoker: bool
     employment_type: str
     average_monthly_net_income: int
-    pets: bool
     languages: List[str]
     apartment_preferences: ApartmentPreferences
     additional_info: List[str]
@@ -77,6 +76,7 @@ def get_embedding(text_list: List[str]) -> List[float]:
     # Concatenate the list into a single string, as OpenAI embedding usually works with text input.
     combined_text = " ".join(text_list)
     responses = openai_client.embeddings.create(input=[combined_text], model=model)
+    print(reversed(responses.data[0].embedding))
     return responses.data[0].embedding
 
 
@@ -112,6 +112,7 @@ def get_user(user_id: str):
     user = collection.find_one({"id": user_id})
     if user:
         user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
+        print(user)
         return User(**user)
     return None
 
@@ -146,7 +147,6 @@ user_data = {
     "employment_type": "Full-time",
     "average_monthly_net_income": 3500,
     "smoker": False,
-    "pets": False,
     "languages": ["English", "German"],
     "apartment_preferences": {
         "max_rent": 800,
@@ -169,7 +169,7 @@ user_data = {
 }
 
 user = User(**user_data)
-#save_user(user)
+save_user(user)
 
 update_user_data_old = {
     "id": "2",
@@ -187,7 +187,6 @@ update_user_data_old = {
     "employment_type": "Full-time",
     "average_monthly_net_income": 3500,
     "smoker": False,
-    "pets": False,
     "languages": ["English", "German"],
     "apartment_preferences": {
         "max_rent": 800,
@@ -225,7 +224,6 @@ updated_user_data_new = {
     "employment_type": "Full-time",
     "average_monthly_net_income": 2500,
     "smoker": False,
-    "pets": False,
     "languages": ["English", "German"],
     "apartment_preferences": {
         "max_rent": 900,

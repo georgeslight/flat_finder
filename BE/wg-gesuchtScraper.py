@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 import json
 import time
 from dotenv import load_dotenv
+import re
 
 load_dotenv(dotenv_path="../.env")
 
@@ -31,10 +32,16 @@ def get_json_object():
         "frei ab": None,
         "frei bis": None,
         "Anzeige Datum": None,
-        "Wg-details": [],
-        "gesucht wird": [],
         "features": [],
-        "tab_contents": []
+        "tab_contents": [],
+        "Wohnungsgröße": None,
+        "WG_groesse": None,
+        "Mitbewohnern_Geschlecht": None,
+        "WG_Art": [],
+        "Gesuchte_Geschlecht": None,
+        "Gesuchte_Alter": None,
+        "Mitbewohner_Alter": None,
+        "smoking": None
     }
 
 
@@ -42,6 +49,71 @@ def get_json_object():
 def setup_driver():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     return driver
+
+
+def parse_wg_details(details_section):
+    data = {
+        "Wohnungsgröße": None,
+        "WG_groesse": None,
+        "Mitbewohnern_Geschlecht": None,
+        "WG_Art": [],
+        "Gesuchte_Geschlecht": None,
+        "Gesuchte_Alter": None,
+        "Mitbewohner_Alter": None,
+        "smoking": None
+    }
+
+    for line in details_section:
+        # Wohnungsgröße
+        match = re.search(r"Wohnungsgröße:\s*(\d+)\s*m²", line)
+        if match:
+            data["Wohnungsgröße"] = match.group(1)
+
+        # WG_groesse and Mitbewohnern_Geschlecht
+        match = re.search(r"(\d+er)\s*WG\s*\(([^)]+)\)", line)
+        if match:
+            data["WG_groesse"] = match.group(1).replace("er", "")
+            geschlecht = match.group(2)
+            if "Frau" in geschlecht:
+                data["Mitbewohnern_Geschlecht"] = "F"
+            elif "Mann" in geschlecht:
+                data["Mitbewohnern_Geschlecht"] = "M"
+            elif "gemischte" in geschlecht or "gemischt" in geschlecht:
+                data["Mitbewohnern_Geschlecht"] = "G"
+
+        # WG_Art
+        if any(keyword in line for keyword in
+               ["Studenten-WG", "Business-WG", "Berufstätigen-WG", "keine Zweck-WG", "gemischte WG",
+                "Internationals welcome"]):
+            data["WG_Art"].extend([keyword for keyword in
+                                   ["Studenten-WG", "Business-WG", "Berufstätigen-WG", "keine Zweck-WG", "gemischte WG",
+                                    "Internationals welcome"] if keyword in line])
+
+        # Gesuchte_Geschlecht
+        if "Geschlecht egal" in line:
+            data["Gesuchte_Geschlecht"] = "Egal"
+        elif "Mann" in line:
+            data["Gesuchte_Geschlecht"] = "M"
+        elif "Frau" in line:
+            data["Gesuchte_Geschlecht"] = "F"
+
+        # Gesuchte_Alter
+        match = re.search(r"zwischen\s*(\d+)\s*und\s*(\d+)\s*Jahren", line)
+        if match:
+            data["Gesuchte_Alter"] = (match.group(1), match.group(2))
+
+        # Mitbewohner_Alter
+        match = re.search(r"Bewohneralter:\s*(\d+)\s*bis\s*(\d+)\s*Jahre", line)
+        if match:
+            data["Mitbewohner_Alter"] = (match.group(1), match.group(2))
+
+        # Smoking
+        if "Rauchen nicht erwünscht" in line:
+            data["smoking"] = False
+        elif "Rauchen" in line:
+            data["smoking"] = True
+
+    return data
 
 
 # Load the website and handle cookies
@@ -90,7 +162,7 @@ def retrieve_structural_data(driver, data):
             for detail, value in zip(details, values):
                 key = detail.text.rstrip(':').strip()  # Remove colons and any extra spaces
                 data[key] = value.text.strip()  # Ensure no extra spaces in value
-                # print(data[detail.text])
+
         second_sections_details = sections[2].find_elements(By.CSS_SELECTOR, "span.section_panel_detail")
         address = second_sections_details[0].text.strip()
 
@@ -114,41 +186,20 @@ def retrieve_structural_data(driver, data):
     except Exception as e:
         print("An error occurred while retrieving financial details:", e)
 
-    # try:
-    #     sections2 = driver.find_elements(By.CSS_SELECTOR, "div.panel.section_panel")
-    #
-    #     for i in range(len(sections2)):
-    #         print(f"section index: {i}")
-    #         print(sections2[i].text)
-    # except Exception as e:
-    #     print("An error occurred while retrieving structural data:", e)
     try:
         sections2 = driver.find_elements(By.CSS_SELECTOR, "div.panel.section_panel")
 
         wg_details_section = sections2[4].text.split("\n")
-        wg_details = []
-        gesucht_wird = []
-        collect_for_gesucht = False
 
-        for line in wg_details_section:
-            if "Die WG:" in line or "Sprache/n:" in line or "WG-Details" in line:
-                continue
-            if "Gesucht wird:" in line:
-                collect_for_gesucht = True
-                continue
-            if "Zimmer" in line:
-                continue
+        # Parse WG details and Gesucht wird sections
+        parsed_data = parse_wg_details(wg_details_section)
 
-            if collect_for_gesucht:
-                gesucht_wird.append(line.strip())
-            else:
-                wg_details.append(line.strip())
-
-        data["Wg-details"] = wg_details
-        data["gesucht wird"] = gesucht_wird
+        data.update(parsed_data)
 
     except Exception as e:
         print("An error occurred while retrieving structural data:", e)
+
+    return data
 
 
 # Retrieve utility details

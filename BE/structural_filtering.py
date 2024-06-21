@@ -54,9 +54,10 @@ def load_apartments():
         return []
 
 
-def filter_apartments(user_data: UserData):
+def filter_apartments(user_data: UserData, apartments):
+    if apartments is None:
+        apartments = load_apartments()
     logger.info("Received request to notify apartment")
-    apartments = load_apartments()
     if not apartments:
         logger.error("Could not load apartment data.")
         raise HTTPException(status_code=500, detail="Could not load apartment data.")
@@ -68,7 +69,7 @@ def filter_apartments(user_data: UserData):
     for apartment in apartments:
         try:
             gesamtmiete = int(apartment.get("Gesamtmiete", "0€").replace("€", "").strip())
-            zimmergroesse = int(apartment.get("Zimmergröße", "0m²").replace("m²", "").strip())
+            zimmer_groesse = int(apartment.get("Zimmergröße", "0m²").replace("m²", "").strip())
             frei_ab = apartment.get("frei ab", "")
 
         except ValueError:
@@ -79,7 +80,7 @@ def filter_apartments(user_data: UserData):
         if (
                 gesamtmiete <= user_preferences.max_rent and
                 apartment.get("Ort") in user_preferences.bezirk and
-                zimmergroesse >= user_preferences.min_size and
+                zimmer_groesse >= user_preferences.min_size and
                 frei_ab <= user_preferences.move_in_date
         ):
             fitting_apartments.append(apartment)
