@@ -1,18 +1,18 @@
 [
     {
         "ID": 1,
-        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Charlottenburg.5518044.html",
-        "Ort": "Charlottenburg",
-        "Straße": "Knobelsdorffstraße",
-        "PLZ": "14059",
-        "Zimmergröße": "26m²",
-        "Gesamtmiete": "800€",
-        "Miete": "525€",
-        "Nebenkosten": "245€",
-        "Sonstige Kosten": "30€",
-        "Kaution": "1450€",
-        "Ablösevereinbarung": "n.a.",
-        "frei ab": "01.08.2024",
+        "Link": "https://www.example.com/apartment1",
+        "Ort": "Kreuzberg",
+        "Straße": "Sample Street 1",
+        "PLZ": "10115",
+        "Zimmergröße": "25m²",
+        "Gesamtmiete": "650€",
+        "Miete": "500€",
+        "Nebenkosten": "150€",
+        "Sonstige Kosten": "0€",
+        "Kaution": "1000€",
+        "Ablösevereinbarung": "0€",
+        "frei ab": "2023-11-01",
         "frei bis": null,
         "Anzeige Datum": "2024-06-21 18:06:50",
         "features": [
@@ -44,5 +44,197 @@
         "Gesuchte_Alter": null,
         "Mitbewohner_Alter": null,
         "smoking": false
+    },
+    {
+        "ID": 2,
+        "Link": "https://www.example.com/apartment2",
+        "Ort": "Neukölln",
+        "Straße": "Sample Street 2",
+        "PLZ": "10116",
+        "Zimmergröße": "200m²",
+        "Gesamtmiete": "50€",
+        "Miete": "550€",
+        "Nebenkosten": "150€",
+        "Sonstige Kosten": "0€",
+        "Kaution": "1000€",
+        "Ablösevereinbarung": "0€",
+        "frei ab": "2021-12-01",
+        "frei bis": null,
+        "Anzeige Datum": "2024-06-21 18:06:50",
+        "features": [
+            "sanierter Altbau",
+            "2. OG",
+            "möbliert",
+            "Badewanne",
+            "WLAN",
+            "Parkett",
+            "Fernwärme",
+            "gute Parkmöglichkeiten",
+            "5 Minuten zu Fuß entfernt",
+            "Waschmaschine"
+        ],
+        "tab_contents": [
+            "Cozy and comfortable room available in an all-female flatshare. The flat is located in a vibrant area of Neukölln, with easy access to public transport and shops."
+        ],
+        "Wohnungsgröße": "85",
+        "Mitbewohner_Anzahl": "3",
+        "Mitbewohnern_Geschlecht": "F",
+        "WG_Art": [
+            "Frauen-WG"
+        ],
+        "Gesuchte_Geschlecht": "F",
+        "Gesuchte_Alter": [
+            20,
+            30
+        ],
+        "Mitbewohner_Alter": [
+            20,
+            30
+        ],
+        "smoking": true
+    },
+    {
+        "ID": 3,
+        "Link": "https://www.example.com/apartment3",
+        "Ort": "Friedrichshain",
+        "Straße": "Sample Street 3",
+        "PLZ": "10117",
+        "Zimmergröße": "18m²",
+        "Gesamtmiete": "600€",
+        "Miete": "450€",
+        "Nebenkosten": "150€",
+        "Sonstige Kosten": "0€",
+        "Kaution": "1000€",
+        "Ablösevereinbarung": "0€",
+        "frei ab": "2024-01-01",
+        "frei bis": null,
+        "Anzeige Datum": "2024-06-21 18:06:50",
+        "features": [
+            "sanierter Altbau",
+            "3. OG",
+            "teilmöbliert",
+            "Dusche",
+            "WLAN",
+            "Parkett",
+            "Zentralheizung",
+            "gute Parkmöglichkeiten",
+            "2 Minuten zu Fuß entfernt",
+            "Waschmaschine"
+        ],
+        "tab_contents": [
+            "Affordable and cozy room available in a male flatshare. Located in the lively Friedrichshain area, close to all amenities and public transport."
+        ],
+        "Wohnungsgröße": "75",
+        "Mitbewohner_Anzahl": "3",
+        "Mitbewohnern_Geschlecht": "M",
+        "WG_Art": [
+            "Männer-WG"
+        ],
+        "Gesuchte_Geschlecht": "M",
+        "Gesuchte_Alter": [
+            20,
+            30
+        ],
+        "Mitbewohner_Alter": [
+            20,
+            30
+        ],
+        "smoking": true
+    },
+    {
+        "ID": 4,
+        "Link": "https://www.example.com/apartment4",
+        "Ort": "Wedding",
+        "Straße": "Sample Street 4",
+        "PLZ": "10118",
+        "Zimmergröße": "22m²",
+        "Gesamtmiete": "550€",
+        "Miete": "400€",
+        "Nebenkosten": "150€",
+        "Sonstige Kosten": "0€",
+        "Kaution": "1000€",
+        "Ablösevereinbarung": "0€",
+        "frei ab": "2023-10-01",
+        "frei bis": null,
+        "Anzeige Datum": "2024-06-21 18:06:50",
+        "features": [
+            "sanierter Altbau",
+            "4. OG",
+            "möbliert",
+            "Badewanne",
+            "WLAN",
+            "Parkett",
+            "Zentralheizung",
+            "gute Parkmöglichkeiten",
+            "4 Minuten zu Fuß entfernt",
+            "Waschmaschine"
+        ],
+        "tab_contents": [
+            "Spacious and bright room available in a mixed flatshare. Located in Wedding, close to public transport and local shops."
+        ],
+        "Wohnungsgröße": "70",
+        "Mitbewohner_Anzahl": "2",
+        "Mitbewohnern_Geschlecht": "F",
+        "WG_Art": [
+            "gemischte WG"
+        ],
+        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Alter": [
+            25,
+            35
+        ],
+        "Mitbewohner_Alter": [
+            25,
+            35
+        ],
+        "smoking": false
+    },
+    {
+        "ID": 5,
+        "Link": "https://www.example.com/apartment5",
+        "Ort": "Mitte",
+        "Straße": "Sample Street 5",
+        "PLZ": "10119",
+        "Zimmergröße": "28m²",
+        "Gesamtmiete": "800€",
+        "Miete": "600€",
+        "Nebenkosten": "200€",
+        "Sonstige Kosten": "0€",
+        "Kaution": "1000€",
+        "Ablösevereinbarung": "0€",
+        "frei ab": "2023-12-15",
+        "frei bis": null,
+        "Anzeige Datum": "2024-06-21 18:06:50",
+        "features": [
+            "sanierter Altbau",
+            "5. OG",
+            "möbliert",
+            "Dusche",
+            "WLAN",
+            "Parkett",
+            "Fernwärme",
+            "gute Parkmöglichkeiten",
+            "5 Minuten zu Fuß entfernt",
+            "Waschmaschine"
+        ],
+        "tab_contents": [
+            "Beautiful and large room available in a mixed flatshare. Located in Mitte, close to all major attractions and amenities."
+        ],
+        "Wohnungsgröße": "90",
+        "Mitbewohner_Anzahl": "3",
+        "Mitbewohnern_Geschlecht": "M",
+        "WG_Art": [
+            "gemischte WG"
+        ],
+        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Alter": [
+            20,
+            30
+        ],
+        "Mitbewohner_Alter": [
+            20,
+            30
+        ],
+        "smoking": true
     }
 ]

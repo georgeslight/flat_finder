@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from structural_filtering import filter_apartments, UserData
+from structural_filtering import filter_apartments, User
 
 load_dotenv(dotenv_path="../.env")
 
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 @app.post("/notify-apartment")
-async def notify_apartment(user_data: UserData):
+async def notify_apartment(user_data: User):
     return filter_apartments(user_data)
 
 
