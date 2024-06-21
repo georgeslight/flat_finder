@@ -57,6 +57,7 @@ class ApartmentPreferences(BaseModel):
 
 
 class User(BaseModel):
+    # mongo generates auto Ids. the ID in the USER BaseNodel is the telegram given ID
     id: str
     full_name: str
     phone_number: str
@@ -107,7 +108,17 @@ def update_user(users: User):
     collection.update_one({"id": users.id}, {"$set": user_dict})
 
 
-# EXAMPLE!!!
+def get_user(user_id: str):
+    user = collection.find_one({"id": user_id})
+    if user:
+        user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
+        return User(**user)
+    return None
+
+
+# ------------------------------------------------------------- #
+
+# EXAMPLES!!!
 
 user_data = {
     "id": "1",
@@ -148,7 +159,7 @@ user_data = {
 }
 
 user = User(**user_data)
-save_user(user)
+#save_user(user)
 
 update_user_data_old = {
     "id": "2",
@@ -226,8 +237,9 @@ updated_user_data_new = {
     ]
 }
 
-
 updated_user_old = User(**update_user_data_old)
 updated_user = User(**updated_user_data_new)
 save_user(updated_user_old)
 update_user(updated_user)
+
+print(get_user("1"))
