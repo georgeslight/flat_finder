@@ -57,6 +57,7 @@ class ApartmentPreferences(BaseModel):
 
 
 class User(BaseModel):
+    id: str
     full_name: str
     phone_number: str
     email: EmailStr
@@ -92,9 +93,24 @@ def save_user(users: User):
     collection.insert_one(user_dict)
 
 
+def update_user(users: User):
+    # Convert datetime.date to string in the user data
+    user_dict = users.dict()
+
+    # Convert date_of_birth to string
+    user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
+
+    # Convert additional_info embeddings
+    embedded_info = get_embedding(users.additional_info)
+    user_dict['additional_info_embedding'] = embedded_info
+
+    collection.update_one({"id": users.id}, {"$set": user_dict})
+
+
 # EXAMPLE!!!
 
 user_data = {
+    "id": "1",
     "full_name": "Anna Schmidt",
     "phone_number": "+49123456789",
     "email": "anna.schmidt@example.com",
@@ -133,3 +149,85 @@ user_data = {
 
 user = User(**user_data)
 save_user(user)
+
+update_user_data_old = {
+    "id": "2",
+    "full_name": "Anna Schmidt",
+    "phone_number": "+49123456789",
+    "email": "anna.schmidt@example.com",
+    "address": {
+        "street": "Example Street",
+        "house_number": 12,
+        "zip_code": 12345,
+        "city": "Munich",
+        "country": "Germany"
+    },
+    "date_of_birth": "1995-05-10",
+    "employment_type": "Full-time",
+    "average_monthly_net_income": 3500,
+    "smoker": False,
+    "pets": False,
+    "languages": ["English", "German"],
+    "apartment_preferences": {
+        "max_rent": 800,
+        "location": "Berlin",
+        "bezirk": ["Mitte", "Friedrichshain", "Prenzlauer Berg"],
+        "min_size": 15,
+        "ready_to_move_in": "2021-09"
+    },
+    "additional_info": [
+        "Relocating for a new job.",
+        "like vegan food",
+        "love jazz music",
+        "enjoy running",
+        "looking for a quiet place to work from home",
+        "speak English and German fluently",
+        "looking for a wg room with only female roommates",
+        "I rather have a fully furnished Room",
+        "I need fast internet connection for my job"
+    ]
+}
+
+updated_user_data_new = {
+    "id": "2",
+    "full_name": "Anna Schmidt",
+    "phone_number": "+49123456789",
+    "email": "anna.schmidt@example.com",
+    "address": {
+        "street": "Example Street",
+        "house_number": 12,
+        "zip_code": 12345,
+        "city": "Munich",
+        "country": "Germany"
+    },
+    "date_of_birth": "1995-05-10",
+    "employment_type": "Full-time",
+    "average_monthly_net_income": 2500,
+    "smoker": False,
+    "pets": False,
+    "languages": ["English", "German"],
+    "apartment_preferences": {
+        "max_rent": 900,
+        "location": "Berlin",
+        "bezirk": ["Mitte", "Friedrichshain", "Prenzlauer Berg"],
+        "min_size": 15,
+        "ready_to_move_in": "2021-09"
+    },
+    "additional_info": [
+        "Relocating for a new job.",
+        "like vegan food",
+        "love jazz music",
+        "enjoy running",
+        "looking for a quiet place to work from home",
+        "speak English and German fluently",
+        "looking for a wg room with only female roommates",
+        "I rather have a fully furnished Room",
+        "I need fast internet connection for my job"
+    ]
+}
+
+
+updated_user_old = User(**update_user_data_old)
+updated_user = User(**updated_user_data_new)
+save_user(updated_user_old)
+update_user(updated_user)
