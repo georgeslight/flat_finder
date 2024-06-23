@@ -7,12 +7,12 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram import BotCommand
 import openai
 import requests
-from mongo.user_db import User, save_user
 
+# Importing from user_db.py
+from mongo.user_db import User, get_user, save_user, update_user
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path="../.env")
-
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 openai.api_key = os.getenv('OPENAI_API_KEY')
@@ -23,48 +23,16 @@ bot = telebot.TeleBot(BOT_TOKEN)
 # Initialize OpenAI client if necessary
 client = openai.OpenAI(api_key=openai.api_key)
 
-# Store thread_id and user profile information in simple in-memory storage
-user_sessions = {}
-
 
 # Function to create a new thread for a user
-def create_thread(user_id):
+def create_user(user_id):
     try:
-        # Create a thread (representing a conversation)
-        thread = client.beta.threads.create()
-        # Saves thread in user_session
-        user_sessions[user_id] = {
-            "thread_id": thread.id,
-            "profile": {
-                "full_name": None,
-                "phone_number": None,
-                "email": None,
-                "address": {
-                    "street": None,
-                    "house_number": None,
-                    "zip_code": None,
-                    "city": None,
-                    "country": None
-                },
-                "date_of_birth": None,
-                "employment_type": None,
-                "average_monthly_net_income": None,
-                "smoker": False
-            },
-            "preferences": {
-                "max_rent": None,
-                "location": None,
-                "bezirk": [],
-                "min_size": None,
-                "ready_to_move_in": None,
-                "preferred_roommates_sex": None,
-                "preferred_roommate_age": [],
-                "preferred_roommate_num": None,
-                "smoking_ok": None
-            },
-            "additional_info": []
-        }
-        return thread.id
+        user = get_user(user_id)
+        if user is None:
+            new_user = User(id=user_id, thread_id=client.beta.threads.create().id)
+            save_user(new_user)
+            return new_user
+        return user
     except Exception as e:
         logging.error(f"Failed to create thread: {e}")
         return None
@@ -76,7 +44,7 @@ def send_welcome(message):
     try:
         bot.reply_to(message, "Welcome!")
         # Create a new thread for the user
-        thread_id = create_thread(message.from_user.id)
+        create_user(message.from_user.id)
     except Exception as e:
         logging.error(f"Failed to send welcome message: {e}")
 
@@ -97,7 +65,7 @@ def handle_profile(message):
 @bot.callback_query_handler(func=lambda call: call.data in ['profile'])
 def profile_info(call):
     try:
-        profile = user_sessions[call.message.chat.id]["profile"]
+        profile = get_user(call.message.chat.id)
         address = profile.get('address', {})
         profile_text = (
             f"Here is your profile information:\n\n"
@@ -140,7 +108,11 @@ def profile_info(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'preferences')
 def preferences_info(call):
     try:
-        preferences = user_sessions[call.message.chat.id]["preferences"]
+        user = get_user(call.message.chat.id)
+        if not user:
+            bot.send_message(call.message.chat.id, "User not found. Please start with /start command.")
+            return
+        preferences = user.apartment_preferences
         preferences_text = (
             f"Here are your apartment preferences:\n\n"
             f"Max Rent: {preferences.get('max_rent', 'Not set')}\n"
@@ -153,7 +125,7 @@ def preferences_info(call):
             f"Preferred Roommate Num: {preferences.get('preferred_roommate_num', 'Not set')}\n"
             f"Smoking OK: {preferences.get('smoking_ok', 'Not set')}\n"
         )
-        additional_info = user_sessions[call.message.chat.id].get("additional_info", [])
+        additional_info = get_user(call.message.chat.id).get("additional_info", [])
         additional_info_text = "\n".join(f"- {info}" for info in additional_info) or "Not set"
         preferences_text += f"\nAdditional Information:\n{additional_info_text}"
 
@@ -202,10 +174,12 @@ def handle_update_callback(call):
             msg = bot.send_message(call.message.chat.id, "Please enter your preferred Bezirks separated by commas:")
             bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
         elif field == "preferred_roommate_age":
-            msg = bot.send_message(call.message.chat.id, "Please enter your preferred roommate ages separated by commas:")
+            msg = bot.send_message(call.message.chat.id,
+                                   "Please enter your preferred roommate ages separated by commas:")
             bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
         elif field == "additional_info":
-            msg = bot.send_message(call.message.chat.id, "Please enter additional information, each item separated by commas:")
+            msg = bot.send_message(call.message.chat.id,
+                                   "Please enter additional information, each item separated by commas:")
             bot.register_next_step_handler(msg, lambda message: update_additional_info(message, call))
         else:
             msg = bot.send_message(call.message.chat.id, f"Please enter your new {field}:")
@@ -219,7 +193,7 @@ def update_smoker_status(call):
     try:
         user_id = call.message.chat.id
         smoker_status = call.data.split('_')[1] == 'true'
-        user_sessions[user_id]['profile']['smoker'] = smoker_status
+        get_user(user_id)['profile']['smoker'] = smoker_status
         bot.reply_to(call.message, f"Your smoking status has been updated to: {'True' if smoker_status else 'False'}")
         profile_info(call)
     except Exception as e:
@@ -236,7 +210,7 @@ def update_address(message, call):
         if match:
             street, house_number, zip_code, city, country = match.groups()
             logging.info(f"Parsed address: {street}, {house_number}, {zip_code}, {city}, {country}")
-            user_sessions[user_id]['profile']['address'] = {
+            get_user(user_id)['profile']['address'] = {
                 "street": street,
                 "house_number": house_number,
                 "zip_code": zip_code,
@@ -256,7 +230,7 @@ def update_profile(message, field, call):
     try:
         user_id = message.from_user.id
         new_value = message.text
-        user_sessions[user_id]['profile'][field] = new_value
+        get_user(user_id)['profile'][field] = new_value
         bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
         profile_info(call)
     except Exception as e:
@@ -269,7 +243,7 @@ def update_preferences(message, field, call):
         new_value = message.text
         if field == "bezirk" or field == "preferred_roommate_age":
             new_value = [x.strip() for x in new_value.split(',')]
-        user_sessions[user_id]['preferences'][field] = new_value
+        get_user(user_id)['preferences'][field] = new_value
         bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
         preferences_info(call)
     except Exception as e:
@@ -280,7 +254,7 @@ def update_additional_info(message, call):
     try:
         user_id = message.from_user.id
         new_value = [x.strip() for x in message.text.split(',')]
-        user_sessions[user_id]['additional_info'] = new_value
+        get_user(user_id)['additional_info'] = new_value
         bot.reply_to(message, "Your additional information has been updated.")
         preferences_info(call)
     except Exception as e:
@@ -293,7 +267,7 @@ def handle_message(message):
     user_id = message.from_user.id
 
     # Retrieve or create a new thread_id for the user
-    thread = user_sessions.get(user_id)
+    thread = get_user(user_id).thread_id
     if not thread:
         send_welcome(message)
         return
