@@ -7,9 +7,12 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram import BotCommand
 import openai
 import requests
+from mongo.user_db import User, save_user
+
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path="../.env")
+
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 openai.api_key = os.getenv('OPENAI_API_KEY')

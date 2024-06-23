@@ -20,7 +20,7 @@
         "location": "Berlin",
         "bezirk": ["Mitte", "Friedrichshain", "Prenzlauer Berg"],
         "min_size": 15,
-        "ready_to_move_in": "2021-09",
+        "ready_to_move_in": "2021-09-01",
         "preferred_roommates_sex": "female",
         "preferred_roommate_age": [25, 35],
         "preferred_roommate_num": 2,

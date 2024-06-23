@@ -62,6 +62,7 @@ class ApartmentPreferences(BaseModel):
 
 class User(BaseModel):
     id: str
+    thread_id: str
     full_name: str
     phone_number: str
     email: EmailStr
@@ -137,7 +138,8 @@ result = collection.delete_many({})
 # EXAMPLES!!!
 
 new_user_data = {
-    "id": "3",
+    "id": "188",
+    "thread_id": "1",
     "full_name": "John Doe",
     "phone_number": "+49123456789",
     "email": "john.doe@example.com",
@@ -266,11 +268,11 @@ updated_user_data_new = {
         "Looking for a long-term stay."
     ]
 }
-
-updated_user_old = User(**update_user_data_old)
-updated_user = User(**updated_user_data_new)
-save_user(updated_user_old)
-update_user(updated_user)
-
-print(get_user("5"))
-print(get_all_user())
+#
+# updated_user_old = User(**update_user_data_old)
+# updated_user = User(**updated_user_data_new)
+# save_user(updated_user_old)
+# update_user(updated_user)
+#
+# print(get_user("5"))
+# print(get_all_user())
