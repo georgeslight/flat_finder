@@ -1,16 +1,8 @@
 import json
 import logging
-import os
-from typing import List, Optional
-from datetime import datetime
-from mongo.user_db import get_user, User
-import openai
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import datetime
 
-load_dotenv(dotenv_path="../.env")
+load_dotenv(dotenv_path="../../.env")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

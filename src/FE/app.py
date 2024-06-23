@@ -4,15 +4,14 @@ import re
 from dotenv import load_dotenv
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-from telegram import BotCommand
 import openai
 import requests
 
 # Importing from user_db.py
-from mongo.user_db import User, get_user, save_user, update_user
+from src.mongo.user_db import User, get_user, save_user
 
 # Load environment variables from .env file
-load_dotenv(dotenv_path="../.env")
+load_dotenv(dotenv_path="../../.env")
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 openai.api_key = os.getenv('OPENAI_API_KEY')

@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 from structural_filtering import filter_apartments, User
 
-load_dotenv(dotenv_path="../.env")
+load_dotenv(dotenv_path="../../.env")
 
 app = FastAPI()
 

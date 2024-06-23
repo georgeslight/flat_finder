@@ -8,4 +8,4 @@ config.yaml
 __pycache__/
 
 # Ignore the mongo/__pycache__ directory
-mongo/__pycache__/
+src/mongo/__pycache__/

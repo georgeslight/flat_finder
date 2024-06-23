@@ -186,11 +186,12 @@ new_user = User(**new_user_data)
 
 # Save and Print the new user details
 save_user(new_user)
-print(get_user("3"))
+print(get_user("188"))
 
 
 update_user_data_old = {
     "id": "5",
+    "thread_id": "1",
     "full_name": "John Doe",
     "phone_number": "+49123456789",
     "email": "john.doe@example.com",
@@ -232,6 +233,7 @@ update_user_data_old = {
 
 updated_user_data_new = {
     "id": "5",
+    "thread_id": "1",
     "full_name": "John Doe",
     "phone_number": "+49123456789",
     "email": "john.doe@example.com",
@@ -270,11 +272,11 @@ updated_user_data_new = {
         "Looking for a long-term stay."
     ]
 }
-#
-# updated_user_old = User(**update_user_data_old)
-# updated_user = User(**updated_user_data_new)
-# save_user(updated_user_old)
-# update_user(updated_user)
-#
-# print(get_user("5"))
-# print(get_all_user())
+
+updated_user_old = User(**update_user_data_old)
+updated_user = User(**updated_user_data_new)
+save_user(updated_user_old)
+update_user(updated_user)
+
+print(get_user("5"))
+print(get_all_user())

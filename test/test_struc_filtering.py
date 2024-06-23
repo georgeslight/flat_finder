@@ -1,8 +1,7 @@
 import unittest
 from datetime import date
 from bson import ObjectId
-from mongo.user_db import User, get_user, save_user
-from BE.structural_filtering import filter_apartments, turn_user_to_user_model
+from src.BE.structural_filtering import filter_apartments, turn_user_to_user_model
 
 
 class TestApartmentFiltering(unittest.TestCase):
@@ -714,6 +713,7 @@ class TestApartmentFiltering(unittest.TestCase):
 
         filtered_apartments = filter_apartments(user, self.apartments)
         self.assertEqual(filtered_apartments, expected_output)
+
 
 if __name__ == '__main__':
     unittest.main()

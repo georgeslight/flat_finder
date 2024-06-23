@@ -10,7 +10,7 @@ import time
 from dotenv import load_dotenv
 import re
 
-load_dotenv(dotenv_path="../.env")
+load_dotenv(dotenv_path="../../.env")
 
 json_file = []
 
