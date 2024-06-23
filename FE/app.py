@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 import re
 from dotenv import load_dotenv
 import telebot
@@ -31,9 +30,6 @@ def create_thread(user_id):
         # Create a thread (representing a conversation)
         thread = client.beta.threads.create()
         # Saves thread in user_session
-        # user_sessions[user_id] = {
-        #     "thread_id": thread.id
-        # }
         user_sessions[user_id] = {
             "thread_id": thread.id,
             "profile": {
@@ -46,7 +42,6 @@ def create_thread(user_id):
                     "zip_code": None,
                     "city": None,
                     "country": None
-
                 },
                 "date_of_birth": None,
                 "employment_type": None,
@@ -54,8 +49,17 @@ def create_thread(user_id):
                 "smoker": False
             },
             "preferences": {
-
-            }
+                "max_rent": None,
+                "location": None,
+                "bezirk": [],
+                "min_size": None,
+                "ready_to_move_in": None,
+                "preferred_roommates_sex": None,
+                "preferred_roommate_age": [],
+                "preferred_roommate_num": None,
+                "smoking_ok": None
+            },
+            "additional_info": []
         }
         return thread.id
     except Exception as e:
@@ -130,6 +134,52 @@ def profile_info(call):
         logging.error(f"Failed to display profile information: {e}")
 
 
+@bot.callback_query_handler(func=lambda call: call.data == 'preferences')
+def preferences_info(call):
+    try:
+        preferences = user_sessions[call.message.chat.id]["preferences"]
+        preferences_text = (
+            f"Here are your apartment preferences:\n\n"
+            f"Max Rent: {preferences.get('max_rent', 'Not set')}\n"
+            f"Location: {preferences.get('location', 'Not set')}\n"
+            f"Bezirk: {', '.join(preferences.get('bezirk', [])) or 'Not set'}\n"
+            f"Min Size: {preferences.get('min_size', 'Not set')}\n"
+            f"Ready to Move In: {preferences.get('ready_to_move_in', 'Not set')}\n"
+            f"Preferred Roommates Sex: {preferences.get('preferred_roommates_sex', 'Not set')}\n"
+            f"Preferred Roommate Age: {', '.join(map(str, preferences.get('preferred_roommate_age', []))) or 'Not set'}\n"
+            f"Preferred Roommate Num: {preferences.get('preferred_roommate_num', 'Not set')}\n"
+            f"Smoking OK: {preferences.get('smoking_ok', 'Not set')}\n"
+        )
+        additional_info = user_sessions[call.message.chat.id].get("additional_info", [])
+        additional_info_text = "\n".join(f"- {info}" for info in additional_info) or "Not set"
+        preferences_text += f"\nAdditional Information:\n{additional_info_text}"
+
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("Max Rent", callback_data="change_max_rent"),
+            InlineKeyboardButton("Location", callback_data="change_location"),
+        )
+        markup.row(
+            InlineKeyboardButton("Bezirk", callback_data="change_bezirk"),
+            InlineKeyboardButton("Min Size", callback_data="change_min_size"),
+        )
+        markup.row(
+            InlineKeyboardButton("Ready to Move In", callback_data="change_ready_to_move_in"),
+            InlineKeyboardButton("Preferred Roommates Sex", callback_data="change_preferred_roommates_sex"),
+        )
+        markup.row(
+            InlineKeyboardButton("Preferred Roommate Age", callback_data="change_preferred_roommate_age"),
+            InlineKeyboardButton("Preferred Roommate Num", callback_data="change_preferred_roommate_num"),
+        )
+        markup.row(
+            InlineKeyboardButton("Smoking OK", callback_data="change_smoking_ok"),
+            InlineKeyboardButton("Additional Info", callback_data="change_additional_info")
+        )
+        bot.send_message(call.message.chat.id, preferences_text, reply_markup=markup)
+    except Exception as e:
+        logging.error(f"Failed to display preferences information: {e}")
+
+
 @bot.callback_query_handler(func=lambda call: call.data.startswith('change_'))
 def handle_update_callback(call):
     try:
@@ -145,9 +195,18 @@ def handle_update_callback(call):
                 InlineKeyboardButton("False", callback_data="smoker_false")
             )
             bot.send_message(call.message.chat.id, "Please select your smoking status:", reply_markup=markup)
+        elif field == "bezirk":
+            msg = bot.send_message(call.message.chat.id, "Please enter your preferred Bezirks separated by commas:")
+            bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
+        elif field == "preferred_roommate_age":
+            msg = bot.send_message(call.message.chat.id, "Please enter your preferred roommate ages separated by commas:")
+            bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
+        elif field == "additional_info":
+            msg = bot.send_message(call.message.chat.id, "Please enter additional information, each item separated by commas:")
+            bot.register_next_step_handler(msg, lambda message: update_additional_info(message, call))
         else:
             msg = bot.send_message(call.message.chat.id, f"Please enter your new {field}:")
-            bot.register_next_step_handler(msg, lambda message: update_profile(message, field, call))
+            bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
     except Exception as e:
         logging.error(f"Failed to handle update callback: {e}")
 
@@ -201,8 +260,28 @@ def update_profile(message, field, call):
         logging.error(f"Failed to handle update profile: {e}")
 
 
-def preferences_info(message):
-    pass
+def update_preferences(message, field, call):
+    try:
+        user_id = message.from_user.id
+        new_value = message.text
+        if field == "bezirk" or field == "preferred_roommate_age":
+            new_value = [x.strip() for x in new_value.split(',')]
+        user_sessions[user_id]['preferences'][field] = new_value
+        bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
+        preferences_info(call)
+    except Exception as e:
+        logging.error(f"Failed to handle update preferences: {e}")
+
+
+def update_additional_info(message, call):
+    try:
+        user_id = message.from_user.id
+        new_value = [x.strip() for x in message.text.split(',')]
+        user_sessions[user_id]['additional_info'] = new_value
+        bot.reply_to(message, "Your additional information has been updated.")
+        preferences_info(call)
+    except Exception as e:
+        logging.error(f"Failed to handle update additional information: {e}")
 
 
 # Handler method for all other text messages
