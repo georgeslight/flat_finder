@@ -2,3 +2,10 @@
 config.yaml
 .idea
 .venv
+
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore the mongo/__pycache__ directory
+mongo/__pycache__/
