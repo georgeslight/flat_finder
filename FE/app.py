@@ -108,7 +108,7 @@ def profile_info(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'preferences')
 def preferences_info(call):
     try:
-        user = get_user(call.message.chat.id)
+        user = get_user(call.from_user.id)
         if not user:
             bot.send_message(call.message.chat.id, "User not found. Please start with /start command.")
             return

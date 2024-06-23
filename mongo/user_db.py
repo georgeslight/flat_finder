@@ -89,11 +89,13 @@ def save_user(users: User):
     user_dict = users.dict()
 
     # Convert date_of_birth to string
-    user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat() if user_dict['date_of_birth'] else None
+    if user_dict['date_of_birth']:
+        user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat() if user_dict['date_of_birth'] else None
 
     # Convert additional_info embeddings
-    embedded_info = get_embedding(users.additional_info)
-    user_dict['additional_info_embedding'] = embedded_info
+    if get_embedding(users.additional_info):
+        embedded_info = get_embedding(users.additional_info)
+        user_dict['additional_info_embedding'] = embedded_info
 
     collection.insert_one(user_dict)
 
