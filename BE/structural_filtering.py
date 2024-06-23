@@ -208,5 +208,6 @@ apartments = [
     }
 ]
 
+
 filtered_apartments = filter_apartments(user, apartments)
 print(filtered_apartments)
