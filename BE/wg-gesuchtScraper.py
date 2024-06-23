@@ -247,7 +247,7 @@ def retrieve_ad_description_text(driver, data):
 
 
 # Main execution function
-def scrap_wg_gesucht(entriesCount=1):
+def scrap_wg_gesucht(entriesCount=10):
     driver = setup_driver()
     url = "https://www.wg-gesucht.de/wg-zimmer-in-Berlin.8.0.1.0.html"
     load_website_and_handle_cookies(driver, url)
@@ -269,6 +269,7 @@ def scrap_wg_gesucht(entriesCount=1):
     driver.quit()
     with open('output.json', 'w', encoding='utf-8', ) as file:
         json.dump(json_file, file, ensure_ascii=False, indent=4)
+        funcx(json_file)
     return json_file
 
 
