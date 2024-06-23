@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List
+from typing import List, Optional
 
 import openai
 from langchain_community.embeddings import OpenAIEmbeddings
@@ -9,7 +9,7 @@ import requests
 import json
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 import os
 
@@ -41,39 +41,39 @@ except Exception as e:
 # vector_search_index = os.getenv('INDEX_NAME')
 
 class Address(BaseModel):
-    street: str
-    house_number: int
-    zip_code: int
-    city: str
-    country: str
+    street: Optional[str] = Field(None)
+    house_number: Optional[int] = Field(None)
+    zip_code: Optional[int] = Field(None)
+    city: Optional[str] = Field(None)
+    country: Optional[str] = Field(None)
 
 
 class ApartmentPreferences(BaseModel):
-    max_rent: int
-    location: str
-    bezirk: List[str]
-    min_size: int
-    ready_to_move_in: str  # Format: "YYYY-MM"
-    preferred_roommates_sex: str
-    preferred_roommate_age: List[int]
-    preferred_roommate_num: int
-    smoking_ok: bool
+    max_rent: Optional[int] = Field(None)
+    location: Optional[str] = Field(None)
+    bezirk: List[Optional[str]] = Field(default_factory=list)
+    min_size: Optional[int] = Field(None)
+    ready_to_move_in: Optional[str] = Field(None)  # Format: "YYYY-MM"
+    preferred_roommates_sex: Optional[str] = Field(None)
+    preferred_roommate_age: List[Optional[int]] = Field(default_factory=list)
+    preferred_roommate_num: Optional[int] = Field(None)
+    smoking_ok: Optional[bool] = Field(None)
 
 
 class User(BaseModel):
     id: str
     thread_id: str
-    full_name: str
-    phone_number: str
-    email: EmailStr
-    address: Address
-    date_of_birth: date  # Format: "YYYY-MM-DD"
-    smoker: bool
-    employment_type: str
-    average_monthly_net_income: int
-    languages: List[str]
-    apartment_preferences: ApartmentPreferences
-    additional_info: List[str]
+    full_name: Optional[str] = Field(None)
+    phone_number: Optional[str] = Field(None)
+    email: Optional[EmailStr] = Field(None)
+    address: Optional[Address] = Field(default_factory=Address)
+    date_of_birth: Optional[date] = Field(None)  # Format: "YYYY-MM-DD"
+    smoker: Optional[bool] = Field(False)
+    employment_type: Optional[str] = Field(None)
+    average_monthly_net_income: Optional[int] = Field(None)
+    languages: List[Optional[str]] = Field(default_factory=list)
+    apartment_preferences: Optional[ApartmentPreferences] = Field(default_factory=ApartmentPreferences)
+    additional_info: List[Optional[str]] = Field(default_factory=list)
 
 
 def get_embedding(text_list: List[str]) -> List[float]:
