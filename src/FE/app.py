@@ -22,15 +22,18 @@ bot = telebot.TeleBot(BOT_TOKEN)
 # Initialize OpenAI client if necessary
 client = openai.OpenAI(api_key=openai.api_key)
 
+user = None
+
 
 # Function to create a new thread for a user
 def create_user(user_id):
+    global user
     try:
         user = get_user(user_id)
         if user is None:
-            new_user = User(id=user_id, thread_id=client.beta.threads.create().id)
-            save_user(new_user)
-            return new_user
+            user = User(id=user_id, thread_id=client.beta.threads.create().id)
+            save_user(user)
+            return user
         return user
     except Exception as e:
         logging.error(f"Failed to create thread: {e}")
@@ -63,24 +66,25 @@ def handle_profile(message):
 # Callback query handler for inline buttons
 @bot.callback_query_handler(func=lambda call: call.data in ['profile'])
 def profile_info(call):
+    global user
     try:
-        profile = get_user(call.message.chat.id)
-        address = profile.get('address', {})
+        # profile = get_user(call.message.chat.id)
+        address = user.address
         profile_text = (
             f"Here is your profile information:\n\n"
-            f"Full Name: {profile.get('full_name', 'Not set')}\n"
-            f"Phone Number: {profile.get('phone_number', 'Not set')}\n"
-            f"Email: {profile.get('email', 'Not set')}\n"
+            f"Full Name: {user.full_name if user.full_name else 'Not set'}\n"
+            f"Phone Number: {user.phone_number if user.phone_number else 'Not set'}\n"
+            f"Email: {user.email if user.email else 'Not set'}\n"
             f"Address:\n"
-            f"     Street: {address.get('street', 'Not set')}\n"
-            f"     House number: {address.get('house_number', 'Not set')}\n"
-            f"     Zip code: {address.get('zip_code', 'Not set')}\n"
-            f"     City: {address.get('city', 'Not set')}\n"
-            f"     Country: {address.get('country', 'Not set')}\n"
-            f"Date of birth: {profile.get('date_of_birth', 'Not set')}\n"
-            f"Employment Type: {profile.get('employment_type', 'Not set')}\n"
-            f"Average monthly net income: {profile.get('average_monthly_net_income', 'Not set')}\n"
-            f"Smoker: {profile.get('smoker', 'Not set')}\n"
+            f"     Street: {address.street if address.street else 'Not set'}\n"
+            f"     House number: {address.house_number if address.house_number else 'Not set'}\n"
+            f"     Zip code: {address.zip_code if address.zip_code else 'Not set'}\n"
+            f"     City: {address.city if address.city else 'Not set'}\n"
+            f"     Country: {address.country if address.country else 'Not set'}\n"
+            f"Date of birth: {user.date_of_birth if user.date_of_birth else 'Not set'}\n"
+            f"Employment Type: {user.employment_type if user.employment_type else'Not set'}\n"
+            f"Average monthly net income: {user.average_monthly_net_income if user.average_monthly_net_income else 'Not set'}\n"
+            f"Smoker: {user.smoker if user.smoker else 'Not set'}\n"
         )
         markup = InlineKeyboardMarkup()
         markup.row(
@@ -106,25 +110,26 @@ def profile_info(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == 'preferences')
 def preferences_info(call):
+    global user
     try:
-        user = get_user(call.from_user.id)
+        # user = get_user(call.from_user.id)
         if not user:
             bot.send_message(call.message.chat.id, "User not found. Please start with /start command.")
             return
         preferences = user.apartment_preferences
         preferences_text = (
             f"Here are your apartment preferences:\n\n"
-            f"Max Rent: {preferences.get('max_rent', 'Not set')}\n"
-            f"Location: {preferences.get('location', 'Not set')}\n"
-            f"Bezirk: {', '.join(preferences.get('bezirk', [])) or 'Not set'}\n"
-            f"Min Size: {preferences.get('min_size', 'Not set')}\n"
-            f"Ready to Move In: {preferences.get('ready_to_move_in', 'Not set')}\n"
-            f"Preferred Roommates Sex: {preferences.get('preferred_roommates_sex', 'Not set')}\n"
-            f"Preferred Roommate Age: {', '.join(map(str, preferences.get('preferred_roommate_age', []))) or 'Not set'}\n"
-            f"Preferred Roommate Num: {preferences.get('preferred_roommate_num', 'Not set')}\n"
-            f"Smoking OK: {preferences.get('smoking_ok', 'Not set')}\n"
+            f"Max Rent: {preferences.max_rent if preferences.max_rent else 'Not set'}\n"
+            f"Location: {preferences.location if preferences.location else 'Not set'}\n"
+            f"Bezirk: {', '.join(preferences.bezirk) if preferences.bezirk else 'Not set'}\n"
+            f"Min Size: {preferences.min_size if preferences.min_size else 'Not set'}\n"
+            f"Ready to Move In: {preferences.ready_to_move_in if preferences.ready_to_move_in else 'Not set'}\n"
+            f"Preferred Roommates Sex: {preferences.preferred_roommates_sex if preferences.preferred_roommates_sex else 'Not set'}\n"
+            f"Preferred Roommate Age: {', '.join(map(str, preferences.preferred_roommate_age)) if preferences.preferred_roommate_age else 'Not set'}\n"
+            f"Preferred Roommate Num: {preferences.preferred_roommate_num if preferences.preferred_roommate_num else 'Not set'}\n"
+            f"Smoking OK: {preferences.smoking_ok if preferences.smoking_ok else 'Not set'}\n"
         )
-        additional_info = get_user(call.message.chat.id).get("additional_info", [])
+        additional_info = user.additional_info if user.additional_info else []
         additional_info_text = "\n".join(f"- {info}" for info in additional_info) or "Not set"
         preferences_text += f"\nAdditional Information:\n{additional_info_text}"
 

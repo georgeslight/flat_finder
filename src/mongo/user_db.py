@@ -85,18 +85,12 @@ def get_embedding(text_list: List[str]) -> List[float]:
 
 
 def save_user(users: User):
-    # Convert datetime.date to string in the user data
     user_dict = users.dict()
-
-    # Convert date_of_birth to string
-    if user_dict['date_of_birth']:
-        user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat() if user_dict['date_of_birth'] else None
-
-    # Convert additional_info embeddings
-    if get_embedding(users.additional_info):
+    if user_dict.get('date_of_birth') is not None:
+        user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
+    if users.additional_info:
         embedded_info = get_embedding(users.additional_info)
         user_dict['additional_info_embedding'] = embedded_info
-
     collection.insert_one(user_dict)
 
 
@@ -105,7 +99,8 @@ def update_user(users: User):
     user_dict = users.dict()
 
     # Convert date_of_birth to string
-    user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
+    if user_dict.get('date_of_birth') is not None:
+        user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
 
     # Convert additional_info embeddings
     embedded_info = get_embedding(users.additional_info)
@@ -115,12 +110,24 @@ def update_user(users: User):
 
 
 def get_user(user_id: str):
-    user = collection.find_one({"id": user_id})
+    try:
+        user = collection.find_one({"id": user_id})
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return None
+
     if user:
-        user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
-        print(user)
+        print(f"User found: {user}")
+        try:
+            user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
+        except ValueError as e:
+            print(f"Date conversion error: {e}")
+            return None
+
         return User(**user)
-    return None
+    else:
+        print(f"No user found with id: {user_id}")
+        return None
 
 
 def get_all_user():
