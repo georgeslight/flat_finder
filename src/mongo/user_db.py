@@ -76,6 +76,27 @@ class User(BaseModel):
     additional_info: List[Optional[str]] = Field(default_factory=list)
 
 
+def get_empty_user():
+    return User(id="", thread_id="", full_name=None, phone_number=None, email=None, address={
+        "street": None,
+        "house_number": None,
+        "zip_code": None,
+        "city": None,
+        "country": None
+    }, date_of_birth=None, employment_type=None, average_monthly_net_income=None, smoker=False, languages=[],
+                apartment_preferences={
+                    "max_rent": None,
+                    "location": None,
+                    "bezirk": [],
+                    "min_size": None,
+                    "ready_to_move_in": None,
+                    "preferred_roommates_sex": None,
+                    "preferred_roommate_age": [],
+                    "preferred_roommate_num": None,
+                    "smoking_ok": False
+                }, additional_info=[])
+
+
 def get_embedding(text_list: List[str]) -> List[float]:
     # Concatenate the list into a single string, as OpenAI embedding usually works with text input.
     combined_text = " ".join(text_list)
@@ -119,7 +140,10 @@ def get_user(user_id: str):
     if user:
         print(f"User found: {user}")
         try:
-            user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
+            if user['date_of_birth']:
+                user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
+            else:
+                user['date_of_birth'] = None
         except ValueError as e:
             print(f"Date conversion error: {e}")
             return None
@@ -145,145 +169,145 @@ result = collection.delete_many({})
 # ------------------------------------------------------------- #
 
 # EXAMPLES!!!
-
-new_user_data = {
-    "id": "188",
-    "thread_id": "1",
-    "full_name": "John Doe",
-    "phone_number": "+49123456789",
-    "email": "john.doe@example.com",
-    "address": {
-        "street": "Sample Street",
-        "house_number": 10,
-        "zip_code": 10115,
-        "city": "Berlin",
-        "country": "Germany"
-    },
-    "date_of_birth": "1990-07-15",
-    "employment_type": "Part-time",
-    "average_monthly_net_income": 2000,
-    "smoker": True,
-    "languages": ["English", "German", "French"],
-    "apartment_preferences": {
-        "max_rent": 700,
-        "location": "Berlin",
-        "bezirk": ["Kreuzberg", "Neukölln"],
-        "min_size": 20,
-        "ready_to_move_in": "2023-11",
-        "preferred_roommates_sex": "Egal",
-        "preferred_roommate_age": [20, 30],
-        "preferred_roommate_num": 3,
-        "smoking_ok": True
-    },
-    "additional_info": [
-        "Looking for a vibrant community.",
-        "Enjoy cooking and sharing meals.",
-        "Passionate about photography.",
-        "Need a pet-friendly environment.",
-        "Prefer a room with lots of natural light.",
-        "Freelancer working from home.",
-        "Interested in cultural exchanges.",
-        "Fluent in English, German, and French.",
-        "Looking for a long-term stay."
-    ]
-}
-
-# Creating a new user instance
-new_user = User(**new_user_data)
-
-# Save and Print the new user details
-save_user(new_user)
-print(get_user("188"))
-
-
-update_user_data_old = {
-    "id": "5",
-    "thread_id": "1",
-    "full_name": "John Doe",
-    "phone_number": "+49123456789",
-    "email": "john.doe@example.com",
-    "address": {
-        "street": "Sample Street",
-        "house_number": 10,
-        "zip_code": 10115,
-        "city": "Berlin",
-        "country": "Germany"
-    },
-    "date_of_birth": "1990-07-15",
-    "employment_type": "Part-time",
-    "average_monthly_net_income": 2000,
-    "smoker": True,
-    "languages": ["English", "German", "French"],
-    "apartment_preferences": {
-        "max_rent": 700,
-        "location": "Berlin",
-        "bezirk": ["Kreuzberg", "Neukölln"],
-        "min_size": 20,
-        "ready_to_move_in": "2023-11",
-        "preferred_roommates_sex": "Egal",
-        "preferred_roommate_age": [20, 30],
-        "preferred_roommate_num": 3,
-        "smoking_ok": True
-    },
-    "additional_info": [
-        "Looking for a vibrant community.",
-        "Enjoy cooking and sharing meals.",
-        "Passionate about photography.",
-        "Need a pet-friendly environment.",
-        "Prefer a room with lots of natural light.",
-        "Freelancer working from home.",
-        "Interested in cultural exchanges.",
-        "Fluent in English, German, and French.",
-        "Looking for a long-term stay."
-    ]
-}
-
-updated_user_data_new = {
-    "id": "5",
-    "thread_id": "1",
-    "full_name": "John Doe",
-    "phone_number": "+49123456789",
-    "email": "john.doe@example.com",
-    "address": {
-        "street": "Sample Street",
-        "house_number": 10,
-        "zip_code": 10115,
-        "city": "Berlin",
-        "country": "Germany"
-    },
-    "date_of_birth": "1990-07-15",
-    "employment_type": "Part-time",
-    "average_monthly_net_income": 5000,
-    "smoker": True,
-    "languages": ["English", "German", "French"],
-    "apartment_preferences": {
-        "max_rent": 700,
-        "location": "Berlin",
-        "bezirk": ["Kreuzberg", "Neukölln"],
-        "min_size": 20,
-        "ready_to_move_in": "2023-11",
-        "preferred_roommates_sex": "Egal",
-        "preferred_roommate_age": [20, 30],
-        "preferred_roommate_num": 3,
-        "smoking_ok": True
-    },
-    "additional_info": [
-        "Looking for a vibrant community.",
-        "Enjoy cooking and sharing meals.",
-        "Passionate about photography.",
-        "Need a pet-friendly environment.",
-        "Prefer a room with lots of natural light.",
-        "Freelancer working from home.",
-        "Interested in cultural exchanges.",
-        "Fluent in English, German, and French.",
-        "Looking for a long-term stay."
-    ]
-}
-
-updated_user_old = User(**update_user_data_old)
-updated_user = User(**updated_user_data_new)
-save_user(updated_user_old)
-update_user(updated_user)
-
-print(get_user("5"))
-print(get_all_user())
+#
+# new_user_data = {
+#     "id": "188",
+#     "thread_id": "1",
+#     "full_name": "John Doe",
+#     "phone_number": "+49123456789",
+#     "email": "john.doe@example.com",
+#     "address": {
+#         "street": "Sample Street",
+#         "house_number": 10,
+#         "zip_code": 10115,
+#         "city": "Berlin",
+#         "country": "Germany"
+#     },
+#     "date_of_birth": "1990-07-15",
+#     "employment_type": "Part-time",
+#     "average_monthly_net_income": 2000,
+#     "smoker": True,
+#     "languages": ["English", "German", "French"],
+#     "apartment_preferences": {
+#         "max_rent": 700,
+#         "location": "Berlin",
+#         "bezirk": ["Kreuzberg", "Neukölln"],
+#         "min_size": 20,
+#         "ready_to_move_in": "2023-11",
+#         "preferred_roommates_sex": "Egal",
+#         "preferred_roommate_age": [20, 30],
+#         "preferred_roommate_num": 3,
+#         "smoking_ok": True
+#     },
+#     "additional_info": [
+#         "Looking for a vibrant community.",
+#         "Enjoy cooking and sharing meals.",
+#         "Passionate about photography.",
+#         "Need a pet-friendly environment.",
+#         "Prefer a room with lots of natural light.",
+#         "Freelancer working from home.",
+#         "Interested in cultural exchanges.",
+#         "Fluent in English, German, and French.",
+#         "Looking for a long-term stay."
+#     ]
+# }
+#
+# # Creating a new user instance
+# new_user = User(**new_user_data)
+#
+# # Save and Print the new user details
+# save_user(new_user)
+# print(get_user("188"))
+#
+#
+# update_user_data_old = {
+#     "id": "5",
+#     "thread_id": "1",
+#     "full_name": "John Doe",
+#     "phone_number": "+49123456789",
+#     "email": "john.doe@example.com",
+#     "address": {
+#         "street": "Sample Street",
+#         "house_number": 10,
+#         "zip_code": 10115,
+#         "city": "Berlin",
+#         "country": "Germany"
+#     },
+#     "date_of_birth": "1990-07-15",
+#     "employment_type": "Part-time",
+#     "average_monthly_net_income": 2000,
+#     "smoker": True,
+#     "languages": ["English", "German", "French"],
+#     "apartment_preferences": {
+#         "max_rent": 700,
+#         "location": "Berlin",
+#         "bezirk": ["Kreuzberg", "Neukölln"],
+#         "min_size": 20,
+#         "ready_to_move_in": "2023-11",
+#         "preferred_roommates_sex": "Egal",
+#         "preferred_roommate_age": [20, 30],
+#         "preferred_roommate_num": 3,
+#         "smoking_ok": True
+#     },
+#     "additional_info": [
+#         "Looking for a vibrant community.",
+#         "Enjoy cooking and sharing meals.",
+#         "Passionate about photography.",
+#         "Need a pet-friendly environment.",
+#         "Prefer a room with lots of natural light.",
+#         "Freelancer working from home.",
+#         "Interested in cultural exchanges.",
+#         "Fluent in English, German, and French.",
+#         "Looking for a long-term stay."
+#     ]
+# }
+#
+# updated_user_data_new = {
+#     "id": "5",
+#     "thread_id": "1",
+#     "full_name": "John Doe",
+#     "phone_number": "+49123456789",
+#     "email": "john.doe@example.com",
+#     "address": {
+#         "street": "Sample Street",
+#         "house_number": 10,
+#         "zip_code": 10115,
+#         "city": "Berlin",
+#         "country": "Germany"
+#     },
+#     "date_of_birth": "1990-07-15",
+#     "employment_type": "Part-time",
+#     "average_monthly_net_income": 5000,
+#     "smoker": True,
+#     "languages": ["English", "German", "French"],
+#     "apartment_preferences": {
+#         "max_rent": 700,
+#         "location": "Berlin",
+#         "bezirk": ["Kreuzberg", "Neukölln"],
+#         "min_size": 20,
+#         "ready_to_move_in": "2023-11",
+#         "preferred_roommates_sex": "Egal",
+#         "preferred_roommate_age": [20, 30],
+#         "preferred_roommate_num": 3,
+#         "smoking_ok": True
+#     },
+#     "additional_info": [
+#         "Looking for a vibrant community.",
+#         "Enjoy cooking and sharing meals.",
+#         "Passionate about photography.",
+#         "Need a pet-friendly environment.",
+#         "Prefer a room with lots of natural light.",
+#         "Freelancer working from home.",
+#         "Interested in cultural exchanges.",
+#         "Fluent in English, German, and French.",
+#         "Looking for a long-term stay."
+#     ]
+# }
+#
+# updated_user_old = User(**update_user_data_old)
+# updated_user = User(**updated_user_data_new)
+# save_user(updated_user_old)
+# update_user(updated_user)
+#
+# print(get_user("5"))
+# print(get_all_user())

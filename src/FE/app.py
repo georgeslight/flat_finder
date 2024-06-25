@@ -8,7 +8,7 @@ import openai
 import requests
 
 # Importing from user_db.py
-from src.mongo.user_db import User, get_user, save_user
+from src.mongo.user_db import User, get_user, save_user, Address, ApartmentPreferences, get_empty_user
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path="../../.env")
@@ -22,18 +22,16 @@ bot = telebot.TeleBot(BOT_TOKEN)
 # Initialize OpenAI client if necessary
 client = openai.OpenAI(api_key=openai.api_key)
 
-user = None
-
 
 # Function to create a new thread for a user
 def create_user(user_id):
-    global user
     try:
         user = get_user(user_id)
         if user is None:
-            user = User(id=user_id, thread_id=client.beta.threads.create().id)
+            user = get_empty_user()
+            user.thread_id = client.beta.threads.create().id
+            user.id = user_id
             save_user(user)
-            return user
         return user
     except Exception as e:
         logging.error(f"Failed to create thread: {e}")
@@ -66,7 +64,6 @@ def handle_profile(message):
 # Callback query handler for inline buttons
 @bot.callback_query_handler(func=lambda call: call.data in ['profile'])
 def profile_info(call):
-    global user
     try:
         # profile = get_user(call.message.chat.id)
         address = user.address
@@ -82,7 +79,7 @@ def profile_info(call):
             f"     City: {address.city if address.city else 'Not set'}\n"
             f"     Country: {address.country if address.country else 'Not set'}\n"
             f"Date of birth: {user.date_of_birth if user.date_of_birth else 'Not set'}\n"
-            f"Employment Type: {user.employment_type if user.employment_type else'Not set'}\n"
+            f"Employment Type: {user.employment_type if user.employment_type else 'Not set'}\n"
             f"Average monthly net income: {user.average_monthly_net_income if user.average_monthly_net_income else 'Not set'}\n"
             f"Smoker: {user.smoker if user.smoker else 'Not set'}\n"
         )
