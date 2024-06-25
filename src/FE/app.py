@@ -25,18 +25,18 @@ client = openai.OpenAI(api_key=openai.api_key)
 
 # create empty user object
 # user = get_empty_user()
-user = User
+user: User
 
 
 # Function to create a new thread for a user
 def create_user(user_id):
     global user
     try:
-        user_a = get_user(user_id)
-        if user_a is None:
-            user_a = User(id=user_id, thread_id=client.beta.threads.create().id)
-            save_user(user_a)
-        return user_a
+        user = get_user(user_id)
+        if user is None:
+            user = User(id=user_id, thread_id=client.beta.threads.create().id)
+            save_user(user)
+        return user
     except Exception as e:
         logging.error(f"Failed to create thread: {e}")
         return None
@@ -86,7 +86,7 @@ def profile_info(call):
             f"Date of birth: {user.date_of_birth if user.date_of_birth else 'Not set'}\n"
             f"Employment Type: {user.employment_type if user.employment_type else 'Not set'}\n"
             f"Average monthly net income: {user.average_monthly_net_income if user.average_monthly_net_income else 'Not set'}\n"
-            f"Smoker: {user.smoker if user.smoker else 'Not set'}\n"
+            f"Smoker: {user.smoker if user.smoker else 'False'}\n"
         )
         markup = InlineKeyboardMarkup()
         markup.row(
@@ -129,7 +129,7 @@ def preferences_info(call):
             f"Preferred Roommates Sex: {preferences.preferred_roommates_sex if preferences.preferred_roommates_sex else 'Not set'}\n"
             f"Preferred Roommate Age: {', '.join(map(str, preferences.preferred_roommate_age)) if preferences.preferred_roommate_age else 'Not set'}\n"
             f"Preferred Roommate Num: {preferences.preferred_roommate_num if preferences.preferred_roommate_num else 'Not set'}\n"
-            f"Smoking OK: {preferences.smoking_ok if preferences.smoking_ok else 'Not set'}\n"
+            f"Smoking OK: {preferences.smoking_ok if preferences.smoking_ok else 'False'}\n"
         )
         additional_info = user.additional_info if user.additional_info else []
         additional_info_text = "\n".join(f"- {info}" for info in additional_info) or "Not set"
@@ -169,13 +169,13 @@ def handle_update_callback(call):
             msg = bot.send_message(call.message.chat.id, "Please enter your new address (e.g., Street-Name Number, "
                                                          "Zip City Country):")
             bot.register_next_step_handler(msg, lambda message: update_address(message, call))
-        elif field == "smoker":
+        elif field in ("smoker", "smoking_ok"):
             markup = InlineKeyboardMarkup()
             markup.row(
-                InlineKeyboardButton("True", callback_data="smoker_true"),
-                InlineKeyboardButton("False", callback_data="smoker_false")
+                InlineKeyboardButton("True", callback_data=f"boolean_true_{field}"),
+                InlineKeyboardButton("False", callback_data=f"boolean_false_{field}")
             )
-            bot.send_message(call.message.chat.id, "Please select your smoking status:", reply_markup=markup)
+            bot.send_message(call.message.chat.id, "Please select your preference:", reply_markup=markup)
         elif field == "bezirk":
             msg = bot.send_message(call.message.chat.id, "Please enter your preferred Bezirks separated by commas:")
             bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
@@ -183,10 +183,14 @@ def handle_update_callback(call):
             msg = bot.send_message(call.message.chat.id,
                                    "Please enter your preferred roommate ages separated by commas:")
             bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
-        elif field == "additional_info":
+        elif field in ("additional_info", "languages"):
             msg = bot.send_message(call.message.chat.id,
                                    "Please enter additional information, each item separated by commas:")
             bot.register_next_step_handler(msg, lambda message: update_additional_info(message, call))
+        elif field in ("full_name", "phone_number", "email", "date_of_birth", "employment_type", "average_monthly_net_income"):
+            msg = bot.send_message(call.message.chat.id,
+                                   f"Please enter your new {field}:")
+            bot.register_next_step_handler(msg, lambda message: update_profile(message, field, call))
         else:
             msg = bot.send_message(call.message.chat.id, f"Please enter your new {field}:")
             bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
@@ -194,31 +198,35 @@ def handle_update_callback(call):
         logging.error(f"Failed to handle update callback: {e}")
 
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('smoker_'))
+@bot.callback_query_handler(func=lambda call: call.data.startswith('boolean_'))
 def update_smoker_status(call):
+    global user
     try:
-        user_id = call.message.chat.id
-        smoker_status = call.data.split('_')[1] == 'true'
-        user_a = get_user(user_id)
-        user_a.smoker = smoker_status
-        update_user(user_a)
-        profile_info(call)
-        bot.reply_to(call.message, f"Your smoking status has been updated to: {'True' if smoker_status else 'False'}")
+        status = call.data.split('_')[1].lower() == 'true'
+        field = call.data.split('_')[2]
+        if field == 'smoker':
+            user.smoker = status
+            update_user(user)
+            bot.reply_to(call.message, f"Your smoking status has been updated to: {status}")
+            profile_info(call)
+        if field == 'smoking':
+            user.apartment_preferences.smoking_ok = status
+            update_user(user)
+            bot.reply_to(call.message, f"Your smoker allowed preferences has been updated to: {status}")
+            preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to update smoker status: {e}")
 
 
 def update_address(message, call):
+    global user
     try:
-        user_id = message.from_user.id
         address = message.text
-
         # Use regex to parse the address
         match = re.match(r'^(.*?[\s\S]+?)\s+(\d+),\s+(\d+)\s+([\s\S]+)\s+([\s\S]+)$', address)
         if match:
             street, house_number, zip_code, city, country = match.groups()
             logging.info(f"Parsed address: {street}, {house_number}, {zip_code}, {city}, {country}")
-            user_x = get_user(user_id)
             new_adress = {
                 "street": street,
                 "house_number": house_number,
@@ -226,9 +234,9 @@ def update_address(message, call):
                 "city": city,
                 "country": country,
             }
-            user_x.address = Address(**new_adress)
+            user.address = Address(**new_adress)
             bot.reply_to(message, "Your address has been updated.")
-            update_user(user_x)
+            update_user(user)
             profile_info(call)
         else:
             bot.reply_to(message, "Invalid address format. Please try again.")
@@ -238,10 +246,11 @@ def update_address(message, call):
 
 
 def update_profile(message, field, call):
+    global user
     try:
-        user_id = message.from_user.id
         new_value = message.text
-        get_user(user_id)['profile'][field] = new_value
+        setattr(user, field, new_value)
+        update_user(user)
         bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
         profile_info(call)
     except Exception as e:
@@ -249,12 +258,13 @@ def update_profile(message, field, call):
 
 
 def update_preferences(message, field, call):
+    global user
     try:
-        user_id = message.from_user.id
+        preferences = user.apartment_preferences
         new_value = message.text
         if field == "bezirk" or field == "preferred_roommate_age":
             new_value = [x.strip() for x in new_value.split(',')]
-        get_user(user_id)['preferences'][field] = new_value
+        setattr(preferences, field, new_value)
         bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
         preferences_info(call)
     except Exception as e:
@@ -262,10 +272,11 @@ def update_preferences(message, field, call):
 
 
 def update_additional_info(message, call):
+    global user
     try:
         user_id = message.from_user.id
         new_value = [x.strip() for x in message.text.split(',')]
-        get_user(user_id)['additional_info'] = new_value
+        user.additional_info = new_value
         bot.reply_to(message, "Your additional information has been updated.")
         preferences_info(call)
     except Exception as e:
