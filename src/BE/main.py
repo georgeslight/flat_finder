@@ -8,6 +8,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from structural_filtering import filter_apartments, User
+from wg_gesucht_scraper import scrap_wg_gesucht
+from embedded_filtering import recommend_wg
 
 load_dotenv(dotenv_path="../../.env")
 
@@ -31,6 +33,18 @@ class Message(BaseModel):
     text: str
     thread: str
     user_name: str
+
+
+# Scrap and notify user
+@app.get("/notify-user")
+async def notify_user(user_data: User):
+    apartments = scrap_wg_gesucht()
+    apartments = filter_apartments(user_data, apartments)
+    response = "Recommendations: \n"
+    for apt in apartments:
+        recommend_wg(apt)
+        response += f"{apt}\n"
+    return response
 
 
 @app.get("/")
