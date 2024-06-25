@@ -8,7 +8,7 @@ import openai
 import requests
 
 # Importing from user_db.py
-from src.mongo.user_db import User, get_user, save_user, Address, ApartmentPreferences, get_empty_user
+from src.mongo.user_db import User, get_user, save_user, Address, ApartmentPreferences, get_empty_user, update_user
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path="../../.env")
@@ -19,9 +19,12 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # Creates a bot instance and passed the BOT_TOKEN to it
 bot = telebot.TeleBot(BOT_TOKEN)
 
+
 # Initialize OpenAI client if necessary
 client = openai.OpenAI(api_key=openai.api_key)
 
+# create empty user object
+# user = get_empty_user()
 user = User
 
 
@@ -29,14 +32,11 @@ user = User
 def create_user(user_id):
     global user
     try:
-        user = get_user(user_id)
-        if user is None:
-            user = get_empty_user()
-            user.thread_id = client.beta.threads.create().id
-            user.id = user_id
-            save_user(user)
-            return user
-        return user
+        user_a = get_user(user_id)
+        if user_a is None:
+            user_a = User(id=user_id, thread_id=client.beta.threads.create().id)
+            save_user(user_a)
+        return user_a
     except Exception as e:
         logging.error(f"Failed to create thread: {e}")
         return None
@@ -114,7 +114,7 @@ def profile_info(call):
 def preferences_info(call):
     global user
     try:
-        # user = get_user(call.from_user.id)
+        user = get_user(call.from_user.id)
         if not user:
             bot.send_message(call.message.chat.id, "User not found. Please start with /start command.")
             return
@@ -199,9 +199,11 @@ def update_smoker_status(call):
     try:
         user_id = call.message.chat.id
         smoker_status = call.data.split('_')[1] == 'true'
-        get_user(user_id)['profile']['smoker'] = smoker_status
-        bot.reply_to(call.message, f"Your smoking status has been updated to: {'True' if smoker_status else 'False'}")
+        user_a = get_user(user_id)
+        user_a.smoker = smoker_status
+        update_user(user_a)
         profile_info(call)
+        bot.reply_to(call.message, f"Your smoking status has been updated to: {'True' if smoker_status else 'False'}")
     except Exception as e:
         logging.error(f"Failed to update smoker status: {e}")
 
@@ -216,14 +218,17 @@ def update_address(message, call):
         if match:
             street, house_number, zip_code, city, country = match.groups()
             logging.info(f"Parsed address: {street}, {house_number}, {zip_code}, {city}, {country}")
-            get_user(user_id)['profile']['address'] = {
+            user_x = get_user(user_id)
+            new_adress = {
                 "street": street,
                 "house_number": house_number,
                 "zip_code": zip_code,
                 "city": city,
                 "country": country,
             }
+            user_x.address = Address(**new_adress)
             bot.reply_to(message, "Your address has been updated.")
+            update_user(user_x)
             profile_info(call)
         else:
             bot.reply_to(message, "Invalid address format. Please try again.")
@@ -249,7 +254,7 @@ def update_preferences(message, field, call):
         new_value = message.text
         if field == "bezirk" or field == "preferred_roommate_age":
             new_value = [x.strip() for x in new_value.split(',')]
-        get_user(user_id).apartment_preferences[field] = new_value
+        get_user(user_id)['preferences'][field] = new_value
         bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
         preferences_info(call)
     except Exception as e:
