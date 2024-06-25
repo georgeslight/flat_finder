@@ -19,6 +19,9 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # Creates a bot instance and passed the BOT_TOKEN to it
 bot = telebot.TeleBot(BOT_TOKEN)
 
+# create empty user object
+user = get_empty_user()
+
 # Initialize OpenAI client if necessary
 client = openai.OpenAI(api_key=openai.api_key)
 
@@ -26,13 +29,11 @@ client = openai.OpenAI(api_key=openai.api_key)
 # Function to create a new thread for a user
 def create_user(user_id):
     try:
-        user = get_user(user_id)
-        if user is None:
-            user = get_empty_user()
-            user.thread_id = client.beta.threads.create().id
-            user.id = user_id
-            save_user(user)
-        return user
+        user_a = get_user(user_id)
+        if user_a is None:
+            user_a = User(id=user_id, thread_id=client.beta.threads.create().id)
+            save_user(user_a)
+        return user_a
     except Exception as e:
         logging.error(f"Failed to create thread: {e}")
         return None
@@ -109,7 +110,7 @@ def profile_info(call):
 def preferences_info(call):
     global user
     try:
-        # user = get_user(call.from_user.id)
+        user = get_user(call.from_user.id)
         if not user:
             bot.send_message(call.message.chat.id, "User not found. Please start with /start command.")
             return
