@@ -98,11 +98,15 @@ def get_empty_user():
 
 
 def get_embedding(text_list: List[str]) -> List[float]:
-    # Concatenate the list into a single string, as OpenAI embedding usually works with text input.
-    combined_text = " ".join(text_list)
-    responses = openai_client.embeddings.create(input=[combined_text], model=model)
-    print(reversed(responses.data[0].embedding))
-    return responses.data[0].embedding
+    try:
+        # Concatenate the list into a single string, as OpenAI embedding usually works with text input.
+        combined_text = " ".join(text_list)
+        responses = openai_client.embeddings.create(input=[combined_text], model=model)
+        print(reversed(responses.data[0].embedding))
+        return responses.data[0].embedding
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return None
 
 
 def save_user(users: User):
@@ -116,20 +120,21 @@ def save_user(users: User):
     print(f"User saved with id: {user_dict.get('id')}")
 
 
-
 def update_user(users: User):
-    # Convert datetime.date to string in the user data
-    user_dict = users.dict()
-
-    # Convert date_of_birth to string
-    if user_dict.get('date_of_birth') is not None:
-        user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
-
-    # Convert additional_info embeddings
-    embedded_info = get_embedding(users.additional_info)
-    user_dict['additional_info_embedding'] = embedded_info
-
-    collection.update_one({"id": users.id}, {"$set": user_dict})
+    try:
+        # Convert datetime.date to string in the user data
+        user_dict = users.dict()
+        # Convert date_of_birth to string
+        if user_dict.get('date_of_birth') is not None:
+            user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
+        # Convert additional_info embeddings
+        if users.additional_info:
+            embedded_info = get_embedding(users.additional_info)
+        user_dict['additional_info_embedding'] = embedded_info
+        collection.update_one({"id": users.id}, {"$set": user_dict})
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return None
 
 
 def get_user(user_id: str):
@@ -165,6 +170,4 @@ def get_all_user():
             users.append(User(**user_x))
     return users
 
-
 #result = collection.delete_many({})
-

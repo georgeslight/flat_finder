@@ -8,7 +8,7 @@ import openai
 import requests
 
 # Importing from user_db.py
-from src.mongo.user_db import User, get_user, save_user, Address, ApartmentPreferences, get_empty_user
+from src.mongo.user_db import User, get_user, save_user, Address, ApartmentPreferences, get_empty_user, update_user
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path="../../.env")
@@ -195,9 +195,11 @@ def update_smoker_status(call):
     try:
         user_id = call.message.chat.id
         smoker_status = call.data.split('_')[1] == 'true'
-        get_user(user_id)['profile']['smoker'] = smoker_status
-        bot.reply_to(call.message, f"Your smoking status has been updated to: {'True' if smoker_status else 'False'}")
+        user_a = get_user(user_id)
+        user_a.smoker = smoker_status
+        update_user(user_a)
         profile_info(call)
+        bot.reply_to(call.message, f"Your smoking status has been updated to: {'True' if smoker_status else 'False'}")
     except Exception as e:
         logging.error(f"Failed to update smoker status: {e}")
 
