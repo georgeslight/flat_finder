@@ -214,14 +214,17 @@ def update_address(message, call):
         if match:
             street, house_number, zip_code, city, country = match.groups()
             logging.info(f"Parsed address: {street}, {house_number}, {zip_code}, {city}, {country}")
-            get_user(user_id)['profile']['address'] = {
+            user_x = get_user(user_id)
+            new_adress = {
                 "street": street,
                 "house_number": house_number,
                 "zip_code": zip_code,
                 "city": city,
                 "country": country,
             }
+            user_x.address = Address(**new_adress)
             bot.reply_to(message, "Your address has been updated.")
+            update_user(user_x)
             profile_info(call)
         else:
             bot.reply_to(message, "Invalid address format. Please try again.")

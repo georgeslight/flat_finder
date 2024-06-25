@@ -130,7 +130,7 @@ def update_user(users: User):
         # Convert additional_info embeddings
         if users.additional_info:
             embedded_info = get_embedding(users.additional_info)
-        user_dict['additional_info_embedding'] = embedded_info
+            user_dict['additional_info_embedding'] = embedded_info
         collection.update_one({"id": users.id}, {"$set": user_dict})
     except Exception as e:
         print(f"Error occurred: {e}")
