@@ -57,7 +57,8 @@ user_a = {
         'smoking_ok': True
     },
     'additional_info': [
-        'Iam allergic to cats',
+        #'Iam allergic to cats',
+        "Iam a student",
         'Looking for a vibrant community.',
         'Enjoy cooking and sharing meals.',
         'Passionate about photography.',
@@ -95,8 +96,8 @@ apartments = [
         "tab_contents": [
             "Dein sonniges Zimmer befindet sich in einer voll möblierten Altbauwohnung in Berlin-Kreuzberg. Vor dem Haus hält die U-Bahnlinie 7. Es gibt ein Bad, eine Küche mit Kühlschrank, Waschmaschine und Flur. 10 Minuten sind es bis zum Alexanderplatz. Vereinbare einen Termin mit Natalie und Jo und sende uns Deinen Einkommensnachweis per whatsapp (siehe Kontaktinformationen).",
             "U-Bahnhof Gneisenaustraße",
-            "Wir sprechen Deutsch und Englisch.",
-            "we have 10 Cats in the apartment."
+            "Wir sprechen Deutsch und Englisch."
+            "We are looking for a Student"
         ],
         "Wohnungsgröße": "90",
         "WG_groesse": "3",
@@ -147,7 +148,7 @@ apartments = [
 assistant_id = "asst_3h49BMfT4jf0mMlkQxAXQYjZ"
 
 
-def deep_filter(user: User, apartment=None):
+def ko_filter(user: User, apartment=None):
     if apartment is None:
         apartment = load_apartments()[0]
 
@@ -165,7 +166,7 @@ def deep_filter(user: User, apartment=None):
     prompt_content = (
         f"Please check if the following user is interested in this shared apartment and if they fit the "
         f"description of the apartment. If they are a good fit, then return 'True', else return 'False'."
-        f"Your should be only 'TRUE' or 'FALSE'. not a single Character more. \n\n"
+        #f"Your should be only 'TRUE' or 'FALSE'. not a single Character more. \n\n"
         f"User: {str_user_bio}\nApartment: {apartment_info}"
     )
 
@@ -189,5 +190,35 @@ def deep_filter(user: User, apartment=None):
         return result
 
 
-print(deep_filter(user_data, apartments[0]))
+def recommend_wg(user: User, apartment):
+    if apartment is None:
+        apartment = load_apartments()[0]
 
+    prompt_content = (
+        f"write a recommendation for the user for this apartment. The recommendation should be a string and have the "
+        f"description: 'you should apply for this apartment because 1. reason 2. reason 3. reason'. your response "
+        f"should include the recommendation. consider that the apartment already been filtered by the user "
+        f"preferences. only consider the data under 'tabs_contents', 'features' in the apartment. and "
+        f"'additional_info' in User \n\n"
+        f"User: {user}\nApartment: {apartment}"
+    )
+
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt_content}
+    ]
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+
+    result = response.choices[0].message.content
+    result += f"\n ID: {apartment.get('ID')} \n Bezirk: {apartment.get('Ort')} \n Zimmergröße: {apartment.get('Zimmergröße')} \n Gesamtmiete: {apartment.get('Gesamtmiete')}"
+
+    result += f"\n\n[{apartment.get("ID")}]({apartment.get("Link")})"
+    return result
+
+
+print(ko_filter(user_data, apartments[0]))
+print(recommend_wg(user_data, apartments[0]))
