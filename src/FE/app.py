@@ -22,9 +22,12 @@ bot = telebot.TeleBot(BOT_TOKEN)
 # Initialize OpenAI client if necessary
 client = openai.OpenAI(api_key=openai.api_key)
 
+user = User
+
 
 # Function to create a new thread for a user
 def create_user(user_id):
+    global user
     try:
         user = get_user(user_id)
         if user is None:
@@ -32,6 +35,7 @@ def create_user(user_id):
             user.thread_id = client.beta.threads.create().id
             user.id = user_id
             save_user(user)
+            return user
         return user
     except Exception as e:
         logging.error(f"Failed to create thread: {e}")
@@ -64,6 +68,7 @@ def handle_profile(message):
 # Callback query handler for inline buttons
 @bot.callback_query_handler(func=lambda call: call.data in ['profile'])
 def profile_info(call):
+    global user
     try:
         # profile = get_user(call.message.chat.id)
         address = user.address
@@ -244,7 +249,7 @@ def update_preferences(message, field, call):
         new_value = message.text
         if field == "bezirk" or field == "preferred_roommate_age":
             new_value = [x.strip() for x in new_value.split(',')]
-        get_user(user_id)['preferences'][field] = new_value
+        get_user(user_id).apartment_preferences[field] = new_value
         bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
         preferences_info(call)
     except Exception as e:
