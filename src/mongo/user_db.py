@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 from typing import List, Optional
 
@@ -10,10 +11,14 @@ import json
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
 from pydantic import BaseModel, EmailStr, Field
+from pymongo.pool import PoolOptions
 
 import os
 
 load_dotenv()
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 mongo_conn_string = os.getenv("MONGODB_CONN_STRING")
 openai_key = os.getenv('OPENAI_API_KEY')
@@ -23,7 +28,7 @@ mongo_index = os.getenv('INDEX_NAME')
 uri = os.getenv('MONGO_URI')
 mongo_client = MongoClient(uri, server_api=ServerApi('1'))
 openai_client = openai.OpenAI(api_key=openai_key)
-collection = mongo_client["Flat_Finder_DB"]["USER"]
+collection = mongo_client['Flat_Finder_DB']['USER']
 
 model = "text-embedding-3-small"
 
@@ -120,18 +125,18 @@ def save_user(users: User):
     print(f"User saved with id: {user_dict.get('id')}")
 
 
-def update_user(users: User):
+def update_user(user: User):
     try:
         # Convert datetime.date to string in the user data
-        user_dict = users.dict()
+        user_dict = user.dict()
         # Convert date_of_birth to string
         if user_dict.get('date_of_birth') is not None:
             user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
         # Convert additional_info embeddings
-        if users.additional_info:
-            embedded_info = get_embedding(users.additional_info)
+        if user.additional_info:
+            embedded_info = get_embedding(user.additional_info)
             user_dict['additional_info_embedding'] = embedded_info
-        collection.update_one({"id": users.id}, {"$set": user_dict})
+        collection.update_one({"id": user.id}, {"$set": user_dict})
     except Exception as e:
         print(f"Error occurred: {e}")
         return None
