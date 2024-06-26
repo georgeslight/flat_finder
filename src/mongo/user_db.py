@@ -136,15 +136,27 @@ def update_user(user: User):
         if user.additional_info:
             embedded_info = get_embedding(user.additional_info)
             user_dict['additional_info_embedding'] = embedded_info
-        collection.update_one({"id": user.id}, {"$set": user_dict})
+
+        # user_id_int = int(user.id)
+        user_id_str = str(user.id)
+
+        result = collection.update_one({"id": user_id_str}, {"$set": user_dict})
+
+        if result.matched_count == 0:
+            print(f"No user found with id: {user_id_str}")
+        elif result.modified_count == 0:
+            print(f"User with id: {user_id_str} was not modified.")
+        else:
+            print(f"User with id: {user_id_str} was successfully updated.")
+
     except Exception as e:
         print(f"Error occurred: {e}")
         return None
 
 
-def get_user(user_id: int):
+def get_user(user_id: str):
     try:
-        user = collection.find_one({"id": user_id})
+        user = collection.find_one({"id": str(user_id)})
     except Exception as e:
         print(f"Error occurred: {e}")
         return None

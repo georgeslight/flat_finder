@@ -34,7 +34,7 @@ def create_user(user_id):
     try:
         user = get_user(user_id)
         if user is None:
-            user = User(id=user_id, thread_id=client.beta.threads.create().id)
+            user = User(id=str(user_id), thread_id=client.beta.threads.create().id)
             save_user(user)
         return user
     except Exception as e:
@@ -172,6 +172,7 @@ def preferences_info(call):
 def handle_update_callback(call):
     try:
         field = '_'.join(call.data.split('_')[1:])
+        field_display = field.replace('_', ' ').title()
         if field == "address":
             msg = bot.send_message(call.message.chat.id, "Please enter your new address (e.g., Street-Name Number, "
                                                          "Zip City Country):")
@@ -192,14 +193,14 @@ def handle_update_callback(call):
             bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
         elif field in ("additional_info", "languages"):
             msg = bot.send_message(call.message.chat.id,
-                                   "Please enter additional information, each item separated by commas:")
+                                   f"Please enter your {field_display}, each item separated by commas:")
             bot.register_next_step_handler(msg, lambda message: update_additional_info(message, call))
         elif field in ("full_name", "phone_number", "email", "date_of_birth", "employment_type", "average_monthly_net_income"):
             msg = bot.send_message(call.message.chat.id,
-                                   f"Please enter your new {field}:")
+                                   f"Please enter your new {field_display}:")
             bot.register_next_step_handler(msg, lambda message: update_profile(message, field, call))
         else:
-            msg = bot.send_message(call.message.chat.id, f"Please enter your new {field}:")
+            msg = bot.send_message(call.message.chat.id, f"Please enter your new {field_display}:")
             bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
     except Exception as e:
         logging.error(f"Failed to handle update callback: {e}")
@@ -209,7 +210,7 @@ def handle_update_callback(call):
 def update_smoker_status(call):
     # global user
     try:
-        user = get_user(call.message.from_user.id)
+        user = get_user(call.from_user.id)
         status = call.data.split('_')[1].lower() == 'true'
         field = call.data.split('_')[2]
         if field == 'smoker':
@@ -261,7 +262,8 @@ def update_profile(message, field, call):
         new_value = message.text
         setattr(user, field, new_value)
         update_user(user)
-        bot.send_message(message.chat.id, f"Your {field} has been updated to: {new_value}")
+        field_display = field.replace('_', ' ').title()
+        bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {new_value}")
         profile_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update profile: {e}")
@@ -273,10 +275,11 @@ def update_preferences(message, field, call):
         user = get_user(message.from_user.id)
         preferences = user.apartment_preferences
         new_value = message.text
+        field_display = field.replace('_', ' ').title()
         if field == "bezirk" or field == "preferred_roommate_age":
             new_value = [x.strip() for x in new_value.split(',')]
         setattr(preferences, field, new_value)
-        bot.send_message(message.chat.id, f"Your {field} has been updated to: {new_value}")
+        bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {new_value}")
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update preferences: {e}")
