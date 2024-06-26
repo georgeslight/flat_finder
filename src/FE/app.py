@@ -105,6 +105,9 @@ def profile_info(call):
             InlineKeyboardButton("Average monthly net income", callback_data="change_average_monthly_net_income"),
             InlineKeyboardButton("Smoker", callback_data="change_smoker")
         )
+        markup.row(
+            InlineKeyboardButton("Go to Preferences", callback_data="preferences"),
+        )
         bot.send_message(call.message.chat.id, profile_text, reply_markup=markup)
     except Exception as e:
         logging.error(f"Failed to display profile information: {e}")
@@ -114,7 +117,7 @@ def profile_info(call):
 def preferences_info(call):
     global user
     try:
-        user = get_user(call.from_user.id)
+        # user = get_user(call.from_user.id)
         if not user:
             bot.send_message(call.message.chat.id, "User not found. Please start with /start command.")
             return
@@ -155,6 +158,9 @@ def preferences_info(call):
         markup.row(
             InlineKeyboardButton("Smoking OK", callback_data="change_smoking_ok"),
             InlineKeyboardButton("Additional Info", callback_data="change_additional_info")
+        )
+        markup.row(
+            InlineKeyboardButton("Go to Profile", callback_data="profile")
         )
         bot.send_message(call.message.chat.id, preferences_text, reply_markup=markup)
     except Exception as e:
@@ -288,13 +294,16 @@ def update_additional_info(message, call):
 def handle_message(message):
     user_id = message.from_user.id
 
+    user_x = get_user(user_id)
+
+    if user_x is None:
+        user_x = create_user(user_id)
+
     # Retrieve or create a new thread_id for the user
-    thread = get_user(user_id).thread_id
-    if not thread:
+    thread_id = user.thread_id
+    if not thread_id:
         send_welcome(message)
         return
-    else:
-        thread_id = thread.get("thread_id")
 
     # Prepare parameters for request
     params = {
