@@ -25,12 +25,12 @@ client = openai.OpenAI(api_key=openai.api_key)
 
 # create empty user object
 # user = get_empty_user()
-user: User
+# user: User
 
 
 # Function to create a new thread for a user
 def create_user(user_id):
-    global user
+    # global user
     try:
         user = get_user(user_id)
         if user is None:
@@ -46,7 +46,7 @@ def create_user(user_id):
 @bot.message_handler(commands=['start', 'hello'])
 def send_welcome(message):
     try:
-        bot.reply_to(message, "Welcome!")
+        bot.send_message(message.chat.id, "Welcome!")
         # Create a new thread for the user
         create_user(message.from_user.id)
     except Exception as e:
@@ -68,8 +68,9 @@ def handle_profile(message):
 # Callback query handler for inline buttons
 @bot.callback_query_handler(func=lambda call: call.data in ['profile'])
 def profile_info(call):
-    global user
+    # global user
     try:
+        user = get_user(call.from_user.id)
         # profile = get_user(call.message.chat.id)
         address = user.address
         profile_text = (
@@ -115,9 +116,9 @@ def profile_info(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == 'preferences')
 def preferences_info(call):
-    global user
+    # global user
     try:
-        # user = get_user(call.from_user.id)
+        user = get_user(call.from_user.id)
         if not user:
             bot.send_message(call.message.chat.id, "User not found. Please start with /start command.")
             return
@@ -206,27 +207,29 @@ def handle_update_callback(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('boolean_'))
 def update_smoker_status(call):
-    global user
+    # global user
     try:
+        user = get_user(call.message.from_user.id)
         status = call.data.split('_')[1].lower() == 'true'
         field = call.data.split('_')[2]
         if field == 'smoker':
             user.smoker = status
             update_user(user)
-            bot.reply_to(call.message, f"Your smoking status has been updated to: {status}")
+            bot.send_message(call.message.chat.id, f"Your smoking status has been updated to: {status}")
             profile_info(call)
         if field == 'smoking':
             user.apartment_preferences.smoking_ok = status
             update_user(user)
-            bot.reply_to(call.message, f"Your smoker allowed preferences has been updated to: {status}")
+            bot.send_message(call.message.chat.id, f"Your smoker allowed preferences has been updated to: {status}")
             preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to update smoker status: {e}")
 
 
 def update_address(message, call):
-    global user
+    # global user
     try:
+        user = get_user(message.from_user.id)
         address = message.text
         # Use regex to parse the address
         match = re.match(r'^(.*?[\s\S]+?)\s+(\d+),\s+(\d+)\s+([\s\S]+)\s+([\s\S]+)$', address)
@@ -241,49 +244,52 @@ def update_address(message, call):
                 "country": country,
             }
             user.address = Address(**new_adress)
-            bot.reply_to(message, "Your address has been updated.")
+            bot.send_message(message.chat.id, "Your address has been updated.")
             update_user(user)
             profile_info(call)
         else:
-            bot.reply_to(message, "Invalid address format. Please try again.")
+            bot.send_message(message.chat.id, "Invalid address format. Please try again.")
             profile_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update address: {e}")
 
 
 def update_profile(message, field, call):
-    global user
+    # global user
     try:
+        user = get_user(message.from_user.id)
         new_value = message.text
         setattr(user, field, new_value)
         update_user(user)
-        bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
+        bot.send_message(message.chat.id, f"Your {field} has been updated to: {new_value}")
         profile_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update profile: {e}")
 
 
 def update_preferences(message, field, call):
-    global user
+    # global user
     try:
+        user = get_user(message.from_user.id)
         preferences = user.apartment_preferences
         new_value = message.text
         if field == "bezirk" or field == "preferred_roommate_age":
             new_value = [x.strip() for x in new_value.split(',')]
         setattr(preferences, field, new_value)
-        bot.reply_to(message, f"Your {field} has been updated to: {new_value}")
+        bot.send_message(message.chat.id, f"Your {field} has been updated to: {new_value}")
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update preferences: {e}")
 
 
 def update_additional_info(message, call):
-    global user
+    # global user
     try:
+        user = get_user(message.from_user.id)
         user_id = message.from_user.id
         new_value = [x.strip() for x in message.text.split(',')]
         user.additional_info = new_value
-        bot.reply_to(message, "Your additional information has been updated.")
+        bot.send_message(message.chat.id, "Your additional information has been updated.")
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update additional information: {e}")
@@ -300,7 +306,7 @@ def handle_message(message):
         user_x = create_user(user_id)
 
     # Retrieve or create a new thread_id for the user
-    thread_id = user.thread_id
+    thread_id = user_x.thread_id
     if not thread_id:
         send_welcome(message)
         return
@@ -316,7 +322,7 @@ def handle_message(message):
     url = 'http://localhost:4000/chat'
     response = requests.post(url, json=params)
     # Reply to the user with the response from AI
-    bot.reply_to(message, response.text)
+    bot.send_message(message.chat.id, response.text)
 
 
 # Start polling for messages
