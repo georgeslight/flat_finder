@@ -1,6 +1,8 @@
 import logging
 import os
 import re
+import datetime
+
 from dotenv import load_dotenv
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -195,9 +197,13 @@ def handle_update_callback(call):
             msg = bot.send_message(call.message.chat.id,
                                    f"Please enter your {field_display}, each item separated by commas:")
             bot.register_next_step_handler(msg, lambda message: update_additional_info(message, call))
-        elif field in ("full_name", "phone_number", "email", "date_of_birth", "employment_type", "average_monthly_net_income"):
+        elif field in ("full_name", "phone_number", "email", "employment_type", "average_monthly_net_income"):
             msg = bot.send_message(call.message.chat.id,
                                    f"Please enter your new {field_display}:")
+            bot.register_next_step_handler(msg, lambda message: update_profile(message, field, call))
+        elif field == "date_of_birth":
+            msg = bot.send_message(call.message.chat.id,
+                                   "Please enter your Birthday (Format: 'YYYY-MM-DD'):")
             bot.register_next_step_handler(msg, lambda message: update_profile(message, field, call))
         else:
             msg = bot.send_message(call.message.chat.id, f"Please enter your new {field_display}:")
@@ -259,11 +265,15 @@ def update_profile(message, field, call):
     # global user
     try:
         user = get_user(message.from_user.id)
-        new_value = message.text
-        setattr(user, field, new_value)
+        if field == "date_of_birth":
+            date_object = datetime.datetime.strptime(message.text, '%Y-%m-%d').date()
+            setattr(user, field, date_object)
+        else:
+            new_value = message.text
+            setattr(user, field, new_value)
         update_user(user)
         field_display = field.replace('_', ' ').title()
-        bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {new_value}")
+        bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
         profile_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update profile: {e}")
