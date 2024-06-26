@@ -61,7 +61,7 @@ class ApartmentPreferences(BaseModel):
 
 
 class User(BaseModel):
-    id: int
+    id: str
     thread_id: str
     full_name: Optional[str] = Field(None)
     phone_number: Optional[str] = Field(None)
@@ -77,7 +77,7 @@ class User(BaseModel):
 
 
 def get_empty_user():
-    return User(id=0, thread_id="", full_name=None, phone_number=None, email=None, address={
+    return User(id="", thread_id="", full_name=None, phone_number=None, email=None, address={
         "street": None,
         "house_number": None,
         "zip_code": None,
@@ -137,7 +137,7 @@ def update_user(users: User):
         return None
 
 
-def get_user(user_id: str):
+def get_user(user_id: int):
     try:
         user = collection.find_one({"id": user_id})
     except Exception as e:
@@ -146,14 +146,14 @@ def get_user(user_id: str):
 
     if user:
         print(f"User found: {user}")
-        try:
-            if user['date_of_birth']:
-                user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
-            else:
-                user['date_of_birth'] = None
-        except ValueError as e:
-            print(f"Date conversion error: {e}")
-            return None
+        # try:
+        #     if user['date_of_birth']:
+        #         user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
+        #     else:
+        #         user['date_of_birth'] = None
+        # except ValueError as e:
+        #     print(f"Date conversion error: {e}")
+        #     return None
 
         return User(**user)
     else:
