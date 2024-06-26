@@ -151,14 +151,14 @@ def get_user(user_id: int):
 
     if user:
         print(f"User found: {user}")
-        # try:
-        #     if user['date_of_birth']:
-        #         user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
-        #     else:
-        #         user['date_of_birth'] = None
-        # except ValueError as e:
-        #     print(f"Date conversion error: {e}")
-        #     return None
+        try:
+            if user['date_of_birth']:
+                user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
+            else:
+                user['date_of_birth'] = None
+        except ValueError as e:
+            print(f"Date conversion error: {e}")
+            return None
 
         return User(**user)
     else:
