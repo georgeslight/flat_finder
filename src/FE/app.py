@@ -186,17 +186,10 @@ def handle_update_callback(call):
                 InlineKeyboardButton("False", callback_data=f"boolean_false_{field}")
             )
             bot.send_message(call.message.chat.id, "Please select your preference:", reply_markup=markup)
-        elif field == "bezirk":
-            msg = bot.send_message(call.message.chat.id, "Please enter your preferred Bezirks separated by commas:")
-            bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
-        elif field == "preferred_roommate_age":
-            msg = bot.send_message(call.message.chat.id,
-                                   "Please enter your preferred roommate ages separated by commas:")
-            bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
-        elif field in ("additional_info", "languages"):
+        elif field in ("additional_info", "languages", "preferred_roommate_age", "bezirk"):
             msg = bot.send_message(call.message.chat.id,
                                    f"Please enter your {field_display}, each item separated by commas:")
-            bot.register_next_step_handler(msg, lambda message: update_additional_info(message, call))
+            bot.register_next_step_handler(msg, lambda message: update_list(message, field, call))
         elif field in ("full_name", "phone_number", "email", "employment_type", "average_monthly_net_income"):
             msg = bot.send_message(call.message.chat.id,
                                    f"Please enter your new {field_display}:")
@@ -205,6 +198,17 @@ def handle_update_callback(call):
             msg = bot.send_message(call.message.chat.id,
                                    "Please enter your Birthday (Format: 'YYYY-MM-DD'):")
             bot.register_next_step_handler(msg, lambda message: update_profile(message, field, call))
+        elif field == "preferred_roommates_sex":
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("Female", callback_data=f"sex_preference_female"),
+                InlineKeyboardButton("Male", callback_data=f"sex_preference_male")
+            )
+            markup.row(
+                InlineKeyboardButton("Gender irrelevant", callback_data=f"sex_preference_gender_irrelevant"),
+                InlineKeyboardButton("Divers", callback_data=f"sex_preference_divers")
+            )
+            bot.send_message(call.message.chat.id, "Please select your preference:", reply_markup=markup)
         else:
             msg = bot.send_message(call.message.chat.id, f"Please enter your new {field_display}:")
             bot.register_next_step_handler(msg, lambda message: update_preferences(message, field, call))
@@ -213,7 +217,7 @@ def handle_update_callback(call):
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('boolean_'))
-def update_smoker_status(call):
+def update_boolean(call):
     # global user
     try:
         user = get_user(call.from_user.id)
@@ -231,6 +235,20 @@ def update_smoker_status(call):
             preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to update smoker status: {e}")
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('sex_preference'))
+def update_sex_preferences(call):
+    try:
+        user = get_user(call.from_user.id)
+        preference = '_'.join(call.data.split('_')[2:])
+        user.apartment_preferences.preferred_roommates_sex = preference
+        update_user(user)
+        bot.send_message(call.message.chat.id, f"Your roommate gender preference has been updated to: "
+                                               f"{preference.replace('_', ' ').title()}")
+        preferences_info(call)
+    except Exception as e:
+        logging.error(f"Failed to handle update gender preference: {e}")
 
 
 def update_address(message, call):
@@ -283,26 +301,27 @@ def update_preferences(message, field, call):
     # global user
     try:
         user = get_user(message.from_user.id)
-        preferences = user.apartment_preferences
-        new_value = message.text
+        new_value = 'apartment_preferences.' + message.text
+        setattr(user, field, new_value)
         field_display = field.replace('_', ' ').title()
-        if field == "bezirk" or field == "preferred_roommate_age":
-            new_value = [x.strip() for x in new_value.split(',')]
-        setattr(preferences, field, new_value)
         bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {new_value}")
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update preferences: {e}")
 
 
-def update_additional_info(message, call):
+def update_list(message, field, call):
     # global user
     try:
         user = get_user(message.from_user.id)
-        user_id = message.from_user.id
         new_value = [x.strip() for x in message.text.split(',')]
-        user.additional_info = new_value
-        bot.send_message(message.chat.id, "Your additional information has been updated.")
+        if field in ("languages", "additional_info"):
+            setattr(user, field, new_value)
+        elif field in ("preferred_roommate_age", "bezirk"):
+            setattr(user.apartment_preferences, field, new_value)
+        update_user(user)
+        field_display = field.replace('_', ' ').title()
+        bot.send_message(message.chat.id, f"Your {field_display} has been updated.")
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update additional information: {e}")
