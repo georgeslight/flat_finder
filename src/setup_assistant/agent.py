@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import openai
 import os
@@ -11,6 +12,7 @@ from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from openai import OpenAI
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
+from src.mongo.user_db import User, get_user, handle_date_formating
 
 from src.mongo.user_db import collection, openai_key
 
@@ -24,44 +26,34 @@ mongo_client = MongoClient(uri, server_api=ServerApi('1'))
 collections = mongo_client["Flat_Finder_DB"]["USER"]
 
 
-def generate_recommendations(user, apartments):
-    vectorStore = MongoDBAtlasVectorSearch(
-        collections, OpenAIEmbeddings(openai_api_key=os.getenv('OPENAI_API_KEY')), index_name=os.getenv('INDEX_NAME')
-    )
+def fetch_user_data(user_id: str) -> dict:
+    user: Optional[User] = get_user(user_id)
+    if user is None:
+        raise ValueError(f"No user found with id {user_id}")
 
-    compressor = LLMChainExtractor.from_llm(client)
+    user_dict = user.dict()
+    user_dict = handle_date_formating(user, user_dict)
+    return user_dict
 
-    compression_retriever = ContextualCompressionRetriever(
-        base_compressor=compressor,
-        base_retriever=vectorStore.as_retriever()
-    )
-
-    recommendations = []
-
-    for apt in apartments:
-        score = sum(info in apt['tab_contents'] for info in user['additional_info'])
-        recommendations.append({
-            'ID': apt['ID'],
-            'Link': apt['Link'],
-            'Recommendation': f"This apartment matches {score} of your preferences."
-        })
-    return recommendations
-
-
-load_dotenv(dotenv_path="../../.env")
 
 functions = [
     {
-        "name": "wirte_recommendation",
-        "description": "write a recommendation for a user, if the apartment fits the user profile or not.",
+      "type": "function",
+      "function": {
+        "name": "fetch_user_data",
+        "description": "get a user dictionary, with all information about the user looking for apartments, "
+                           "and their apartment preferences its looking for",
         "parameters": {
-            "type": "object",
-            "properties": {
-                "user_data": {"type": "object", "description": "Vectorized User data."},
-                "apartments": {"type": "object", "description": "List of available apartments."}
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "string",
+              "description": "The ID of the user to look for"
             },
-            "required": ["user_data", "apartments"]
+          },
+          "required": ["user_id"]
         }
+      }
     }
 ]
 
@@ -69,24 +61,14 @@ functions = [
 assistant = client.beta.assistants.create(
     name="Apartment Recommendation Assistant",
     description="Assists users in finding the perfect apartment based on their preferences.",
-    instructions="Use the generate_recommendations function to recommend apartments based on user preferences.the "
-                 "recommendation should be a string an have the following format: 'you should (not) apply for this "
-                 "apartment because 1. reason 2. reason 3. reason'. your response should include the recommendation.",
+    instructions="Use the fetch_user_data function to get information about the user.",
+    tools=functions,
     model="gpt-3.5-turbo-0125",
-    tools=[
-        {"type": "function", "function": functions[0]}
-    ]
 )
-print(f"Assistant ID: {assistant.id}")
-
-
-def generate_recommendations_call(user_data, apartments):
-
-    return generate_recommendations(user_data, apartments)
 
 
 function_lookup = {
-    "generate_recommendations": generate_recommendations_call
+    "fetch_user_data": fetch_user_data,
 }
 
 
