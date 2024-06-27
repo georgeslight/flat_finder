@@ -114,15 +114,9 @@ def get_embedding(text_list: List[str]) -> List[float]:
         return None
 
 
-def save_user(users: User):
-    user_dict = users.dict()
-    if user_dict.get('date_of_birth') is not None:
-        user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
-    if user_dict['apartment_preferences'].get('ready_to_move_in') is not None:
-        user_dict['apartment_preferences']['ready_to_move_in'] = user_dict['apartment_preferences']['ready_to_move_in'].isoformat()
-    if users.additional_info:
-        embedded_info = get_embedding(users.additional_info)
-        user_dict['additional_info_embedding'] = embedded_info
+def save_user(user: User):
+    user_dict = user.dict()
+    user_dict = handle_date_formating(user, user_dict)
     collection.insert_one(user_dict)
     print(f"User saved with id: {user_dict.get('id')}")
 
@@ -187,5 +181,18 @@ def get_all_user():
             user_x['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(user_x['apartment_preferences']['ready_to_move_in'])
             users.append(User(**user_x))
     return users
+
+
+def handle_date_formating(user, user_dict):
+    if user_dict['apartment_preferences'].get('ready_to_move_in') is not None:
+        user_dict['apartment_preferences']['ready_to_move_in'] = user_dict['apartment_preferences'][
+            'ready_to_move_in'].isoformat()
+    if user_dict.get('date_of_birth') is not None:
+        user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
+    # if user.additional_info:
+    #     embedded_info = get_embedding(user.additional_info)
+    #     user_dict['additional_info_embedding'] = embedded_info
+    return user_dict
+
 
 #result = collection.delete_many({})
