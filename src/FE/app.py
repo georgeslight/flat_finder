@@ -347,10 +347,13 @@ def update_list(message, field, call):
 def handle_message(message):
     user_id = message.from_user.id
 
+    logging.info(f"Received message from user ID: {user_id}")
+
     user_x = get_user(user_id)
 
     if user_x is None:
         user_x = create_user(user_id)
+        logging.info(f"Created new user with ID: {user_id}")
 
     # Retrieve or create a new thread_id for the user
     thread_id = user_x.thread_id

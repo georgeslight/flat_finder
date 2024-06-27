@@ -93,15 +93,21 @@ def submit_tool_outputs(thread_id, run_id, tools_to_call):
     for tool in tools_to_call:
         output = None
         tool_call_id = tool.id
+        logging.info(f"Submitting tool {tool_call_id}")
         function_name = tool.function.name
+        logging.info(f"Function name: {function_name}")
         function_args = json.loads(tool.function.arguments)
+        logging.info(f"Function arguments: {function_args}")
         function_to_call = function_lookup[function_name]
         output = function_to_call(**function_args)
+        logging.info(f"Output: {output}")
         if output:
             tool_output_array.append({"tool_call_id": tool_call_id, "output": json.dumps(output)})
 
-    return client.beta.threads.runs.submit_tool_outputs(
+    response = client.beta.threads.runs.submit_tool_outputs(
         thread_id=thread_id,
         run_id=run_id,
         tool_outputs=tool_output_array
     )
+    logging.info(f"Submit tool outputs response: {response}")
+    return response

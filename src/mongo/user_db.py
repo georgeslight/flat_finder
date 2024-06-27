@@ -130,14 +130,7 @@ def save_user(users: User):
 def update_user(user: User):
     try:
         user_dict = user.dict()
-        if user_dict['apartment_preferences'].get('ready_to_move_in') is not None:
-            user_dict['apartment_preferences']['ready_to_move_in'] = user_dict['apartment_preferences']['ready_to_move_in'].isoformat()
-        if user_dict.get('date_of_birth') is not None:
-            user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
-        # Convert additional_info embeddings
-        if user.additional_info:
-            embedded_info = get_embedding(user.additional_info)
-            user_dict['additional_info_embedding'] = embedded_info
+        user_dict = handle_date_formating(user, user_dict)
 
         # user_id_int = int(user.id)
         user_id_str = str(user.id)
@@ -156,15 +149,16 @@ def update_user(user: User):
         return None
 
 
-def get_user(user_id: str):
+def get_user(user_id: str) -> Optional[User]:
+    logging.info(f"Fetching user with ID: {user_id}")
     try:
         user = collection.find_one({"id": str(user_id)})
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logging.error(f"Error occurred while fetching user: {e}")
         return None
 
     if user:
-        print(f"User found: {user}")
+        logging.info(f"User found: {user_id}")
         try:
             if user['date_of_birth']:
                 user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
@@ -175,12 +169,12 @@ def get_user(user_id: str):
             else:
                 user['apartment_preferences']['ready_to_move_in'] = None
         except ValueError as e:
-            print(f"Date conversion error: {e}")
+            logging.error(f"Date conversion error: {e}")
             return None
 
         return User(**user)
     else:
-        print(f"No user found with id: {user_id}")
+        logging.info(f"No user found with ID: {user_id}")
         return None
 
 

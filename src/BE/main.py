@@ -81,16 +81,7 @@ async def post_message(user_message: Message):
         thread_id=user_message.thread
     )
 
-    # run steps
-    run_steps = client.beta.threads.runs.steps.list(
-        thread_id=user_message.thread,
-        run_id=run.id
-    )
-
-    # checks if tool was used
-    if len(run_steps.data) > 1:
-        # if tool was used, steps are printed
-        print(run_steps.data[1].step_details.tool_calls[0].code_interpreter.input)
+    logging.info(f"Messages: {messages}")
 
     # returns assistants response
     return messages.data[0].content[0].text.value
