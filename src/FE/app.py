@@ -132,9 +132,9 @@ def preferences_info(call):
             f"Bezirk: {', '.join(preferences.bezirk) if preferences.bezirk else 'Not set'}\n"
             f"Min Size: {preferences.min_size if preferences.min_size else 'Not set'}\n"
             f"Ready to Move In: {preferences.ready_to_move_in if preferences.ready_to_move_in else 'Not set'}\n"
-            f"Preferred Roommates Sex: {preferences.preferred_roommates_sex if preferences.preferred_roommates_sex else 'Not set'}\n"
+            f"Preferred Roommates Sex: {preferences.preferred_roommates_sex.replace('_', ' ').title() if preferences.preferred_roommates_sex else 'Not set'}\n"
             f"Preferred Roommate Age: {', '.join(map(str, preferences.preferred_roommate_age)) if preferences.preferred_roommate_age else 'Not set'}\n"
-            f"Preferred Roommate Num: {preferences.preferred_roommate_num if preferences.preferred_roommate_num else 'Not set'}\n"
+            f"Preferred Roommate Number: {preferences.preferred_roommate_num if preferences.preferred_roommate_num else 'Not set'}\n"
             f"Smoking OK: {preferences.smoking_ok if preferences.smoking_ok else 'False'}\n"
         )
         additional_info = user.additional_info if user.additional_info else []
@@ -249,6 +249,8 @@ def update_sex_preferences(call):
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update gender preference: {e}")
+        bot.send_message(call.message.chat.id, "There was an error updating your preference, please try again.")
+        preferences_info(call)
 
 
 def update_address(message, call):
@@ -277,6 +279,8 @@ def update_address(message, call):
             profile_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update address: {e}")
+        bot.send_message(message.chat.id, "There was an error updating your address, please try again.")
+        profile_info(call)
 
 
 def update_profile(message, field, call):
@@ -295,19 +299,28 @@ def update_profile(message, field, call):
         profile_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update profile: {e}")
+        bot.send_message(message.chat.id, "There was an error updating your profile, please try again.")
+        profile_info(call)
 
 
 def update_preferences(message, field, call):
     # global user
     try:
         user = get_user(message.from_user.id)
-        new_value = 'apartment_preferences.' + message.text
-        setattr(user, field, new_value)
+        if field == "ready_to_move_in":
+            date_object = datetime.datetime.strptime(message.text, '%Y-%m-%d').date()
+            setattr(user.apartment_preferences, field, date_object)
+        else:
+            new_value = message.text
+            setattr(user.apartment_preferences, field, new_value)
+        update_user(user)
         field_display = field.replace('_', ' ').title()
-        bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {new_value}")
+        bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update preferences: {e}")
+        bot.send_message(message.chat.id, "There was an error updating your preferences, please try again.")
+        preferences_info(call)
 
 
 def update_list(message, field, call):
@@ -325,6 +338,8 @@ def update_list(message, field, call):
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update additional information: {e}")
+        bot.send_message(message.chat.id, "There was an error, please try again.")
+        profile_info(call)
 
 
 # Handler method for all other text messages

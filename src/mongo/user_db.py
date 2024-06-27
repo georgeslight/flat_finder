@@ -58,7 +58,7 @@ class ApartmentPreferences(BaseModel):
     location: Optional[str] = Field(None)
     bezirk: List[Optional[str]] = Field(default_factory=list)
     min_size: Optional[int] = Field(None)
-    ready_to_move_in: Optional[str] = Field(None)  # Format: "YYYY-MM"
+    ready_to_move_in: Optional[date] = Field(None)  # Format: "YYYY-MM"
     preferred_roommates_sex: Optional[str] = Field(None)
     preferred_roommate_age: List[Optional[int]] = Field(default_factory=list)
     preferred_roommate_num: Optional[int] = Field(None)
@@ -118,6 +118,8 @@ def save_user(users: User):
     user_dict = users.dict()
     if user_dict.get('date_of_birth') is not None:
         user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
+    if user_dict['apartment_preferences'].get('ready_to_move_in') is not None:
+        user_dict['apartment_preferences']['ready_to_move_in'] = user_dict['apartment_preferences']['ready_to_move_in'].isoformat()
     if users.additional_info:
         embedded_info = get_embedding(users.additional_info)
         user_dict['additional_info_embedding'] = embedded_info
@@ -127,9 +129,9 @@ def save_user(users: User):
 
 def update_user(user: User):
     try:
-        # Convert datetime.date to string in the user data
         user_dict = user.dict()
-        # Convert date_of_birth to string
+        if user_dict['apartment_preferences'].get('ready_to_move_in') is not None:
+            user_dict['apartment_preferences']['ready_to_move_in'] = user_dict['apartment_preferences']['ready_to_move_in'].isoformat()
         if user_dict.get('date_of_birth') is not None:
             user_dict['date_of_birth'] = user_dict['date_of_birth'].isoformat()
         # Convert additional_info embeddings
@@ -168,6 +170,10 @@ def get_user(user_id: str):
                 user['date_of_birth'] = date.fromisoformat(user['date_of_birth'])
             else:
                 user['date_of_birth'] = None
+            if user['apartment_preferences'].get('ready_to_move_in'):
+                user['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(user['apartment_preferences']['ready_to_move_in'])
+            else:
+                user['apartment_preferences']['ready_to_move_in'] = None
         except ValueError as e:
             print(f"Date conversion error: {e}")
             return None
@@ -184,6 +190,7 @@ def get_all_user():
     for user_x in user_collection:
         if user_collection:
             user_x['date_of_birth'] = date.fromisoformat(user_x['date_of_birth'])
+            user_x['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(user_x['apartment_preferences']['ready_to_move_in'])
             users.append(User(**user_x))
     return users
 
