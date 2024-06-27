@@ -50,7 +50,7 @@ user_a = {
         'location': 'Berlin',
         'bezirk': ['Kreuzberg', 'Neukölln', 'Pankow'],
         'min_size': 10,
-        'ready_to_move_in': '2023-11',
+        'ready_to_move_in': '2023-11-01',
         'preferred_roommates_sex': 'Egal',
         'preferred_roommate_age': [20, 60],
         'preferred_roommate_num': 3,

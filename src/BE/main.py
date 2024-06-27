@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 from structural_filtering import filter_apartments, User
 from wg_gesucht_scraper import scrap_wg_gesucht
-from embedded_filtering import recommend_wg
+from ai_recommendation import recommend_wg
 
 load_dotenv(dotenv_path="../../.env")
 
