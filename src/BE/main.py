@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from src.setup_assistant.agent import submit_tool_outputs
+from src.setup_assistant.agent import submit_tool_outputs, assistant
 from structural_filtering import filter_apartments, User
 from wg_gesucht_scraper import scrap_wg_gesucht
 from ai_recommendation import recommend_wg
@@ -19,7 +19,7 @@ app = FastAPI()
 
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-assistant_id = os.getenv('ASSISTANT_ID')
+assistant_id = assistant.id
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
