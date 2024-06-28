@@ -41,8 +41,8 @@ def fetch_user_data(user_id: str) -> dict:
     return user_dict
 
 
-def fetch_flats():
-    scrape_wg_gesucht(1) # todo turn 1 to 20 when production
+def fetch_flats(x):
+    scrape_wg_gesucht(x)
     base_path = os.path.dirname(os.path.abspath(__name__))
     file_path = os.path.join(base_path, 'src', 'BE', 'output.json')
     try:
@@ -57,11 +57,10 @@ def fetch_flats():
         return []
 
 
-def filtered_flats():
-    flats = fetch_flats()
-    user = fetch_user_data("1") # todo George: get user from current user (no id)
-    filtered_wgs = filter_apartments(User(**user), flats)
-    # todo George: get user from current user (no id)
+def filter_flats(user_id: str):
+    flats = fetch_flats(1)  # todo turn 1 to 20 when production
+    user = fetch_user_data(user_id)  # todo George: get user from current user (no id)
+    filtered_wgs = filter_apartments(User(**user), flats) # todo consider removing the User(**user) and just pass user
     return filtered_wgs
 
 
@@ -99,19 +98,19 @@ functions = [
     {
         "type": "function",
         "function": {
-            "name": "filtered_flats",
-            "description": "fetch a list of all new listed flats in wg-gesucht.com. get the user "
-                           "base on the field features and tab_contents",
-            # "parameters": {
-            #     "type": "object",
-            #     "properties": {
-            #         "user_id": {
-            #             "type": "string",
-            #             "description": "The ID of the user to look for"
-            #         },
-            #     },
-            #     "required": ["user_id"]
-            # }
+            "name": "filter_flats",
+            "description": "fetch a list of the new listed flats in wg-gesucht.com. get the user informations and "
+                           "filter the flats, based on the user preferences",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "description": "The ID of the user to filter the apartments for"
+                    },
+                },
+                "required": ["user_id"]
+            }
         }
     }
     #     todo send notification method????? without sending a input to ai
@@ -127,14 +126,10 @@ assistant = client.beta.assistants.create(
     model="gpt-3.5-turbo-0125",
 )
 
-
-def generate_recommendations_call(user_data, apartments):
-    return generate_recommendations(user_data, apartments)
-
-
 function_lookup = {
     # "generate_recommendations": generate_recommendations_call
     "fetch_user_data": fetch_user_data,
+    "filter_flats": filter_flats,
 
 }
 
