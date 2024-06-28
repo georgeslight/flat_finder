@@ -354,7 +354,7 @@ def notify_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
             apartments = scrap_wg_gesucht(5)
-            filtered_apartments = filter_apartments(user_data, apartments)  # todo debug filter_apartments
+            filtered_apartments = filter_apartments(user_data, apartments)
             if filtered_apartments:
                 response = "Recommendations: \n"
                 for apt in filtered_apartments:
@@ -392,7 +392,8 @@ def handle_message(message):
     params = {
         "text": message.text,
         "thread": thread_id,
-        "user_name": message.from_user.first_name
+        "user_name": message.from_user.first_name,
+        "user_id": message.from_user.id
     }
 
     # Send request

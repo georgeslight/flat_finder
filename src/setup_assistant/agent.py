@@ -1,18 +1,18 @@
+import json
 import logging
+import os
+from typing import Optional
 
 import openai
-import os
-import json
 from dotenv import load_dotenv
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
-from openai import OpenAI
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
-from src.mongo.user_db import collection, openai_key
+from src.mongo.user_db import handle_date_formating, get_user, User
 
 # Load environment variables
 load_dotenv(dotenv_path=".env")
@@ -25,7 +25,7 @@ collections = mongo_client["Flat_Finder_DB"]["USER"]
 
 
 def generate_recommendations(user, apartments):
-    vector_store = MongoDBAtlasVectorSearch(
+    vectorStore = MongoDBAtlasVectorSearch(
         collections, OpenAIEmbeddings(openai_api_key=os.getenv('OPENAI_API_KEY')), index_name=os.getenv('INDEX_NAME')
     )
 
@@ -33,7 +33,7 @@ def generate_recommendations(user, apartments):
 
     compression_retriever = ContextualCompressionRetriever(
         base_compressor=compressor,
-        base_retriever=vector_store.as_retriever()
+        base_retriever=vectorStore.as_retriever()
     )
 
     recommendations = []
@@ -48,45 +48,109 @@ def generate_recommendations(user, apartments):
     return recommendations
 
 
-load_dotenv(dotenv_path="../../.env")
+def fetch_user_data(user_id: str) -> dict:
+    user: Optional[User] = get_user(user_id)
+    if user is None:
+        raise ValueError(f"No user found with id {user_id}")
+
+    user_dict = user.dict()
+    user_dict = handle_date_formating(user, user_dict)
+    return user_dict
+
+
+def fetch_flats():
+    base_path = os.path.dirname(os.path.abspath(__name__))
+    file_path = os.path.join(base_path, 'src', 'BE', 'output.json')
+    try:
+        with open(file_path, 'r') as file:
+            flats_data = json.load(file)
+            return flats_data
+    except FileNotFoundError:
+        logging.info(f"File {file_path} not found.")
+        return []
+    except json.decoder.JSONDecodeError:
+        logging.info(f"Error decoding JSON from file {file_path}.")
+        return []
+
+
+# todo:Ghazi (filter flats base in structural data)
+def filtered_flats():
+    # todo George: get user from current user (no id)
+    # apartaments = filter_apartments(get_user(user_id))  # fetch_flats() ->
+    return filtered_flats  # in json
+
 
 functions = [
+    # {
+    #     "name": "wirte_recommendation",
+    #     "description": "write a recommendation for a user, if the apartment fits the user profile or not.",
+    #     "parameters": {
+    #         "type": "object",
+    #         "properties": {
+    #             "user_data": {"type": "object", "description": "Vectorized User data."},
+    #             "apartments": {"type": "object", "description": "List of available apartments."}
+    #         },
+    #         "required": ["user_data", "apartments"]
+    #     }
+    # }
     {
-        "name": "wirte_recommendation",
-        "description": "write a recommendation for a user, if the apartment fits the user profile or not.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "user_data": {"type": "object", "description": "Vectorized User data."},
-                "apartments": {"type": "object", "description": "List of available apartments."}
-            },
-            "required": ["user_data", "apartments"]
+        "type": "function",
+        "function": {
+            "name": "fetch_user_data",
+            "description": "get a user dictionary, with all information about the user looking for apartments, "
+                           "and their apartment preferences its looking for",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "description": "The ID of the user to look for"
+                    },
+                },
+                "required": ["user_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "filtered_flats",
+            "description": "fetch a list of all new listed flats in wg-gesucht.com from the last day. get the user recomendations"
+                           "base on the field features and tab_contents",
+            # "parameters": {
+            #     "type": "object",
+            #     "properties": {
+            #         "user_id": {
+            #             "type": "string",
+            #             "description": "The ID of the user to look for"
+            #         },
+            #     },
+            #     "required": ["user_id"]
+            # }
         }
     }
+    #     todo send notification method????? without sending a input to ai
 ]
 
+# todo better instructions
 # Create the assistant
 assistant = client.beta.assistants.create(
     name="Apartment Recommendation Assistant",
     description="Assists users in finding the perfect apartment based on their preferences.",
-    instructions="Use the generate_recommendations function to recommend apartments based on user preferences.the "
-                 "recommendation should be a string an have the following format: 'you should (not) apply for this "
-                 "apartment because 1. reason 2. reason 3. reason'. your response should include the recommendation.",
+    instructions="Use the fetch_user_data function to get information about the user.",
+    tools=functions,
     model="gpt-3.5-turbo-0125",
-    tools=[
-        {"type": "function", "function": functions[0]}
-    ]
 )
-print(f"Assistant ID: {assistant.id}")
 
 
 def generate_recommendations_call(user_data, apartments):
-
     return generate_recommendations(user_data, apartments)
 
 
 function_lookup = {
-    "generate_recommendations": generate_recommendations_call
+    # "generate_recommendations": generate_recommendations_call
+    "fetch_user_data": fetch_user_data,
+
 }
 
 
