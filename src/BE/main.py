@@ -80,8 +80,9 @@ async def post_message(user_message: Message):
     run = client.beta.threads.runs.create(
         thread_id=user_message.thread,
         assistant_id=assistant_id,
-        instructions=f"Please address the user as {user_message.user_name}, the id from the current user id "
-                     f"{user_message.user_id}. To get information about the user use this 'user_id' as default"
+        instructions=f"Please address the user as {user_message.user_name}, the id from the current user is "
+                     f"{user_message.user_id}. To get information about the user and its flat preferences, use "
+                     f"this 'user_id' as default"
     )
 
     while run.status not in ['completed', 'failed']:
