@@ -365,7 +365,8 @@ def handle_message(message):
     params = {
         "text": message.text,
         "thread": thread_id,
-        "user_name": message.from_user.first_name
+        "user_name": message.from_user.first_name,
+        "user_id": message.from_user.id
     }
 
     # Send request
