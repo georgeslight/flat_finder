@@ -25,7 +25,7 @@ collections = mongo_client["Flat_Finder_DB"]["USER"]
 
 
 def generate_recommendations(user, apartments):
-    vectorStore = MongoDBAtlasVectorSearch(
+    vector_store = MongoDBAtlasVectorSearch(
         collections, OpenAIEmbeddings(openai_api_key=os.getenv('OPENAI_API_KEY')), index_name=os.getenv('INDEX_NAME')
     )
 
@@ -33,7 +33,7 @@ def generate_recommendations(user, apartments):
 
     compression_retriever = ContextualCompressionRetriever(
         base_compressor=compressor,
-        base_retriever=vectorStore.as_retriever()
+        base_retriever=vector_store.as_retriever()
     )
 
     recommendations = []

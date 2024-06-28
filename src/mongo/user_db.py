@@ -58,7 +58,7 @@ class ApartmentPreferences(BaseModel):
     location: Optional[str] = Field(None)
     bezirk: List[Optional[str]] = Field(default_factory=list)
     min_size: Optional[int] = Field(None)
-    ready_to_move_in: Optional[date] = Field(None)  # Format: "YYYY-MM"
+    ready_to_move_in: Optional[date] = Field(None)
     preferred_roommates_sex: Optional[str] = Field(None)
     preferred_roommate_age: List[Optional[int]] = Field(default_factory=list)
     preferred_roommate_num: Optional[int] = Field(None)

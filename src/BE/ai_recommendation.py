@@ -57,7 +57,7 @@ user_a = {
         'smoking_ok': True
     },
     'additional_info': [
-        #'Iam allergic to cats',
+        'Iam allergic to cats',
         "Iam a student",
         'Looking for a vibrant community.',
         'Enjoy cooking and sharing meals.',
@@ -98,6 +98,7 @@ apartments = [
             "U-Bahnhof Gneisenaustraße",
             "Wir sprechen Deutsch und Englisch."
             "We are looking for a Student"
+            "We have 2 cats"
         ],
         "Wohnungsgröße": "90",
         "WG_groesse": "3",
@@ -130,7 +131,10 @@ apartments = [
             "Waschmaschine", "viel natürliches Licht"
         ],
         "tab_contents": [
-            "Das sonnige Zimmer befindet sich in einer voll möblierten Altbauwohnung in Berlin-Neukölln. Vor dem Haus hält die U-Bahnlinie 8. Es gibt ein Bad, eine Küche mit Kühlschrank, Waschmaschine und Flur. 15 Minuten sind es bis zum Alexanderplatz. Vereinbare einen Termin mit Alex und Maria und sende uns Deinen Einkommensnachweis per whatsapp (siehe Kontaktinformationen).",
+            "Das sonnige Zimmer befindet sich in einer voll möblierten Altbauwohnung in Berlin-Neukölln. Vor dem Haus "
+            "hält die U-Bahnlinie 8. Es gibt ein Bad, eine Küche mit Kühlschrank, Waschmaschine und Flur. 15 Minuten "
+            "sind es bis zum Alexanderplatz. Vereinbare einen Termin mit Alex und Maria und sende uns Deinen "
+            "Einkommensnachweis per whatsapp (siehe Kontaktinformationen).",
             "U-Bahnhof Hermannplatz",
             "Wir sprechen Deutsch, Englisch und Französisch."
         ],
@@ -166,7 +170,7 @@ def ko_filter(user: User, apartment=None):
     prompt_content = (
         f"Please check if the following user is interested in this shared apartment and if they fit the "
         f"description of the apartment. If they are a good fit, then return 'True', else return 'False'."
-        #f"Your should be only 'TRUE' or 'FALSE'. not a single Character more. \n\n"
+        f"Your should be only 'TRUE' or 'FALSE'. not a single Character more. \n\n"
         f"User: {str_user_bio}\nApartment: {apartment_info}"
     )
 
@@ -190,6 +194,7 @@ def ko_filter(user: User, apartment=None):
         return result
 
 
+# todo fix and mix with ko_filter
 def recommend_wg(user: User, apartment):
     if apartment is None:
         apartment = load_apartments()[0]
@@ -199,7 +204,7 @@ def recommend_wg(user: User, apartment):
         f"description: 'you should apply for this apartment because 1. reason 2. reason 3. reason'. your response "
         f"should include the recommendation. consider that the apartment already been filtered by the user "
         f"preferences. only consider the data under 'tabs_contents', 'features' in the apartment. and "
-        f"'additional_info' in User \n\n"
+        f"'additional_info' in User. your response most contain max 250 chars!!!. \n\n"
         f"User: {user}\nApartment: {apartment}"
     )
 
@@ -217,6 +222,7 @@ def recommend_wg(user: User, apartment):
     result += f"\n ID: {apartment.get('ID')} \n Bezirk: {apartment.get('Ort')} \n Zimmergröße: {apartment.get('Zimmergröße')} \n Gesamtmiete: {apartment.get('Gesamtmiete')}"
 
     result += f"\n\n[{apartment.get("ID")}]({apartment.get("Link")})"
+    print(result)
     return result
 
 

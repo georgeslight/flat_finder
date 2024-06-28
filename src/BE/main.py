@@ -9,7 +9,9 @@ from pydantic import BaseModel
 
 from structural_filtering import filter_apartments, User
 from wg_gesucht_scraper import scrap_wg_gesucht
-from ai_recommendation import recommend_wg
+from ai_recommendation import ko_filter ,recommend_wg
+import time
+
 
 load_dotenv(dotenv_path="../../.env")
 
@@ -24,11 +26,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@app.post("/notify-apartment")
-async def notify_apartment(user_data: User):
-    return filter_apartments(user_data)
-
-
 class Message(BaseModel):
     text: str
     thread: str
@@ -36,15 +33,7 @@ class Message(BaseModel):
 
 
 # Scrap and notify user
-@app.get("/notify-user")
-async def notify_user(user_data: User):
-    apartments = scrap_wg_gesucht()
-    apartments = filter_apartments(user_data, apartments)
-    response = "Recommendations: \n"
-    for apt in apartments:
-        recommend_wg(apt)
-        response += f"{apt}\n"
-    return response
+
 
 
 @app.get("/")

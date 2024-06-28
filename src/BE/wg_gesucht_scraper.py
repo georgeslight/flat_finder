@@ -1,4 +1,4 @@
-import os
+
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -38,10 +38,10 @@ def get_json_object():
         "WG_groesse": None,
         "Mitbewohnern_Geschlecht": None,
         "WG_Art": [],
-        "Gesuchte_Geschlecht": None,
-        "Gesuchte_Alter": None,
-        "Mitbewohner_Alter": None,
-        "smoking": None
+        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Alter": [0, 99],
+        "Mitbewohner_Alter": [0, 99],
+        "smoking": True
     }
 
 
@@ -55,12 +55,12 @@ def parse_wg_details(details_section):
     data = {
         "Wohnungsgröße": None,
         "WG_groesse": None,
-        "Mitbewohnern_Geschlecht": None,
+        "Mitbewohnern_Geschlecht": "Egal",
         "WG_Art": [],
-        "Gesuchte_Geschlecht": None,
-        "Gesuchte_Alter": None,
-        "Mitbewohner_Alter": None,
-        "smoking": None
+        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Alter": ["0", "99"],
+        "Mitbewohner_Alter": ["0", "99"],
+        "smoking": True
     }
 
     for line in details_section:
@@ -208,7 +208,6 @@ def retrieve_utility_details(driver, data):
         utility_container = driver.find_element(By.CLASS_NAME, "utility_icons")
         utility_divs = utility_container.find_elements(By.CLASS_NAME, "text-center")
         for div in utility_divs:
-            #icon = div.find_element(By.TAG_NAME, "span").get_attribute('class')
             text = ' '.join(div.text.split())
             data["features"].append(text)
         # for feature in data["features"]:
@@ -247,12 +246,12 @@ def retrieve_ad_description_text(driver, data):
 
 
 # Main execution function
-def scrap_wg_gesucht(entriesCount=10):
+def scrap_wg_gesucht(entries_count=10):
     driver = setup_driver()
     url = "https://www.wg-gesucht.de/wg-zimmer-in-Berlin.8.0.1.0.html"
     load_website_and_handle_cookies(driver, url)
 
-    for i in range(entriesCount):
+    for i in range(entries_count):
         data = get_json_object()
         data["ID"] = i + 1
         interact_with_listing(driver, i, data)
@@ -269,7 +268,6 @@ def scrap_wg_gesucht(entriesCount=10):
     driver.quit()
     with open('output.json', 'w', encoding='utf-8', ) as file:
         json.dump(json_file, file, ensure_ascii=False, indent=4)
-        funcx(json_file)
     return json_file
 
 

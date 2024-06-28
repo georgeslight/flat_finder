@@ -1,16 +1,20 @@
+import datetime
 import logging
 import os
 import re
-import datetime
+import time
 
-from dotenv import load_dotenv
-import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import openai
 import requests
+import telebot
+from dotenv import load_dotenv
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from src.BE.ai_recommendation import ko_filter, recommend_wg
+from src.BE.structural_filtering import filter_apartments
+from src.BE.wg_gesucht_scraper import scrap_wg_gesucht
 # Importing from user_db.py
-from src.mongo.user_db import User, get_user, save_user, Address, ApartmentPreferences, get_empty_user, update_user
+from src.mongo.user_db import User, get_user, save_user, Address, update_user, get_all_user
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path="../../.env")
@@ -21,9 +25,9 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # Creates a bot instance and passed the BOT_TOKEN to it
 bot = telebot.TeleBot(BOT_TOKEN)
 
-
 # Initialize OpenAI client if necessary
 client = openai.OpenAI(api_key=openai.api_key)
+
 
 # create empty user object
 # user = get_empty_user()
@@ -198,6 +202,7 @@ def handle_update_callback(call):
             msg = bot.send_message(call.message.chat.id,
                                    "Please enter your Birthday (Format: 'YYYY-MM-DD'):")
             bot.register_next_step_handler(msg, lambda message: update_profile(message, field, call))
+            # todo Options -> M for male and F for Female or Egal for both
         elif field == "preferred_roommates_sex":
             markup = InlineKeyboardMarkup()
             markup.row(
@@ -342,6 +347,28 @@ def update_list(message, field, call):
         profile_info(call)
 
 
+# handle main use_case
+def notify_user():
+    try:
+        for user in get_all_user():
+            user_data = user
+            logging.info(f"Checking for new apartments for user: {user_data.id}")
+            apartments = scrap_wg_gesucht(5)
+            filtered_apartments = filter_apartments(user_data, apartments)  # todo debug filter_apartments
+            if filtered_apartments:
+                response = "Recommendations: \n"
+                for apt in filtered_apartments:
+                    ai_recommendation = recommend_wg(user_data, apt)
+                    response += f"Recommendations: {ai_recommendation}\n apt: {apt}\n\n"
+                logging.info(f"Sending recommendations to user: {user_data.id}")
+            else:
+                logging.info(f"No new apartments found for user: {user_data.id}")
+                response = "No new apartments found."
+            bot.send_message(user_data.id, response)
+    except Exception as e:
+        logging.error(f"Failed to notify user: {e}")
+
+
 # Handler method for all other text messages
 @bot.message_handler(func=lambda msg: True)
 def handle_message(message):
@@ -377,4 +404,5 @@ def handle_message(message):
 
 # Start polling for messages
 if __name__ == "__main__":
+    notify_user()
     bot.infinity_polling()
