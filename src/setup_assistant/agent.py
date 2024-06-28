@@ -5,12 +5,14 @@ from typing import Optional
 
 import openai
 from dotenv import load_dotenv
+from src.BE.structural_filtering import filter_apartments
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
+from src.BE.wg_gesucht_scraper import scrape_wg_gesucht
 
 from src.mongo.user_db import handle_date_formating, get_user, User
 
@@ -24,27 +26,8 @@ mongo_client = MongoClient(uri, server_api=ServerApi('1'))
 collections = mongo_client["Flat_Finder_DB"]["USER"]
 
 
-def generate_recommendations(user, apartments):
-    vectorStore = MongoDBAtlasVectorSearch(
-        collections, OpenAIEmbeddings(openai_api_key=os.getenv('OPENAI_API_KEY')), index_name=os.getenv('INDEX_NAME')
-    )
-
-    compressor = LLMChainExtractor.from_llm(client)
-
-    compression_retriever = ContextualCompressionRetriever(
-        base_compressor=compressor,
-        base_retriever=vectorStore.as_retriever()
-    )
-
-    recommendations = []
-
-    for apt in apartments:
-        score = sum(info in apt['tab_contents'] for info in user['additional_info'])
-        recommendations.append({
-            'ID': apt['ID'],
-            'Link': apt['Link'],
-            'Recommendation': f"This apartment matches {score} of your preferences."
-        })
+def generate_recommendations(user, apartment):
+    recommendations = ""
     return recommendations
 
 
@@ -59,6 +42,7 @@ def fetch_user_data(user_id: str) -> dict:
 
 
 def fetch_flats():
+    scrape_wg_gesucht(1) # todo turn 1 to 20 when production
     base_path = os.path.dirname(os.path.abspath(__name__))
     file_path = os.path.join(base_path, 'src', 'BE', 'output.json')
     try:
@@ -73,11 +57,12 @@ def fetch_flats():
         return []
 
 
-# todo:Ghazi (filter flats base in structural data)
 def filtered_flats():
+    flats = fetch_flats()
+    user = fetch_user_data("1") # todo George: get user from current user (no id)
+    filtered_wgs = filter_apartments(User(**user), flats)
     # todo George: get user from current user (no id)
-    # apartaments = filter_apartments(get_user(user_id))  # fetch_flats() ->
-    return filtered_flats  # in json
+    return filtered_wgs
 
 
 functions = [
@@ -115,7 +100,7 @@ functions = [
         "type": "function",
         "function": {
             "name": "filtered_flats",
-            "description": "fetch a list of all new listed flats in wg-gesucht.com from the last day. get the user recomendations"
+            "description": "fetch a list of all new listed flats in wg-gesucht.com. get the user "
                            "base on the field features and tab_contents",
             # "parameters": {
             #     "type": "object",

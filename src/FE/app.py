@@ -12,7 +12,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from src.BE.ai_recommendation import ko_filter, recommend_wg
 from src.BE.structural_filtering import filter_apartments
-from src.BE.wg_gesucht_scraper import scrap_wg_gesucht
+from src.BE.wg_gesucht_scraper import scrape_wg_gesucht
 # Importing from user_db.py
 from src.mongo.user_db import User, get_user, save_user, Address, update_user, get_all_user
 
@@ -353,7 +353,7 @@ def notify_user():
         for user in get_all_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
-            apartments = scrap_wg_gesucht(5)
+            apartments = scrape_wg_gesucht(5)
             filtered_apartments = filter_apartments(user_data, apartments)
             if filtered_apartments:
                 response = "Recommendations: \n"
@@ -405,5 +405,5 @@ def handle_message(message):
 
 # Start polling for messages
 if __name__ == "__main__":
-    notify_user()
+    #notify_user()
     bot.infinity_polling()

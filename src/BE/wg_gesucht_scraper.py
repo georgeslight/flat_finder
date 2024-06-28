@@ -246,7 +246,7 @@ def retrieve_ad_description_text(driver, data):
 
 
 # Main execution function
-def scrap_wg_gesucht(entries_count=10):
+def scrape_wg_gesucht(entries_count=10):
     driver = setup_driver()
     url = "https://www.wg-gesucht.de/wg-zimmer-in-Berlin.8.0.1.0.html"
     load_website_and_handle_cookies(driver, url)
@@ -272,4 +272,4 @@ def scrap_wg_gesucht(entries_count=10):
 
 
 if __name__ == "__main__":
-    scrap_wg_gesucht()
+    scrape_wg_gesucht()

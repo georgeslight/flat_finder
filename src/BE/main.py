@@ -10,7 +10,7 @@ from pydantic import BaseModel
 
 from src.setup_assistant.agent import submit_tool_outputs, assistant
 from structural_filtering import filter_apartments, User
-from wg_gesucht_scraper import scrap_wg_gesucht
+from wg_gesucht_scraper import scrape_wg_gesucht
 from ai_recommendation import recommend_wg
 
 load_dotenv(dotenv_path="../../.env")
@@ -41,7 +41,7 @@ class Message(BaseModel):
 # Scrap and notify user
 @app.get("/notify-user")
 async def notify_user(user_data: User):
-    apartments = scrap_wg_gesucht()
+    apartments = scrape_wg_gesucht()
     apartments = filter_apartments(user_data, apartments)
     response = "Recommendations: \n"
     for apt in apartments:
