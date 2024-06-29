@@ -1,47 +1,53 @@
 [
     {
         "ID": 1,
-        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Friedenau.11087014.html",
-        "Ort": "Friedenau",
-        "Straße": "Albestrasse 19",
-        "PLZ": "12159",
-        "Zimmergröße": "12m²",
-        "Gesamtmiete": "750€",
-        "Miete": "750€",
-        "Nebenkosten": "n.a.",
-        "Sonstige Kosten": "n.a.",
-        "Kaution": "n.a.",
-        "Ablösevereinbarung": "n.a.",
-        "frei ab": "01.08.2024",
+        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin.9422393.html",
+        "Ort": "",
+        "Straße": "Sorauerstr.",
+        "PLZ": "10997",
+        "Zimmergröße": "25m²",
+        "Gesamtmiete": "682€",
+        "Miete": "450€",
+        "Nebenkosten": "113€",
+        "Sonstige Kosten": "119€",
+        "Kaution": "1000€",
+        "Ablösevereinbarung": "0€",
+        "frei ab": "31.07.2024",
         "frei bis": null,
-        "Anzeige Datum": "2024-06-29 10:56:08",
+        "Anzeige Datum": "2024-06-29 11:11:27",
         "features": [
+            "Fernwärme",
             "Altbau",
-            "3. OG",
-            "3 Minuten zu Fuß entfernt"
+            "5. OG",
+            "möbliert",
+            "DSL, Flatrate, WLAN",
+            "Dielen",
+            "Zentralheizung",
+            "2 Minuten zu Fuß entfernt",
+            "Waschmaschine, Spülmaschine"
         ],
         "tab_contents": [
-            "A room in my flat is becoming available from August onwards 750 euros month (although the landlady will likely increase the rent) The room is fully furnished and has two big windows overlooking the Hinterhof (so it's quite bright. The room gets mostly afternoon sun. The room comes with: a bed, a wardrobe and a desk (I have to double check with my housemate to see what ekse came with the room).",
-            "The flat is located in Friedenau close to the U9 (2-3 minutes by foot) and to the Ringbahn (8-10 minutes by foot). The s1 is also not too far away (15-20 minutes by foot). There are multiple shops nearby (Nahkauf, Netto, Rewe, Edeka, bakeries, you name it). It is also not too far away from the shopping streets in Steglitz.",
-            "Pls this is not a Zweck-WG, the ideal wg life for me is one in which we can hangout, cook together, go out together but at the same time have our own lives and can respect each other's time. Also, considering that most of the neighbors are families or older people this is not a party flat. A bit about me: -I'm 24 (although I will turn 25 quite soon) -studied art history and I'm currently working full-time -On my free time I enjoy going to museums, reading, watching movies and series (I watch drag race religiously hahaha) and also enjoy going to zumba and jumping fitness classes.",
-            "Important info: -Anmeldung is possible -I'm mainly looking for someone FLINTA. -Ideally you are in your mid to late twenties. -No smoker and no pets. -the room cannot be shared by a couple. -You ideally work or are a bit further in your studies (so, no first year students, sorry!)"
+            "A fully furnished Room is available in a shared flat for 3 people at Kreuzberg-Wrangelkiez.. Very bright, quiet and Sunny flat! A lot of Families live in the Apartment and it works very well, everybody respects each other, so it‘s not suitable for Partying!",
+            "Sorauerstraße is a silent street between Wrangelkiez and Görlitzer Park near to the Canal.. Lovely Cafe-Sora is downstairs! U-Bahnhof Schlesisches Tor is 2 Minutes by walk.. REWE, Lidl, Eurogida and Bio-Company are the closest Shops! Everything you need is just around the corner..",
+            "We are looking for a clean, careful and chill Person! Long term rent is preferred! Including all costs(Warmwasser, Zentralheizung, Rundfunkbeitrag, Strom, Internet, Nebenkosten und Betriebskosten) Smoking is allowed but Pets are not!",
+            "Just for the record, you can stay in the flat as long as you want from our side if we get along well but the only thing is that Anmeldung is not possible because i have my Anmeldung somewhere else due to my Kids Kindergarten and Hausverwaltung unfortunately doesn’t give this Wohnungsgeberbestätigung to the Subtenants.. An Apartment-viewing is possible at any time.. And for last, please write a short description about yourself with at least one photo attached, otherwise you will get no answer! And yes, as long as the ad is online, it is still available.."
         ],
-        "Wohnungsgröße": null,
-        "WG_groesse": "2",
-        "Mitbewohnern_Geschlecht": "F",
+        "Wohnungsgröße": "88",
+        "WG_groesse": "3",
+        "Mitbewohnern_Geschlecht": "Egal",
         "WG_Art": [
             "Berufstätigen-WG",
-            "keine Zweck-WG"
+            "Internationals welcome"
         ],
-        "Gesuchte_Geschlecht": "F",
+        "Gesuchte_Geschlecht": "Egal",
         "Gesuchte_Alter": [
-            "24",
-            "30"
+            "27",
+            "42"
         ],
         "Mitbewohner_Alter": [
             "0",
             "99"
         ],
-        "smoking": false
+        "smoking": true
     }
 ]

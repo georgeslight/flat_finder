@@ -134,8 +134,8 @@ def filter_apartments(user_data: User, json_apartments=None):
                     #(frei_ab is None or frei_ab <= ready_to_move_in) and todo: fix this
                     (user_preferences.smoking_ok or not apartment.get("smoking", False)) and
                     (
-                            user_preferences.preferred_roommates_sex == "Egal" or user_preferences.preferred_roommates_sex ==
-                            apartment.get("Mitbewohnern_Geschlecht", "Egal")
+                            user_preferences.preferred_roommates_sex == "gender_irrelevant" or user_preferences.preferred_roommates_sex ==
+                            apartment.get("Mitbewohnern_Geschlecht", "gender_irrelevant")
                     ) and
                     (apartment.get("Gesuchte_Alter", [0, 100])[0] <= user_age <=
                      apartment.get("Gesuchte_Alter", [0, 100])[1]) and
@@ -154,3 +154,5 @@ def filter_apartments(user_data: User, json_apartments=None):
     if fitting_apartments is None:
         return None
     return {"fitting_apartments": fitting_apartments}
+
+# todo consider the preferred_roommates_sex options in UI

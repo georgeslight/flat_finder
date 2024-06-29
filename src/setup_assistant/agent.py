@@ -13,7 +13,7 @@ from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from src.BE.wg_gesucht_scraper import scrape_wg_gesucht
-
+from src.BE.ai_recommendation import recommend_wg
 from src.mongo.user_db import handle_date_formating, get_user, User
 
 # Load environment variables
@@ -57,11 +57,28 @@ def fetch_user_data(user_id: str) -> dict:
 #         logging.info(f"Error decoding JSON from file {file_path}.")
 #         return []
 
+def get_recommendations(user_id: str):
+    user = fetch_user_data(user_id)
+    filtered_wgs = filter_flats(user_id)
+    recommendations = []
+    for flat in filtered_wgs:
+        recommendations.append(generate_recommendations(user, flat))
+    return recommendations
+
 
 def filter_flats(user_id: str):
-    flats = scrape_wg_gesucht(1)  # todo turn 1 to 20 when production
+    user = fetch_user_data(user_id)
+    # flats = scrape_wg_gesucht(1)
+    # todo remove after testing!
+    # Construct the absolute path
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(base_path, 'test_apartments.json')
+
+    # Open the file using the absolute path
+    with open(file_path, 'r', encoding='utf-8') as file:
+        flats = json.load(file)
     user = fetch_user_data(user_id)  # todo George: get user from current user (no id)
-    filtered_wgs = filter_apartments(User(**user), flats) # todo consider removing the User(**user) and just pass user
+    filtered_wgs = filter_apartments(User(**user), flats)  # todo consider removing the User(**user) and just pass user
     return filtered_wgs
 
 
@@ -129,14 +146,29 @@ functions = [
                 "required": ["user_id"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "generate_recommendations_call",
+            "description": "Generate a recommendation for the user for a specific apartment.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "user": {"type": "object", "description": "User data dictionary"},
+                    "apartment": {"type": "object", "description": "Apartment data dictionary"}
+                },
+                "required": ["user", "apartment"]
+            }
+        }
     }
-    #     todo send notification method????? without sending a input to ai
+
 ]
 
 # todo better instructions
 # Create the assistant
 assistant = client.beta.assistants.create(
-    name="Apartment Recommendation Assistant",
+    name="Test-Apartment Recommendation Assistant",
     description="Assists users in finding the perfect apartment based on their preferences.",
     instructions="Use the fetch_user_data function to get information about the user.",
     tools=functions,
@@ -147,7 +179,7 @@ function_lookup = {
     # "generate_recommendations": generate_recommendations_call
     "fetch_user_data": fetch_user_data,
     "filter_flats": filter_flats,
-
+    "generate_recommendations_call": recommend_wg,
 }
 
 
