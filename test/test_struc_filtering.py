@@ -1,6 +1,8 @@
 import unittest
 from datetime import date
 from bson import ObjectId
+
+from src.BE.ai_recommendation import recommend_wg
 from src.BE.structural_filtering import filter_apartments, turn_user_to_user_model
 import json
 
@@ -72,6 +74,22 @@ class TestApartmentFiltering(unittest.TestCase):
         print("Expected output:", json.dumps(self.fitting_apartments, indent=2, ensure_ascii=False))
         print("Filtered apartments for user 1:", json.dumps(filtered_apartments, indent=2, ensure_ascii=False))
         self.assertEqual(filtered_apartments, self.fitting_apartments)
+
+    def test_recommend_wg_positive(self):
+        user = turn_user_to_user_model(self.user1)
+        apartment = self.fitting_apartments['fitting_apartments'][0]
+
+        recommendation = recommend_wg(user, apartment)
+
+        print("AI Recommendation:", recommendation)
+
+    def test_recommend_wg_negative(self):
+        user = turn_user_to_user_model(self.user1)
+        apartment = self.fitting_apartments['fitting_apartments'][1]
+        print(apartment.get("ID"))
+        recommendation = recommend_wg(user, apartment)
+
+        print("AI Recommendation:", recommendation)
 
 
 if __name__ == '__main__':
