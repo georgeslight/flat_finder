@@ -2,15 +2,18 @@ import datetime
 import logging
 import os
 import re
+import threading
+
 import time
 
 import openai
 import requests
+import schedule
 import telebot
 from dotenv import load_dotenv
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from src.BE.ai_recommendation import ko_filter, recommend_wg
+from src.BE.ai_recommendation import recommend_wg
 from src.BE.structural_filtering import filter_apartments
 from src.BE.wg_gesucht_scraper import scrape_wg_gesucht
 # Importing from user_db.py
@@ -403,7 +406,41 @@ def handle_message(message):
     bot.send_message(message.chat.id, response.text)
 
 
+def schedule_task():
+    schedule.every(10).minutes.do(notify_user)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+
+def start_polling():
+    while True:
+        try:
+            bot.infinity_polling()
+        except Exception as e:
+            logging.error(f"Infinity polling error: {e}")
+            time.sleep(5)
+
+
 # Start polling for messages
 if __name__ == "__main__":
-    #notify_user()
-    bot.infinity_polling()
+    bot_thread = None
+    schedule_thread = None
+    try:
+        # Bot's polling in a thread
+        bot_thread = threading.Thread(target=start_polling)
+        logging.info(f"Starting polling thread: {bot_thread}")
+        bot_thread.start()
+
+        # Scheduler in a separate thread
+        schedule_thread = threading.Thread(target=schedule_task)
+        logging.info(f"Starting polling thread: {schedule_thread}")
+        schedule_thread.start()
+
+        # Keep the main thread alive
+        while True:
+            time.sleep(5)
+    except (KeyboardInterrupt, SystemExit):
+        logging.info("Bot stopped")
+        if bot_thread is not None: bot_thread.join()
+        if schedule_thread is not None: schedule_thread.join()

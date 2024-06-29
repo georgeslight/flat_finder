@@ -5,15 +5,11 @@ from typing import Optional
 
 import openai
 from dotenv import load_dotenv
-from src.BE.structural_filtering import filter_apartments
-from langchain.retrievers import ContextualCompressionRetriever
-from langchain.retrievers.document_compressors import LLMChainExtractor
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-from src.BE.wg_gesucht_scraper import scrape_wg_gesucht
+
 from src.BE.ai_recommendation import recommend_wg
+from src.BE.structural_filtering import filter_apartments
 from src.mongo.user_db import handle_date_formating, get_user, User
 
 # Load environment variables
@@ -41,22 +37,6 @@ def fetch_user_data(user_id: str) -> dict:
     return user_dict
 
 
-# def fetch_flats(count: int = 1):
-#     return scrape_wg_gesucht(count)
-#     base_path = os.path.dirname(os.path.abspath(__name__))
-#     file_path = os.path.join(base_path, 'src', 'BE', 'output.json')
-#
-#     try:
-#         with open(file_path, 'r') as file:
-#             flats_data = json.load(file)
-#             return flats_data
-#     except FileNotFoundError:
-#         logging.info(f"File {file_path} not found.")
-#         return []
-#     except json.decoder.JSONDecodeError:
-#         logging.info(f"Error decoding JSON from file {file_path}.")
-#         return []
-
 def get_recommendations(user_id: str):
     user = fetch_user_data(user_id)
     filtered_wgs = filter_flats(user_id)
@@ -83,18 +63,6 @@ def filter_flats(user_id: str):
 
 
 functions = [
-    # {
-    #     "name": "wirte_recommendation",
-    #     "description": "write a recommendation for a user, if the apartment fits the user profile or not.",
-    #     "parameters": {
-    #         "type": "object",
-    #         "properties": {
-    #             "user_data": {"type": "object", "description": "Vectorized User data."},
-    #             "apartments": {"type": "object", "description": "List of available apartments."}
-    #         },
-    #         "required": ["user_data", "apartments"]
-    #     }
-    # }
     {
         "type": "function",
         "function": {
@@ -113,22 +81,6 @@ functions = [
             }
         }
     },
-    # {
-    #     "type": "function",
-    #     "function": {
-    #         "name": "fetch_flats",
-    #         "description": "fetch new listings flats in wg-gesucht.com and save them into a json file",
-    #         "parameters": {
-    #             "type": "object",
-    #             "properties": {
-    #                 "count": {
-    #                     "type": "integer",
-    #                     "description": "The count of how many listings should be fetched, default is 1"
-    #                 },
-    #             }
-    #         }
-    #     }
-    # },
     {
         "type": "function",
         "function": {
@@ -162,7 +114,6 @@ functions = [
             }
         }
     }
-
 ]
 
 # todo better instructions
@@ -170,7 +121,8 @@ functions = [
 assistant = client.beta.assistants.create(
     name="Test-Apartment Recommendation Assistant",
     description="Assists users in finding the perfect apartment based on their preferences.",
-    instructions="Use the fetch_user_data function to get information about the user.",
+    instructions="Use the fetch_user_data function to get information about the user. filter_flats function to get"
+                 "recently listed flats. and the function generate_recommendations_call to get recommendations.",
     tools=functions,
     model="gpt-3.5-turbo-0125",
 )
