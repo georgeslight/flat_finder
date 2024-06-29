@@ -19,8 +19,8 @@ app = FastAPI()
 
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-assistant_id = assistant.id
-
+# assistant_id = assistant.id
+assistant_id = os.getenv('ASSISTANT_ID')
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

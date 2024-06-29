@@ -41,24 +41,25 @@ def fetch_user_data(user_id: str) -> dict:
     return user_dict
 
 
-def fetch_flats(x):
-    scrape_wg_gesucht(x)
-    base_path = os.path.dirname(os.path.abspath(__name__))
-    file_path = os.path.join(base_path, 'src', 'BE', 'output.json')
-    try:
-        with open(file_path, 'r') as file:
-            flats_data = json.load(file)
-            return flats_data
-    except FileNotFoundError:
-        logging.info(f"File {file_path} not found.")
-        return []
-    except json.decoder.JSONDecodeError:
-        logging.info(f"Error decoding JSON from file {file_path}.")
-        return []
+# def fetch_flats(count: int = 1):
+#     return scrape_wg_gesucht(count)
+#     base_path = os.path.dirname(os.path.abspath(__name__))
+#     file_path = os.path.join(base_path, 'src', 'BE', 'output.json')
+#
+#     try:
+#         with open(file_path, 'r') as file:
+#             flats_data = json.load(file)
+#             return flats_data
+#     except FileNotFoundError:
+#         logging.info(f"File {file_path} not found.")
+#         return []
+#     except json.decoder.JSONDecodeError:
+#         logging.info(f"Error decoding JSON from file {file_path}.")
+#         return []
 
 
 def filter_flats(user_id: str):
-    flats = fetch_flats(1)  # todo turn 1 to 20 when production
+    flats = scrape_wg_gesucht(1)  # todo turn 1 to 20 when production
     user = fetch_user_data(user_id)  # todo George: get user from current user (no id)
     filtered_wgs = filter_apartments(User(**user), flats) # todo consider removing the User(**user) and just pass user
     return filtered_wgs
@@ -95,11 +96,27 @@ functions = [
             }
         }
     },
+    # {
+    #     "type": "function",
+    #     "function": {
+    #         "name": "fetch_flats",
+    #         "description": "fetch new listings flats in wg-gesucht.com and save them into a json file",
+    #         "parameters": {
+    #             "type": "object",
+    #             "properties": {
+    #                 "count": {
+    #                     "type": "integer",
+    #                     "description": "The count of how many listings should be fetched, default is 1"
+    #                 },
+    #             }
+    #         }
+    #     }
+    # },
     {
         "type": "function",
         "function": {
             "name": "filter_flats",
-            "description": "fetch a list of the new listed flats in wg-gesucht.com. get the user informations and "
+            "description": "fetch a list of the new listed flats in wg-gesucht.com. get the user information and "
                            "filter the flats, based on the user preferences",
             "parameters": {
                 "type": "object",

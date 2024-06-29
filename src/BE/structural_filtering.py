@@ -101,11 +101,6 @@ def reformat_apartment_data(input_data):
     return formatted_apartments
 
 
-# Usage example:
-# formatted_data = reformat_apartment_data('scraped_apartments.json')
-# print(json.dumps(formatted_data, indent=4, ensure_ascii=False))
-
-
 def filter_apartments(user_data: User, json_apartments=None):
     if json_apartments is None:
         json_apartments = load_apartments()
