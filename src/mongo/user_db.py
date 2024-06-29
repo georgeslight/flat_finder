@@ -177,8 +177,10 @@ def get_all_user():
     users = []
     for user_x in user_collection:
         if user_collection:
-            user_x['date_of_birth'] = date.fromisoformat(user_x['date_of_birth'])
-            user_x['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(user_x['apartment_preferences']['ready_to_move_in'])
+            if user_x['date_of_birth'] is not None:
+                user_x['date_of_birth'] = date.fromisoformat(user_x['date_of_birth'])
+            if user_x['apartment_preferences']['ready_to_move_in'] is not None:
+                user_x['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(user_x['apartment_preferences']['ready_to_move_in'])
             users.append(User(**user_x))
     return users
 
