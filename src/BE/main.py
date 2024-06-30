@@ -8,10 +8,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from ai_recommendation import recommend_wg
 from src.setup_assistant.agent import submit_tool_outputs, assistant
 from structural_filtering import filter_apartments, User
 from wg_gesucht_scraper import scrape_wg_gesucht
-from ai_recommendation import recommend_wg
 
 load_dotenv(dotenv_path="../../.env")
 

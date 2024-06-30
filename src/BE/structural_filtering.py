@@ -1,12 +1,12 @@
+import datetime
 import json
 import logging
 from datetime import datetime
 
-from src.mongo.user_db import User
 from dotenv import load_dotenv
 from fastapi import HTTPException
-import datetime
-from datetime import date
+
+from src.mongo.user_db import User
 
 load_dotenv(dotenv_path="../../.env")
 
@@ -34,7 +34,6 @@ def calculate_age(birthdate: datetime.date) -> int:
 
 
 def reformat_apartment_data(input_data):
-
     formatted_apartments = []
     for apartment in input_data:
         if isinstance(apartment, dict):  # Ensure we are working with a dictionary
@@ -93,7 +92,8 @@ def reformat_apartment_data(input_data):
                         "WG_Art": nested_apartment.get("WG_Art", []),
                         "Gesuchte_Geschlecht": nested_apartment.get("Gesuchte_Geschlecht"),
                         "Gesuchte_Alter": [int(age) for age in nested_apartment.get("Gesuchte_Alter", ["0", "99"])],
-                        "Mitbewohner_Alter": [int(age) for age in nested_apartment.get("Mitbewohner_Alter", ["0", "99"])],
+                        "Mitbewohner_Alter": [int(age) for age in
+                                              nested_apartment.get("Mitbewohner_Alter", ["0", "99"])],
                         "smoking": nested_apartment.get("smoking", False)
                     }
                     formatted_apartments.append(formatted_apartment)
@@ -119,9 +119,9 @@ def filter_apartments(user_data: User, json_apartments=None):
             try:
                 gesamtmiete = int(apartment.get("Gesamtmiete", "0€").replace("€", "").strip())
                 zimmergroesse = int(apartment.get("Zimmergröße", "0m²").replace("m²", "").strip())
-                #frei_ab_str = apartment.get("frei ab", "")
-                #frei_ab = datetime.datetime.strptime(frei_ab_str, "%Y-%m-%d").date() if frei_ab_str else None
-                #ready_to_move_in = datetime.datetime.strptime(user_preferences.ready_to_move_in, "%Y-%m-%d").date() todo: fix this
+                # frei_ab_str = apartment.get("frei ab", "")
+                # frei_ab = datetime.datetime.strptime(frei_ab_str, "%Y-%m-%d").date() if frei_ab_str else None
+                # ready_to_move_in = datetime.datetime.strptime(user_preferences.ready_to_move_in, "%Y-%m-%d").date() todo: fix this
             except ValueError:
                 logger.warning(f"Skipping apartment {apartment.get("ID")} with invalid data: {ValueError}")
                 continue
@@ -131,7 +131,7 @@ def filter_apartments(user_data: User, json_apartments=None):
                     gesamtmiete <= user_preferences.max_rent and
                     apartment.get("Ort", "") in user_preferences.bezirk and
                     zimmergroesse >= user_preferences.min_size and
-                    #(frei_ab is None or frei_ab <= ready_to_move_in) and todo: fix this
+                    # (frei_ab is None or frei_ab <= ready_to_move_in) and todo: fix this
                     (user_preferences.smoking_ok or not apartment.get("smoking", False)) and
                     (
                             user_preferences.preferred_roommates_sex == "gender_irrelevant" or user_preferences.preferred_roommates_sex ==

@@ -1,19 +1,13 @@
 import logging
+import os
 from datetime import date
 from typing import List, Optional
 
 import openai
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from pymongo.mongo_client import MongoClient
-import requests
-import json
-from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
 from pydantic import BaseModel, EmailStr, Field
-from pymongo.pool import PoolOptions
-
-import os
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 load_dotenv()
 
@@ -159,7 +153,8 @@ def get_user(user_id: str) -> Optional[User]:
             else:
                 user['date_of_birth'] = None
             if user['apartment_preferences'].get('ready_to_move_in'):
-                user['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(user['apartment_preferences']['ready_to_move_in'])
+                user['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(
+                    user['apartment_preferences']['ready_to_move_in'])
             else:
                 user['apartment_preferences']['ready_to_move_in'] = None
         except ValueError as e:
@@ -180,7 +175,8 @@ def get_all_user():
             if user_x['date_of_birth'] is not None:
                 user_x['date_of_birth'] = date.fromisoformat(user_x['date_of_birth'])
             if user_x['apartment_preferences']['ready_to_move_in'] is not None:
-                user_x['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(user_x['apartment_preferences']['ready_to_move_in'])
+                user_x['apartment_preferences']['ready_to_move_in'] = date.fromisoformat(
+                    user_x['apartment_preferences']['ready_to_move_in'])
             users.append(User(**user_x))
     return users
 
@@ -196,5 +192,4 @@ def handle_date_formating(user, user_dict):
     #     user_dict['additional_info_embedding'] = embedded_info
     return user_dict
 
-
-#result = collection.delete_many({})
+# result = collection.delete_many({})

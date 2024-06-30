@@ -1,11 +1,10 @@
 import json
 import logging
-from datetime import date
 import os
-import openai
-from bson import ObjectId
+
 from dotenv import load_dotenv
 from openai import OpenAI
+
 from src.mongo.user_db import User
 
 load_dotenv(dotenv_path="../../.env")
@@ -215,7 +214,6 @@ def recommend_wg(user: User, apartment=None):
         return recommend_result
     else:
         return "The user and the apartment are not a good fit. AI Output: \n" + ko_response.choices[0].message.content
-
 
 # print(ko_filter(user_data, apartments[0]))
 # print(recommend_wg(user_data, apartments[0]))

@@ -1,14 +1,12 @@
+import json
+import re
+import time
 
-
+from dotenv import load_dotenv
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-
-import json
-import time
-from dotenv import load_dotenv
-import re
+from webdriver_manager.chrome import ChromeDriverManager
 
 load_dotenv(dotenv_path="../../.env")
 
