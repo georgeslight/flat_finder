@@ -1,7 +1,7 @@
 import datetime
 import json
 import logging
-from datetime import datetime
+import datetime
 
 from dotenv import load_dotenv
 from fastapi import HTTPException
@@ -29,8 +29,11 @@ def turn_user_to_user_model(user):
 
 
 def calculate_age(birthdate: datetime.date) -> int:
-    today = datetime.date.today()
-    return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    try:
+        today = datetime.date.today()
+        return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    except Exception as e:
+        logger.error(f"Error calculating age: {e}")
 
 
 def reformat_apartment_data(input_data):
@@ -148,7 +151,7 @@ def filter_apartments(user_data: User, json_apartments=None):
 
     if not fitting_apartments:
         logger.info("No matching apartments found.")
-        return {"message": "No matching apartments found."}
+        return None
 
     logger.info(f"Matching apartments found: {len(fitting_apartments)}")
     if fitting_apartments is None:
