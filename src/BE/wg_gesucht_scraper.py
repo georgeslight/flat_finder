@@ -45,7 +45,9 @@ def get_json_object():
 
 # Initialize the Chrome driver
 def setup_driver():
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    options = webdriver.ChromeOptions()
+    options.page_load_strategy = 'none'
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     return driver
 
 
@@ -244,7 +246,7 @@ def retrieve_ad_description_text(driver, data):
 
 
 # Main execution function
-def scrape_wg_gesucht(entries_count=10):
+def scrape_wg_gesucht(entries_count=1):
     driver = setup_driver()
     url = "https://www.wg-gesucht.de/wg-zimmer-in-Berlin.8.0.1.0.html"
     load_website_and_handle_cookies(driver, url)
