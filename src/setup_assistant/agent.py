@@ -158,3 +158,20 @@ def submit_tool_outputs(thread_id, run_id, tools_to_call):
     )
     logging.info(f"Submit tool outputs response: {response}")
     return response
+
+
+def fetch_flats():
+    # return scrape_wg_gesucht(count)
+    base_path = os.path.dirname(os.path.abspath(__name__))
+    file_path = os.path.join(base_path, 'output.json')
+
+    try:
+        with open(file_path, 'r') as file:
+            flats_data = json.load(file)
+            return flats_data
+    except FileNotFoundError:
+        logging.info(f"File {file_path} not found.")
+        return []
+    except json.decoder.JSONDecodeError:
+        logging.info(f"Error decoding JSON from file {file_path}.")
+        return []

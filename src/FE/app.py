@@ -18,6 +18,7 @@ from src.BE.structural_filtering import filter_apartments
 from src.BE.wg_gesucht_scraper import scrape_wg_gesucht
 # Importing from user_db.py
 from src.mongo.user_db import User, get_user, save_user, Address, update_user, get_all_user
+from src.setup_assistant.agent import fetch_flats
 
 # Load environment variables from .env file
 load_dotenv(dotenv_path="../../.env")
@@ -358,16 +359,22 @@ def notify_user():
             logging.info(f"Checking for new apartments for user: {user_data.id}")
             apartments = scrape_wg_gesucht(5)
             filtered_apartments = filter_apartments(user_data, apartments)
-            if filtered_apartments:
+            if 'message' not in filtered_apartments:
                 response = "Recommendations: \n"
                 for apt in filtered_apartments:
                     ai_recommendation = recommend_wg(user_data, apt)
                     response += f"Recommendations: {ai_recommendation}\n apt: {apt}\n\n"
+
+                # Split response into smaller chunks
+                max_message_length = 4096  # Telegram's max message length
+                for i in range(0, len(response), max_message_length):
+                    part = response[i:i + max_message_length]
+                    bot.send_message(int(user_data.id), part)
                 logging.info(f"Sending recommendations to user: {user_data.id}")
             else:
                 logging.info(f"No new apartments found for user: {user_data.id}")
                 response = "No new apartments found."
-            bot.send_message(user_data.id, response)
+                bot.send_message(int(user_data.id), response)
     except Exception as e:
         logging.error(f"Failed to notify user: {e}")
 

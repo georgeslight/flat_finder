@@ -153,6 +153,6 @@ def filter_apartments(user_data: User, json_apartments=None):
     logger.info(f"Matching apartments found: {len(fitting_apartments)}")
     if fitting_apartments is None:
         return None
-    return {"fitting_apartments": fitting_apartments}
+    return fitting_apartments
 
 # todo consider the preferred_roommates_sex options in UI

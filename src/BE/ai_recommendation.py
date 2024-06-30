@@ -159,8 +159,8 @@ def recommend_wg(user: User, apartment=None):
     user_bio = user.additional_info
     str_user_bio = "User: " + ", ".join(user_bio)
 
-    apartment_features = apartment.get("features", [])
-    apartment_details = apartment.get("tab_contents", [])
+    apartment_features = apartment.get("features")
+    apartment_details = apartment.get("tab_contents")
 
     str_apartment_features = "features: " + ", ".join(apartment_features)
     str_apartment_details = "details: " + ", ".join(apartment_details)
