@@ -188,7 +188,7 @@ def recommend_wg(user: User, apartment=None):
 
     if ko_result == "TRUE":
         # Second API call to generate the recommendation
-        recommend_prompt_content = (
+        recommend_prompt_content = ( # todo: Debi -> fix and optimize this prompt
             f"write a recommendation for the user for this apartment. The recommendation should be a string and have the"
             f"description: 'you should apply for this apartment because 1. reason 2. reason 3. reason'. your response "
             f"should include the recommendation. consider that the apartment already been filtered by the user "
