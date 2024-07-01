@@ -75,11 +75,11 @@ def parse_wg_details(details_section):
             data["WG_groesse"] = match.group(1).replace("er", "")
             geschlecht = match.group(2)
             if "Frau" in geschlecht:
-                data["Mitbewohnern_Geschlecht"] = "F"
+                data["Mitbewohnern_Geschlecht"] = "Female"
             elif "Mann" in geschlecht:
-                data["Mitbewohnern_Geschlecht"] = "M"
+                data["Mitbewohnern_Geschlecht"] = "Male"
             elif "gemischte" in geschlecht or "gemischt" in geschlecht:
-                data["Mitbewohnern_Geschlecht"] = "G"
+                data["Mitbewohnern_Geschlecht"] = "Gender irrelevant"
 
         # WG_Art
         if any(keyword in line for keyword in

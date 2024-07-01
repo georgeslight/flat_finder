@@ -357,15 +357,16 @@ def notify_user():
         for user in get_all_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
-            # apartments = fetch_flats()
+            # filtered_apartments = fetch_flats()
             filtered_apartments = filter_apartments(user_data, apartments)
             if 'message' not in filtered_apartments:
                 response = "Recommendations: \n"
                 for apt in filtered_apartments:
                     ai_recommendation = recommend_wg(user_data, apt)
-                    response = f"Recommendations: {ai_recommendation}\n\n"
-                    bot.send_message(int(user_data.id), response)
-                    logging.info(f"Sending recommendations to user: {user_data.id}")
+                    if ai_recommendation:
+                        response = f"Recommendations: {ai_recommendation}\n\n"
+                        bot.send_message(int(user_data.id), response)
+                        logging.info(f"Sending recommendations to user: {user_data.id}")
             else:
                 logging.info(f"No new apartments found for user: {user_data.id}")
                 # response = "No new apartments found." #
@@ -409,7 +410,7 @@ def handle_message(message):
 
 
 def schedule_task():
-    schedule.every(10).minutes.do(notify_user)
+    schedule.every(1).minutes.do(notify_user)
     while True:
         schedule.run_pending()
         time.sleep(1)

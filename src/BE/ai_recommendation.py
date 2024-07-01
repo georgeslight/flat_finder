@@ -32,11 +32,23 @@ def recommend_wg(user: User, apartment):
     str_apartment_details = "details: " + ", ".join(apartment_details)
 
     apartment_info = f"Apartment: \n\n{str_apartment_features} \n\n{str_apartment_details}"
-
     # First API call to check if the user and the apartment are a good fit
     ko_prompt_content = (
         f"Please check if the following user is interested in this shared apartment and if they fit the "
-        f"description of the apartment. If they are a good fit, then return 'True', else return 'False'."
+        f"criteria. The user is looking for a shared apartment in Berlin. They are a smoker = {user.smoker},"
+        f" the user speaks {user.languages}, and is looking for a shared apartment that "
+        f"fits the following criteria: {str_user_bio}. Please check if the user is interested in the following "
+        f"apartment and if they are a good fit. The apartment has the following features: {str_apartment_features} "
+        f"and details: {str_apartment_details}.the Check should only consider Deals breakers. Don't consider the price"
+        f", location, or any other details. If they are a good fit, then return 'True', else return 'False'."
+        f"only return 'False' if the user has a deal breaker. consider that the apartment already been filtered by the "
+        f"user preferences like the rent and the room size. Example when to return False: User is allergic to cats and "
+        f"the apartment has multiple cats, User is a smoker and the apartment is non-smoking, User is a vegan and the "
+        f"apartment is not vegan-friendly, User wants a very quite place and the apartment is very loud, etc."
+        f"Examples for when not to return False: User is a smoker and the apartment allows smoking on the balcony, User "
+        f"wants a pet-friendly apartment and you dont find any information about pets in the apartment, User is a vegan "
+        f"and you dont find any information about the apartment being vegan-friendly, User is a night owl and you dont "
+        f"find any information about the apartment being quite, etc. \n\n"
         f"Your should be only 'TRUE' or 'FALSE'. if 'FALSE' include the reasons why very briefly \n\n"
         f"{str_user_bio}\n{apartment_info}"
     )
