@@ -162,7 +162,7 @@ def submit_tool_outputs(thread_id, run_id, tools_to_call):
 
 def fetch_flats():
     # return scrape_wg_gesucht(count)
-    base_path = os.path.dirname(os.path.abspath(__name__))
+    base_path = os.path.abspath(os.getcwd())
     file_path = os.path.join(base_path, 'output.json')
 
     try:

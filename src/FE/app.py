@@ -353,10 +353,11 @@ def update_list(message, field, call):
 # handle main use_case
 def notify_user():
     try:
+        apartments = scrape_wg_gesucht(5)
         for user in get_all_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
-            apartments = scrape_wg_gesucht(5)
+            # apartments = fetch_flats()
             filtered_apartments = filter_apartments(user_data, apartments)
             if 'message' not in filtered_apartments:
                 response = "Recommendations: \n"
