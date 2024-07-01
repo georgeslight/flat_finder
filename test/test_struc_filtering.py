@@ -61,16 +61,6 @@ class TestApartmentFiltering(unittest.TestCase):
     def test_filter_apartments_user1(self):
         user = turn_user_to_user_model(self.user1)
         filtered_apartments = filter_apartments(user, self.apartments)
-
-        # Ensure the types are consistent for comparison
-        for apt in filtered_apartments['fitting_apartments']:
-            apt['Gesuchte_Alter'] = [str(age) for age in apt['Gesuchte_Alter']]
-            apt['Mitbewohner_Alter'] = [str(age) for age in apt['Mitbewohner_Alter']]
-
-        for apt in self.fitting_apartments['fitting_apartments']:
-            apt['Gesuchte_Alter'] = [str(age) for age in apt['Gesuchte_Alter']]
-            apt['Mitbewohner_Alter'] = [str(age) for age in apt['Mitbewohner_Alter']]
-
         print("Expected output:", json.dumps(self.fitting_apartments, indent=2, ensure_ascii=False))
         print("Filtered apartments for user 1:", json.dumps(filtered_apartments, indent=2, ensure_ascii=False))
         self.assertEqual(filtered_apartments, self.fitting_apartments)

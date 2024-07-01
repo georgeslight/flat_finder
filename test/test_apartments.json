@@ -40,7 +40,7 @@
             "Studenten-WG",
             "keine Zweck-WG"
         ],
-        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Geschlecht": "gender_irrelevant",
         "Gesuchte_Alter": [
             "0",
             "99"
@@ -93,7 +93,7 @@
             "Business-WG",
             "Internationals welcome"
         ],
-        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Geschlecht": "gender_irrelevant",
         "Gesuchte_Alter": [
             "0",
             "99"
@@ -142,7 +142,7 @@
         "WG_Art": [
             "Berufstätigen-WG"
         ],
-        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Geschlecht": "gender_irrelevant",
         "Gesuchte_Alter": [
             "24",
             "35"
@@ -179,13 +179,13 @@
         ],
         "Wohnungsgröße": null,
         "WG_groesse": null,
-        "Mitbewohnern_Geschlecht": "Egal",
+        "Mitbewohnern_Geschlecht": "gender_irrelevant",
         "WG_Art": [
             "Studenten-WG",
             "Berufstätigen-WG",
             "gemischte WG"
         ],
-        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Geschlecht": "gender_irrelevant",
         "Gesuchte_Alter": [
             "0",
             "99"
@@ -282,12 +282,12 @@
         ],
         "Wohnungsgröße": null,
         "WG_groesse": "3",
-        "Mitbewohnern_Geschlecht": "Egal",
+        "Mitbewohnern_Geschlecht": "gender_irrelevant",
         "WG_Art": [
             "Studenten-WG",
             "Berufstätigen-WG"
         ],
-        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Geschlecht": "gender_irrelevant",
         "Gesuchte_Alter": [
             "20",
             "35"
@@ -333,12 +333,12 @@
         ],
         "Wohnungsgröße": null,
         "WG_groesse": "3",
-        "Mitbewohnern_Geschlecht": "Egal",
+        "Mitbewohnern_Geschlecht": "gender_irrelevant",
         "WG_Art": [
             "Studenten-WG",
             "Berufstätigen-WG"
         ],
-        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Geschlecht": "gender_irrelevant",
         "Gesuchte_Alter": [
             "20",
             "35"
@@ -385,19 +385,19 @@
         ],
         "Wohnungsgröße": null,
         "WG_groesse": "3",
-        "Mitbewohnern_Geschlecht": "Egal",
+        "Mitbewohnern_Geschlecht": "gender_irrelevant",
         "WG_Art": [
             "Studenten-WG",
             "Berufstätigen-WG"
         ],
-        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Geschlecht": "gender_irrelevant",
         "Gesuchte_Alter": [
-            "20",
-            "35"
+            20,
+            35
         ],
         "Mitbewohner_Alter": [
-            "20",
-            "30"
+            20,
+            30
         ],
         "smoking": true
     }
