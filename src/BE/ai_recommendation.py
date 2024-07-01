@@ -72,7 +72,7 @@ def recommend_wg(user: User, apartment):
             f"description: 'you should apply for this apartment because 1. reason 2. reason 3. reason'. your response "
             f"should include the recommendation. consider that the apartment already been filtered by the user "
             f"preferences. only consider the data under 'tabs_contents', 'features' in the apartment. and "
-            f"'additional_info' in User. your response most contain max 1500 chars!!!. \n\n"
+            f"'additional_info' in User. your response most contain max 1000 chars!!!. \n\n"
             f"User: {str_user_bio}\nApartment: {apartment_info}"
         )
 
@@ -85,9 +85,37 @@ def recommend_wg(user: User, apartment):
             model="gpt-3.5-turbo",
             messages=recommend_messages
         )
+
+        # Third API call to generate the application
+        application_prompt_content = (
+            f"Here are the user Bio and the Information of an shared apartment. I need you to write an example "
+            f"Application for the user. Make sure the Text is no longer then 1000 chars. The Application should be "
+            f"written in the name of the user. The Application should include the following information: 1. Introduce "
+            f"yourself and your interests. 2. Why you are interested in this apartment. 3. Why you are a good fit for "
+            f"this apartment. 4. extra information about you that you think is important. 5. consideration that the "
+            f"apartments owner wants to know about (you can find this in the 'tabs_contents') 6. closing sentence "
+            f"with user contact information (if you find any). your text mus be max 1000 chars. if you find any "
+            f"information that you think is important to include in the application, but if you don't find it in the "
+            f"apartment or the user bio, you should never ever make it up!!!. PS: the application is one Test without "
+            f"numbered points or bullet points  \n\n"
+            f" \n\n"
+            f"User: {str(user)}\nApartment: {str(apartment)}"
+        )
+
+        application_messages = [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": application_prompt_content}
+        ]
+
+        application_response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=application_messages
+        )
+
         recommend_result = (f"\n Bezirk: {apartment.get('Ort')} \n Zimmergröße: {apartment.get('Zimmergröße')} \n "
                             f"Gesamtmiete: {apartment.get('Gesamtmiete')}\n\n")
         recommend_result += recommend_response.choices[0].message.content.strip()
+        recommend_result += f"\n\n Example Application: \n {application_response.choices[0].message.content.strip()}"
         recommend_result += f"\n link: {apartment.get('Link')}"
 
         return recommend_result

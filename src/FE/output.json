@@ -1,67 +1,122 @@
 [
     {
         "ID": 1,
-        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Charlottenburg.11077426.html",
-        "Ort": "Charlottenburg",
-        "Straße": "Knobelsdorffstr. 79",
-        "PLZ": "14059",
+        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Berlin.11065262.html",
+        "Ort": "Berlin",
+        "Straße": "Steinheilpfad 1",
+        "PLZ": "12209",
         "Zimmergröße": "14m²",
-        "Gesamtmiete": "630€",
-        "Miete": "550€",
-        "Nebenkosten": "80€",
+        "Gesamtmiete": "1125€",
+        "Miete": "821€",
+        "Nebenkosten": "304€",
         "Sonstige Kosten": "n.a.",
-        "Kaution": "n.a.",
+        "Kaution": "2400€",
         "Ablösevereinbarung": "n.a.",
-        "frei ab": "01.08.2024",
+        "frei ab": "10.07.2024",
         "frei bis": null,
-        "Anzeige Datum": "2024-07-01 15:45:41",
+        "Anzeige Datum": "2024-07-01 16:08:52",
         "features": [
-            "Altbau",
-            "EG",
+            "Verbrauchsausweis, V: 1319kW h/(m²a), Gas, Baujahr 2007, Energieeffizienzklasse E",
+            "Einfamilienhaus",
+            "4. OG",
+            "teilmöbliert",
             "Badewanne, Dusche",
-            "WLAN",
-            "Laminat",
-            "5 Minuten zu Fuß entfernt",
-            "Waschmaschine, Spülmaschine, Terrasse, Garten, Fahrradkeller"
+            "DSL, WLAN schneller als 100 Mbit/s",
+            "Parkett, Dielen",
+            "Gasheizung",
+            "Waschmaschine, Spülmaschine, Terrasse, Balkon, Garten, Keller, Fahrradkeller"
         ],
         "tab_contents": [
-            "Hallo zusammen, ich heiße Johannes, bin 37 Jahre alt und suche ab August eine neue Mitbewohnerin oder einen Mitbewohner. Ich bin berufstätig und bin in meiner Freizeit gerne mit Freunden unterwegs, im Fitnessstudio oder genieße einfach mal meine Ruhe. Ansonsten koche ich auch ganz gerne mal, als ursprünglich gelernter Koch. Die wirklich große Wohnung mit viel Platz (4 Zimmer), in der wir nur zu zweit wohnen, ist 84 m² groß und das zu beziehende, unmöblierte Zimmer 14 m². Natürlich stehen Wohnzimmer und Terrasse / Garten für alle zur Verfügung . Die Wohnung ist sehr zentral gelegen mit der Nähe zur Ring-Bahn und U-Bahnlinie 2. Supermärkte sind in der Nähe vorhanden. Wir sollten uns gut verstehen und eine gute Kommunikation pflegen. Gerne kann man auch mal was gemeinsam unternehmen oder kochen, ist aber kein Muss. Jeder sollte auch die Möglichkeiten haben seine Ruhe genießen zu können. Ich bin kein großer Freund von großen Partys in der WG. Sauberkeit wird bei mir großgeschrieben und wir sollten uns in der Hinsicht einig sein. Ein Verständnis über einen moderaten Energieverbrauch sollte ebenfalls vorhanden sein. Dich sollte nicht stören, dass gelegentlich meine 2 Kinder (7 und 9 Jahre) kommen und auch mal bei mir nächtigen. Die sind aber recht entspannt. Ich freue mich Dich kennenzulernen:) Beste Grüße Johannes"
+            "Opportunity to live in a new shared community \"WG\". This newly renovated house offers 8 private individual bedrooms, 3 large bathrooms, a guest toilet and a host of community rooms. There is a very large kitchen with breakfast nook on the ground floor along with a large living room and separate dining room to be shared within the community. One enters the house to a large entrance area with ample space for coats and shoes. The entire ground floor is shared space for the community including a large sunny terrace, large garden, an outdoor covered party room with wood grill and table. Private bedroom with bed frame and mattress, clothes closet, ceiling lamps and curtains. Community space of 179 sqm including separate kitchen with breakfast nook, dining room, living room, terrace, coat closet, balcony and garden First Floor 4 individual bedrooms ranging in size with large bathroom with both shower and bathtub. Total rent on this floor based on room size and ranges from 787€ - 1.125€ Upper Floor 2 individual bedrooms with large bathroom with shower, a kitchenette and balcony. Total rent ranges from 1.272€ - 1.432€ Basement 2 connected rooms with bathroom, sauna, laundry room and workroom. Separate entrance to garden. 35,3 qm with total rent of 1.247€.",
+            "The Berlin district of Lichterfelde has been one of the most popular residential areas in the metropolis for decades. Surrounded by prestigious old buildings, detached houses and city villas and nestled in green belts and wooded areas, the district has a perfect infrastructure and transport links. All stores for daily needs are within walking distance. The S-Bahn Osdorfer Str. and Lichterfelde-Ost can be reached via bus lines 112, 284 and 380, and Lichterfelde-Ost, is only ca. 1 km from the villa where you will find the district center with restaurants, international gastronomy and the LIO shopping center.",
+            "We are looking for students and young professionals who are interested in living in a community with very large space to share. NO FAMILIES!",
+            "Rent includes electricity, internet, Gardner and community area cleaning services."
         ],
-        "Wohnungsgröße": "84",
-        "WG_groesse": "2",
-        "Mitbewohnern_Geschlecht": "Male",
+        "Wohnungsgröße": "179",
+        "WG_groesse": null,
+        "Mitbewohnern_Geschlecht": "Egal",
         "WG_Art": [
+            "Studenten-WG",
             "Berufstätigen-WG",
-            "keine Zweck-WG",
             "gemischte WG"
         ],
         "Gesuchte_Geschlecht": "Egal",
         "Gesuchte_Alter": [
-            "0",
-            "99"
+            "18",
+            "25"
         ],
         "Mitbewohner_Alter": [
-            "0",
-            "99"
+            "18",
+            "25"
         ],
         "smoking": true
     },
     {
         "ID": 2,
-        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Friedrichshain.10896802.html",
+        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Karlshorst.3217757.html",
+        "Ort": "Karlshorst",
+        "Straße": "Dönhoffstr. 9",
+        "PLZ": "10318",
+        "Zimmergröße": "20m²",
+        "Gesamtmiete": "550€",
+        "Miete": "350€",
+        "Nebenkosten": "200€",
+        "Sonstige Kosten": "n.a.",
+        "Kaution": "550€",
+        "Ablösevereinbarung": "n.a.",
+        "frei ab": "02.09.2024",
+        "frei bis": "31.03.2025",
+        "Anzeige Datum": "2024-07-01 16:08:59",
+        "features": [
+            "Gas, Baujahr 1906",
+            "Altbau",
+            "2. OG",
+            "möbliert",
+            "Dusche",
+            "DSL, WLAN schneller als 100 Mbit/s",
+            "Teppich, Dielen",
+            "Zentralheizung",
+            "gute Parkmöglichkeiten",
+            "6 Minuten zu Fuß entfernt",
+            "Waschmaschine"
+        ],
+        "tab_contents": [
+            "Hiring out one big and sunny room from two month until one year, for very busy roommate gladly from abroad. In two rooms at the end of the flat live a Russian family with two children, 5 + 8 Otherwise Karlshorst is a quiet and green district public transport are close by -> 10 min. to Friedrichshain, -> 17min. to Alexanderplatz Please attach a foto and write me !"
+        ],
+        "Wohnungsgröße": "100",
+        "WG_groesse": "4",
+        "Mitbewohnern_Geschlecht": "Female",
+        "WG_Art": [
+            "Berufstätigen-WG",
+            "gemischte WG"
+        ],
+        "Gesuchte_Geschlecht": "Egal",
+        "Gesuchte_Alter": [
+            "20",
+            "60"
+        ],
+        "Mitbewohner_Alter": [
+            "5",
+            "58"
+        ],
+        "smoking": true
+    },
+    {
+        "ID": 3,
+        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Friedrichshain.10748637.html",
         "Ort": "Friedrichshain",
         "Straße": "Frankfurter Allee",
         "PLZ": "10247",
-        "Zimmergröße": "22m²",
-        "Gesamtmiete": "380€",
+        "Zimmergröße": "18m²",
+        "Gesamtmiete": "370€",
         "Miete": "350€",
-        "Nebenkosten": "30€",
+        "Nebenkosten": "20€",
         "Sonstige Kosten": "n.a.",
         "Kaution": "n.a.",
         "Ablösevereinbarung": "n.a.",
         "frei ab": "01.07.2024",
         "frei bis": "18.07.2024",
-        "Anzeige Datum": "2024-07-01 15:45:49",
+        "Anzeige Datum": "2024-07-01 16:09:07",
         "features": [
             "Altbau",
             "EG",
@@ -72,7 +127,7 @@
             "Waschmaschine, Spülmaschine"
         ],
         "tab_contents": [
-            "Hey, ich würde gern mein Wohnzimmer untervermieten. Deshalb auch wirklich nur für den Übergang / kurze Zeit. Ich nutze es kaum, du hättest es fast für dich. Lage ist Top, direkt an der U-Bahn (U5) 7 min bis Alexanderplatz - eine Station zu Ringbahn - 10 min bis Warschauer Strasse. Anmeldung ist leider nicht möglich. Meldet euch einfach mal."
+            "Hallo an alle. Ich biete hier ein Zimmer für den Übergang. Falls ihr was zur Überbrückung sucht oder für kurze Zeit nach Berlin kommen wollt. Anmeldung ist nicht möglich. Für die Einzelheiten meldet euch bitte mit einer Bewerbungsmail. Fotos usw habe ich dann natürlich auch."
         ],
         "Wohnungsgröße": null,
         "WG_groesse": "2",
@@ -94,143 +149,108 @@
         "smoking": true
     },
     {
-        "ID": 3,
-        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Pankow.11081396.html",
-        "Ort": "Pankow",
-        "Straße": "Retzbacher Weg 69",
-        "PLZ": "13189",
-        "Zimmergröße": "16m²",
-        "Gesamtmiete": "500€",
-        "Miete": "500€",
-        "Nebenkosten": "n.a.",
-        "Sonstige Kosten": "n.a.",
-        "Kaution": "490€",
-        "Ablösevereinbarung": "n.a.",
-        "frei ab": "15.07.2024",
-        "frei bis": "15.09.2024",
-        "Anzeige Datum": "2024-07-01 15:46:00",
-        "features": [
-            "1. OG",
-            "möbliert",
-            "Badewanne, Dusche",
-            "WLAN",
-            "Teppich, Dielen",
-            "Ökostrom",
-            "Waschmaschine, Spülmaschine, Balkon"
-        ],
-        "tab_contents": [
-            "Hey! Ich mache diesen Sommer ein Praktikum außerhalb von Berlin und vermiete daher mein wunderschönes WG-Zimmer in Pankow. Ich lasse alle Möbel da und räume dir in meinen Schränken Platz für deine Klamotten etc. frei :D Wie du sehen kannst, habe ich relativ viele Pflanzen im Zimmer. Falls du Pflanzen genauso liebst wie ich, würde ich sie gerne alle im Zimmer lassen und in deine Obhut geben. Das Zimmer hat eine große Fensterfront und einen gemütlichen Balkon mit dran. (Das schönste Zimmer in der Wohnung!) Wenn du Interesse hast, kannst du gerne vorbei kommen und es dir anschauen. :D",
-            "Es befinden sich hier in direkter Umgebung 2 Bushaltestellen von denen aus du schnell zum S- und U-Bahnhof Pankow kommst. Pankow ist allgemein sehr gut angebunden und du bist in 15 Minuten in Prenzlauerberg (Szeneviertel). Mit der U-Bahn bist du auch fix in Mitte oder mit der S-Bahn schnell am Ring, sodass du überall gut hin kommst. Es gibt mehrere Einkaufsmöglichkeiten in der Nähe und einen großen Sportplatz.",
-            "Du wohnst mit Robin zusammen, der sich sehr für die Umwelt einsetzt, super kommunikativ und aufgeschlossen ist. Er ist immer offen für einen entspannten Kochabend, eine Spätitour oder beim Stampfen im Club dabei."
-        ],
-        "Wohnungsgröße": null,
-        "WG_groesse": "2",
-        "Mitbewohnern_Geschlecht": "Male",
-        "WG_Art": [
-            "gemischte WG"
-        ],
-        "Gesuchte_Geschlecht": "Egal",
-        "Gesuchte_Alter": [
-            "0",
-            "99"
-        ],
-        "Mitbewohner_Alter": [
-            "27",
-            "29"
-        ],
-        "smoking": true
-    },
-    {
         "ID": 4,
-        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Berlin.11036761.html",
-        "Ort": "Berlin",
-        "Straße": "Frankfurter Allee 45",
-        "PLZ": "10247",
-        "Zimmergröße": "20m²",
-        "Gesamtmiete": "300€",
-        "Miete": "300€",
-        "Nebenkosten": "n.a.",
-        "Sonstige Kosten": "n.a.",
-        "Kaution": "n.a.",
-        "Ablösevereinbarung": "n.a.",
-        "frei ab": "01.07.2024",
-        "frei bis": "17.07.2024",
-        "Anzeige Datum": "2024-07-01 15:46:08",
+        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Wedding.11087284.html",
+        "Ort": "Wedding",
+        "Straße": "Schererstr.",
+        "PLZ": "13347",
+        "Zimmergröße": "13m²",
+        "Gesamtmiete": "650€",
+        "Miete": "500€",
+        "Nebenkosten": "150€",
+        "Sonstige Kosten": "0€",
+        "Kaution": "500€",
+        "Ablösevereinbarung": "0€",
+        "frei ab": "27.07.2024",
+        "frei bis": "27.08.2024",
+        "Anzeige Datum": "2024-07-01 16:09:20",
         "features": [
-            "Altbau",
-            "1. OG",
+            "4. OG",
             "möbliert",
             "Badewanne, Dusche",
             "WLAN",
-            "1 Minute zu Fuß entfernt",
-            "Waschmaschine"
+            "Parkett",
+            "schlechte Parkmöglichkeiten",
+            "5 Minuten zu Fuß entfernt",
+            "Waschmaschine, Spülmaschine, Balkon, Fahrradkeller"
         ],
         "tab_contents": [
-            "Hey, ich muß kurzfristig für ein paar Wochen verreisen. Wer sucht was für ein paar Wochen ab sofort? Meldet euch einfach."
+            "In diesem charmant eingerichteten Zimmer sorgen warme Farben für eine gemütliche Atmosphäre. Durch das große Fenster strömt Tageslicht, das den Raum erhellt und eine einladende Stimmung schafft. Der Balkon zur Südseite bietet einen idyllischen Rückzugsort mit Blick aufs Grüne!",
+            "Du wirst im Wedding wohnen, einem lebendigen und vielseitigen Viertel. Direkt nebenan gibt es coole Bars wie die Henrietta und das KikiSol. Für einen Kaffee kannst du zum Cafe Bades, ins Mars oder ins Oeuf gehen. Auch in der Nähe sind der Humboldthain, der Schillerpark und die Rehberge, perfekt für Spaziergänge und Erholung im Grünen. Die U6 und der S-Bahnhof Wedding sind nur 5 Minuten zu Fuß entfernt, und die U9 ist ebenfalls in nur 5 Minuten erreichbar. Falls du Tipps oder Ratschläge brauchst, helfen wir gerne aus!",
+            "Die Wohnung verfügt über eine große Wohnküche mit französischem Balkon, der den Kern der Wohnung bildet. Du wirst mit Jonny zusammenwohnen, einem guten Freund von mir, mit dem ich damals während meines Studiums auch schon zusammen gewohnt habe. Er dreht während seiner Zeit hier in Berlin einen kleinen Spielfilm. Instagram: @jonny_b_goody",
+            "Fotos vom Wohnzimmer / Bad folgen ... :D !"
         ],
-        "Wohnungsgröße": null,
+        "Wohnungsgröße": "80",
         "WG_groesse": "2",
         "Mitbewohnern_Geschlecht": "Male",
         "WG_Art": [
-            "Studenten-WG",
+            "Berufstätigen-WG",
             "keine Zweck-WG"
         ],
         "Gesuchte_Geschlecht": "Egal",
         "Gesuchte_Alter": [
-            "0",
+            "21",
             "99"
         ],
         "Mitbewohner_Alter": [
-            "0",
-            "99"
+            "28",
+            "28"
         ],
         "smoking": true
     },
     {
         "ID": 5,
-        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Prenzlauer-Berg.7218829.html",
-        "Ort": "Prenzlauer Berg",
-        "Straße": "Beim Kollwitzplatz 12000",
-        "PLZ": "10405",
-        "Zimmergröße": "13m²",
-        "Gesamtmiete": "778€",
-        "Miete": "657€",
-        "Nebenkosten": "121€",
+        "Link": "https://www.wg-gesucht.de/wg-zimmer-in-Berlin-Altglienicke.4808416.html",
+        "Ort": "Altglienicke",
+        "Straße": "Ortolfstr. 128",
+        "PLZ": "12524",
+        "Zimmergröße": "23m²",
+        "Gesamtmiete": "600€",
+        "Miete": "480€",
+        "Nebenkosten": "120€",
         "Sonstige Kosten": "n.a.",
-        "Kaution": "800€",
+        "Kaution": "1200€",
         "Ablösevereinbarung": "n.a.",
-        "frei ab": "01.07.2024",
-        "frei bis": "31.07.2024",
-        "Anzeige Datum": "2024-07-01 15:46:15",
+        "frei ab": "03.07.2024",
+        "frei bis": null,
+        "Anzeige Datum": "2024-07-01 16:09:34",
         "features": [
+            "Verbrauchsausweis, V: 108kW h/(m²a), Gas, Baujahr 1997, Energieeffizienzklasse A+",
+            "Einfamilienhaus",
+            "1. OG",
             "möbliert",
             "Badewanne",
             "DSL, Flatrate, WLAN 26-50 Mbit/s",
+            "Teppich, Fliesen",
+            "Ökostrom",
             "Gasheizung",
-            "Bewohnerparken",
-            "2 Minuten zu Fuß entfernt",
-            "Waschmaschine, Spülmaschine, Fahrradkeller"
+            "gute Parkmöglichkeiten",
+            "3 Minuten zu Fuß entfernt",
+            "Spülmaschine, Terrasse, Balkon, Garten, Gartenmitbenutzung, Haustiere erlaubt"
         ],
         "tab_contents": [
-            "I (female) am looking for friendly (female) people/commuter. Please answer my questions below... thanks! I am always happy to host guests from all over the world - to spent some time with occasionally, get in exchange and maybe go out for dinner or cook together from time to time. I used to travel a lot by myself a long time ago. I am renting out my guestroom for a short period of time to females only (sorry guys), perfect for your start or short stay in Berlin. Everything is prepared for you, so you can easily arrive with your suitcase only. Of course you can use the bathroom and kitchen too. The room offers you a very quiet and relaxing sleep. And the birds will wake you up in the morning or you use the shutter to sleep in completely darkness and not getting \"disturb\" by the birds singing in the morning ;) The flat, the house and back yard are non smoking areas. Perfect located in the heart of East Berlin close to beautiful Kollwitzplatz, just two stops to Alexanderplatz by subway U2 (Senefelderplatz) and Tram M2 (Knaackstrasse). Surrounded by plenty of cafes, restaurant, art and culture, international people and co-working places. You will find wonderful markets with fresh food in front of the door, twice a week. Additionally organic food stores, Rewe (open until midnight), Netto, drugstores... This offer is for a working female with a daily routine outside the house, because I am working from home already. I am happy to have a tea and chat with you in the evening, when you are coming back to the flat after your daily work etc. Also I am happy to provide you with information about Berlin etc. if needed. I am renting out my guestroom on short time base to one person only. So additional overnight guests are not possible. I also ask you kindly to meet your friends outside of the house in one of the plenty cafes around. This is not a typical WG situation, I am just renting out my guestroom from time to time. Also a cute tiny dog is living here too, so please only apply if you are a dog lover too :)) I am looking forward to hearing from you with some information like * your age, * where are you from, * why you are coming to Berlin (what kind of work/ internship etc.), * how long do you intend to stay in Berlin (and how long in my guestroom), * what else do you like to explore in Berlin, some of your interests, * sent me dates when you are available for a personal meeting (no online interviews) * a picture for the first Impression would be wonderful :) Please do not sent me Facebook or Insta links, I do not use facebook or Insta The pics of the room are not up to date, I prefer a personal meeting anyway :) Please write the codeword \"dog\" in your application :) Best A. PPS I will answer personal requests only, for time reasons I can not answer to copy and paste requests, thank you for your understanding ------------------------------------------------------------------------------------------------------------------------------------------------------ Daten sind etwas flexibel, gerne auch Pendlerin Bitte meine Anzeige aufmerksam lesen und meine Fragen beantworten, danke :) Ich freue mich über etwas Abwechslung und nette Gäste aus aller Welt! Um sich mal auszutauschen, gelegentlich etwas gemeinsam essen zu gehen, zu kochen etc. Deshalb mein Angebot auf kurze Zeit: Perfekt zum Einstieg oder Kurzaufenthalt in Berlin... an berufstaetige Frau mit geregeltem Tagesablauf außerhalb der Wohnung zu vermieten. Ein sehr ruhiges Zimmer mit Bett und Kleiderschrank in super Lage beim schönen Kollwitzplatz. Küche und Bad selbstverständlich zur Mitbenutzung. Entweder du lässt dich morgens von den singenden Vögeln wecken, oder du benutzt die Aussenjalousie, die das Zimmer komplett abschirmt :) Unschlagbar direkt umgeben von vielen wunderbaren Cafes, Restaurants, Kino und Kultur, Co-working Cafes... alles was das Herz begehrt. Zweimal in der Woche frisches Essen vom schoenen Markt auf dem Kollwitzplatz, den groeßten Bioladen LPG um die Ecke, div. Lebensmittellaeden wie Rewe, Netto bis Edeka und diese bis spaet nachts geoeffnet... Optimale Verkehrsanbindung, die U2 Senefelderplatz sowie die Tram M2 Knaackstraße, in 5 Minuten bist du am Alex, also super zentral. Das Zimmer liegt sehr ruhig zum Innenhof und ist moebliert mit einem gemuetlichen Bett mit Bettdecke und Bettzeug, Sessel, Schreibtisch und einem Wandschrank fuer deine Kleidung. Bettdecke, Bezuege und Handtücher sind vorhanden. So kannst du entspannt mit deinem Koffer ankommen, fuer den Rest ist gesorgt. Abschließend noch, die Wohnung ist ein Nichtraucherbereich, ebenso der Hinterhof (wegen der Kinder im Haus und dem Sandkasten dort). Da ich hier nur mein Gästezimmer von Zeit zu Zeit an eine freundliche weibliche Einzelperson vermiete, handelt es sich nicht um eine typische WG. Deshalb sind weitere Gaeste oder Besucher von dir innerhalb der Wohnung leider nicht moeglich. Dafuer gibt es jede Menge wunderschoene Cafes in Hülle und Fülle unmittelbar vor der Tuer zum Treffen und Verabreden mit Freunden, dazu unzählige Hostels zum Übernachten für Freunde. Hier lebt auch ein kleiner süßer Hund mit mir, deshalb bitte nur bewerben, wenn du auch Hunde magst :)) Preis inkl. Bettwaesche, Handtuecher und aller Nebenkosten (Strom, Heizung, W-LAN, GEZ). Ich freue mich von dir zu hoeren mit ein paar Infos zu dir, sehr gene mit Profilfoto für den ersten Eindruck, wer mir schreibt :), * wer du bist, Alter und woher * was du in Berlin machst und arbeitest, * von wann bis wann du gerne bleiben moechtest (in meinem Gästezimmer und in Berlin) * Terminvorschläge für ein persönliches Kennenlernen (keine online Interviews) Bitte sende mir keinen Facebook Link, ich nutze keine Facebook. Ich freue mich von dir zu hoeren! Beste Grüße PS die Fotos sind nicht ganz aktuell von dem Zimmer. Ich bevorzuge sowieso ein persönliches Kennenlernen vorab :) PPS ich beantworte nur noch persönliche Anfragen aus Zeitgründen"
+            "Sehr helles, ruhiges Zimmer im 1. OG. Das Zimmer ist möbliert mit: Doppelbett (140x90), 3-türiger Kleiderschrank, Schrankwand, Nachttisch, Bürostuhl, Tisch. Der Boden ist mit Teppichboden ausgelegt. Das Zimmer hat einen Zugang zum Balkon, der dir zur Verfügung steht. Der Balkon ist zum Südwesten ausgerichtet, mit Blick auf den Garten. Das Bad, welches sich auch im OG befindet, wird nur von 2 Personen genutzt. Es gibt noch ein zweites Bad im UG. Im EG befindet sich noch ein zweites WC und die Küche zur gemeinsamen Nutzung. Unter BVG.de oder VBB.de könnt ihr schauen, wie lange ihr mit den Öffentlichen Verkehrsmitteln braucht. http://www.bvg.de/ Bitte schickt uns keine Standarttexte, sondern beantwortet uns bitte ein paar einfache Fragen!!!! Schreibt uns bitte etwas über eure Person: - wie alt ihr seid, - was ihr so macht, - was ihr für Hobby´s habt, - ob ihr WG-Erfahung habt, - wie lange ihr bleiben möchtet (wir suchen für mind. 1 Jahr), - wie lange ihr von hier zur Uni oder Arbeitsstelle fahrt und - wie ihr das Zimmer finanzieren wollt. Überlegt euch bitte, ob ihr wirklich so weit an den Stadtrand ziehen wollt. Wer sich die Mühe nicht machen mag, kann leider von uns nicht berücksichtigt werden. Bitte habt Verständnis dafür.",
+            "Altglienicke liegt im ruhigen, grünen Südosten von Berlin (Stadtrand). Einfamilienhaus in gepflegter Wohngegend. Gartenmitbenutzung. Nahe Wirtschafts- und Wissenschaftsstandort Adlershof, Universität Adlershof und dem Flughafen. Das Strandbad Grünau erreichen Sie in 20 min/Fahrrad, sehr gute Einkaufsmöglichkeiten in der Nähe sowie sehr gute Bus- u. Bahnverbindung nach Adlershof, Rudow, Schönefeld. Mit öffentl. Verkehrsmitteln S/U/Bus alle 10 min, bis Zoo, Alex, 40 min. Mit dem Auto: 3 min bis zur Autobahnauffahrt Schönefeld-Nord, bis Zoo u. Alex ca. 25 min. Parkplätze gibt es immer vor der Tür, Ärzte sind fußläufig in 8 min zu erreichen. Einkaufsmöglichkeiten findet ihr reichlich, Netto 2 min, Edeka, 8 min, Aldi 9 min zu Fuß, Der 260er Bus fährt alle 10 min zum S-Bhf. Adlershof oder zur U-7 nach Rudow",
+            "Wir sind keine Zweck-WG, „kleben“ aber auch nicht ständig aufeinander. Wenn sich Interessen (z. B. Kochen, Spieleabende, Wandern, Grillen, Tischtennis(platte-vorhanden) überschneiden, sitzen wir sehr gern zusammen, tauschen uns aus, helfen einander. Alles nach Lust und Laune. Ideal für Berufstätige, Studenten, u. a., die nicht gern allein leben. aber sich auch gern einmal zurück ziehen wollen. Geputzt wird von uns im wöchentlichen Wechsel. Wir legen Wert auf Sauberkeit! Der Garten wird ebenfalls gemeinsam in Ordnung gehalten. z. B. Rasen mähen, Hecke schneiden, Gießen... Gern kann auch ein eigendes Beet angelegt werden.",
+            "Eine Sauna ist im Keller des Hauses vorhanden und kann nach Absprache und gegen Extragebühr mitbenutzt werden. Mit uns lebt Henry, unser heiß geliebter Kater. Besichtigungstermine können mit Martina per Mail oder Telefon vereinbart werden. Falls Ihr die Anzeige bis hier hin gelesen habt, gebt bitte in der E-Mail das Losungswort \"Katze\" an. :-)"
         ],
-        "Wohnungsgröße": "70",
-        "WG_groesse": "2",
+        "Wohnungsgröße": null,
+        "WG_groesse": "3",
         "Mitbewohnern_Geschlecht": "Female",
         "WG_Art": [
             "Berufstätigen-WG",
             "keine Zweck-WG",
             "Internationals welcome"
         ],
-        "Gesuchte_Geschlecht": "F",
+        "Gesuchte_Geschlecht": "Egal",
         "Gesuchte_Alter": [
-            "25",
-            "99"
+            "23",
+            "98"
         ],
         "Mitbewohner_Alter": [
-            "40",
-            "50"
+            "38",
+            "58"
         ],
-        "smoking": false
+        "smoking": true
     }
 ]
