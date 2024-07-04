@@ -1,4 +1,6 @@
+import asyncio
 import datetime
+import json
 import logging
 import os
 import re
@@ -410,7 +412,8 @@ def handle_message(message):
 
 
 def schedule_task():
-    schedule.every(1).minutes.do(notify_user)
+    notify_user()
+    schedule.every(10).minutes.do(notify_user)
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -419,9 +422,8 @@ def schedule_task():
 def start_polling():
     while True:
         try:
-            bot.infinity_polling()
-        except Exception as e:
-            logging.error(f"Infinity polling error: {e}")
+            asyncio.run(bot.polling(non_stop=True, interval=1, timeout=0))
+        except:
             time.sleep(5)
 
 
