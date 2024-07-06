@@ -1,0 +1,13 @@
+openai~=1.10.0
+python-dotenv~=1.0.1
+fastapi~=0.110.3
+uvicorn~=0.25.0
+pydantic~=1.10.15
+requests~=2.32.3
+pyTelegramBotAPI==4.20.0
+telegram==0.0.1
+python-telegram-bot~=21.3
+schedule~=1.2.2
+selenium~=4.21.0
+webdriver-manager~=4.0.1
+pymongo~=4.7.3
