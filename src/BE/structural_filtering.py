@@ -29,6 +29,9 @@ def turn_user_to_user_model(user):
 
 
 def calculate_age(birthdate: datetime.date) -> int:
+    if birthdate is None:
+        logger.error("Birthdate is None. Cannot calculate age.")
+        return -1
     try:
         today = datetime.date.today()
         return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
