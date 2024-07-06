@@ -13,6 +13,7 @@ import schedule
 import telebot
 from dotenv import load_dotenv
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telegram.constants import ParseMode
 
 from src.BE.ai_recommendation import recommend_wg
 from src.BE.structural_filtering import filter_apartments
@@ -352,17 +353,35 @@ def update_list(message, field, call):
         profile_info(call)
 
 
+def fetch_json():
+    base_path = os.path.abspath(os.getcwd())
+    file_path = os.path.join(base_path, 'output.json')
+    logging.info(f"Fetching JSON from {file_path}")
+
+    try:
+        with open(file_path, 'r') as file:
+            flats_data = json.load(file)
+            logging.info("Successfully fetched JSON data.")
+            return flats_data
+    except FileNotFoundError:
+        logging.info(f"File {file_path} not found.")
+        return []
+    except json.decoder.JSONDecodeError:
+        logging.info(f"Error decoding JSON from file {file_path}.")
+        return []
+
+
 # handle main use_case
 def notify_user():
     try:
         apartments = scrape_wg_gesucht(5)
+        # apartments = fetch_json()  # only demo use
         for user in get_all_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
-            # filtered_apartments = fetch_flats()
             filtered_apartments = filter_apartments(user_data, apartments)
-            if 'message' not in filtered_apartments:
-                response = "Recommendations: \n"
+            # filtered_apartments = apartments
+            if filtered_apartments:
                 for apt in filtered_apartments:
                     ai_recommendation = recommend_wg(user_data, apt)
                     if ai_recommendation:
@@ -407,8 +426,20 @@ def handle_message(message):
     # Send request
     url = 'http://localhost:4000/chat'
     response = requests.post(url, json=params)
-    # Reply to the user with the response from AI
-    bot.send_message(message.chat.id, response.text)
+    text = escape_characters(response.text.replace('**', '*').replace('"', ''), '_>~`#+-=|{}.!')
+    text_list = text.split('\\n\\n')
+    for item in text_list:
+        bot.send_message(chat_id=message.chat.id, text=item.replace('\\n', '\\\n'), parse_mode=ParseMode.MARKDOWN_V2)
+
+
+def escape_characters(text, characters_to_escape):
+    escaped_text = ""
+    for char in text:
+        if char in characters_to_escape:
+            escaped_text += '\\' + char
+        else:
+            escaped_text += char
+    return escaped_text
 
 
 def schedule_task():
