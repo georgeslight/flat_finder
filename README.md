@@ -34,24 +34,26 @@
 
 1. **Download Telegram on your [Smart phone (IOS)](https://apps.apple.com/us/app/telegram-messenger/id686449807) or [Desktop (windows)](https://apps.microsoft.com/detail/9nztwsqntd0s?launch=true&mode=full&hl=en-gb&gl=de&ocid=bingwebsearch)**
 2. Create an account in Telegram.
-3. **setup your env. file to the flat finder Folder:**
+3. setup your **env. file** to the flat finder Folder:
 4. **Install the requirements:**
-  ```bash
-  pip install -r requirements.txt
-  ```
+      ```bash
+      pip install -r requirements.txt
+      ```
 5. **Run the Agent:**
-  ```bash
-    python src/BE/main.py
-  ```
-5. **Run the Telegram Bot:**
-  ```bash
-    python src/FE/app.py
-  ```
-6. **Start the conversation with the bot:**
-    - Search for the bot in Telegram with the name you have given in the env file.
-    - Start the conversation with the bot by typing /start.
-    - typ /profile to set up your profile and preferences.
-    - After setting the preferences, the bot will notify you with the recommendations.
+      ``` python
+        python src/BE/main.py
+      ```
+6. **Run the Telegram Bot:**
+      ``` python
+        python src/FE/app.py
+      ```
+6. **Start the conversation with the [FlatFinderHTWBot](https://t.me/FlatFinderHTWBot):**
+   1. Start a Chat with the bot using this [link](https://t.me/FlatFinderHTWBot).
+   2. Klick on the start button or send **/start**.
+   3. send **/profile** to set up your profile and preferences.
+
+### congrats you are ready to go!
+
 ---
 ## Experiments
 
