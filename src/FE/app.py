@@ -386,7 +386,6 @@ def notify_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
             filtered_apartments = filter_apartments(user_data, apartments)
-            # filtered_apartments = apartments
             if filtered_apartments:
                 for apt in filtered_apartments:
                     ai_recommendation = recommend_wg(user_data, apt)
@@ -433,9 +432,9 @@ def handle_message(message):
     url = 'http://localhost:4000/chat'
     response = requests.post(url, json=params)
     text = escape_characters(response.text.replace('**', '*').replace('"', ''), '_>~`#+-=|{}.!')
-    text_list = text.split('\\n\\n')
-    for item in text_list:
-        bot.send_message(chat_id=message.chat.id, text=item.replace('\\n', '\\\n'), parse_mode=ParseMode.MARKDOWN_V2)
+    # text_list = text.split('\\n\\n')
+    # for item in text_list:
+    bot.send_message(chat_id=message.chat.id, text=text.replace('\\n', '\\\n'), parse_mode=ParseMode.MARKDOWN_V2)
 
 
 def escape_characters(text, characters_to_escape):
@@ -449,8 +448,7 @@ def escape_characters(text, characters_to_escape):
 
 
 def schedule_task():
-    notify_user()
-    schedule.every(10).minutes.do(notify_user)
+    schedule.every(2).minutes.do(notify_user)
     while True:
         schedule.run_pending()
         time.sleep(1)
