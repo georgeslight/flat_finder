@@ -381,7 +381,7 @@ def fetch_json():
 def notify_user():
     try:
         apartments = scrape_wg_gesucht(5)
-        apartments = fetch_json()  # only demo use
+        # apartments = fetch_json()  # only demo use
         for user in get_all_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
@@ -433,9 +433,9 @@ def handle_message(message):
     url = 'http://localhost:4000/chat'
     response = requests.post(url, json=params)
     text = escape_characters(response.text.replace('**', '*').replace('"', ''), '_>~`#+-=|{}.!')
-    text_list = text.split('\\n\\n')
-    for item in text_list:
-        bot.send_message(chat_id=message.chat.id, text=item.replace('\\n', '\\\n'), parse_mode=ParseMode.MARKDOWN_V2)
+    # text_list = text.split('\\n\\n')
+    # for item in text_list:
+    bot.send_message(chat_id=message.chat.id, text=text.replace('\\n', '\\\n'), parse_mode=ParseMode.MARKDOWN_V2)
 
 
 def escape_characters(text, characters_to_escape):
