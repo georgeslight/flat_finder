@@ -300,6 +300,13 @@ def update_profile(message, field, call):
         if field == "date_of_birth":
             date_object = datetime.datetime.strptime(message.text, '%Y-%m-%d').date()
             setattr(user, field, date_object)
+        elif field == "email":
+            email = message.text
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                bot.send_message(message.chat.id, "Please provide a valid email address.")
+                profile_info(call)
+                return
+            setattr(user, field, email)
         else:
             new_value = message.text
             setattr(user, field, new_value)
