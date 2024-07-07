@@ -16,6 +16,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.constants import ParseMode
 
 from src.BE.ai_recommendation import recommend_wg
+from src.BE.structural_filtering import filter_apartments
 from src.BE.wg_gesucht_scraper import scrape_wg_gesucht
 # Importing from user_db.py
 from src.mongo.user_db import User, get_user, save_user, Address, update_user, get_all_user
