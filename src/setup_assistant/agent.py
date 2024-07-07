@@ -9,25 +9,56 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
 from src.BE.ai_recommendation import recommend_wg
-from src.BE.structural_filtering import filter_apartments
 from src.mongo.user_db import handle_date_formating, get_user, User
 
-# Load environment variables
 load_dotenv(dotenv_path=".env")
 
-# Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 uri = os.getenv('MONGO_URI')
 mongo_client = MongoClient(uri, server_api=ServerApi('1'))
 collections = mongo_client["Flat_Finder_DB"]["USER"]
 
 
-def generate_recommendations(user, apartment):
-    recommendations = ""
-    return recommendations
+def fetch_flats(user_id: str):
+    base_path = os.path.abspath(os.getcwd())
+    file_path = os.path.join(base_path, 'output.json')
+    logging.info(f"Fetching JSON from {file_path}")
+    flats = None
+    try:
+        with open(file_path, 'r') as file:
+            flats_data = json.load(file)
+            flats = flats_data
+    except FileNotFoundError:
+        logging.info(f"File {file_path} not found.")
+        return []
+    except json.decoder.JSONDecodeError:
+        logging.info(f"Error decoding JSON from file {file_path}.")
+        return []
+
+    user = get_user(user_id)
+    if user is None:
+        raise ValueError(f"No user found with id {user_id}")
+
+    filtered_flats = None
+    try:
+        filtered_flats = flats  # filter_apartments(user, flats)
+    except Exception as e:
+        logging.error(f"An error occurred while filtering apartments: {e}")
+
+    recommendations = []
+    if filtered_flats:
+        logging.info(f"Found {len(filtered_flats)} apartments.")
+        for apt in filtered_flats:
+            recommendation = recommend_wg(user, apt)
+            if recommendation is not None:
+                recommendations.append(recommendation)
+    else:
+        return "No new apartments found."
+
+    return recommendations if recommendations else "No new apartments found."
 
 
-def fetch_user_data(user_id: str) -> dict:
+def fetch_user(user_id: str) -> dict:
     user: Optional[User] = get_user(user_id)
     if user is None:
         raise ValueError(f"No user found with id {user_id}")
@@ -37,38 +68,34 @@ def fetch_user_data(user_id: str) -> dict:
     return user_dict
 
 
-def get_recommendations(user_id: str):
-    user = fetch_user_data(user_id)
-    filtered_wgs = filter_flats(user_id)
-    recommendations = []
-    for flat in filtered_wgs:
-        recommendations.append(generate_recommendations(user, flat))
-    return recommendations
-
-
-def filter_flats(user_id: str):
-    user = fetch_user_data(user_id)
-    # flats = scrape_wg_gesucht(1)
-    # todo remove after testing!
-    # Construct the absolute path
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(base_path, 'test_apartments.json')
-
-    # Open the file using the absolute path
-    with open(file_path, 'r', encoding='utf-8') as file:
-        flats = json.load(file)
-    user = fetch_user_data(user_id)  # todo George: get user from current user (no id)
-    filtered_wgs = filter_apartments(User(**user), flats)  # todo consider removing the User(**user) and just pass user
-    return filtered_wgs
-
-
 functions = [
     {
         "type": "function",
         "function": {
-            "name": "fetch_user_data",
+            "name": "fetch_flats",
+            "description": "This function returns a JSON list of new listed flats."
+                           "With a ai generated message, the message contains an explication why its the best fit"
+                           "for the user, and an example application text for the user to apply for the flat."
+                           "This function requires a parameter user_id. Use the default id given.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "description": "The default user id"
+                    },
+                },
+                "required": ["user_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "fetch_user",
             "description": "get a user dictionary, with all information about the user looking for apartments, "
-                           "and their apartment preferences its looking for",
+                           "and their apartment preferences in the field apartment_preferences its looking for. "
+                           "This function requires a parameter user_id. Use the default id given.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -81,57 +108,25 @@ functions = [
             }
         }
     },
-    {
-        "type": "function",
-        "function": {
-            "name": "filter_flats",
-            "description": "fetch a list of the new listed flats in wg-gesucht.com. get the user information and "
-                           "filter the flats, based on the user preferences",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "user_id": {
-                        "type": "string",
-                        "description": "The ID of the user to filter the apartments for"
-                    },
-                },
-                "required": ["user_id"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "generate_recommendations_call",
-            "description": "Generate a recommendation for the user for a specific apartment.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "user": {"type": "object", "description": "User data dictionary"},
-                    "apartment": {"type": "object", "description": "Apartment data dictionary"}
-                },
-                "required": ["user", "apartment"]
-            }
-        }
-    }
 ]
 
-# todo better instructions
 # Create the assistant
 assistant = client.beta.assistants.create(
-    name="Test-Apartment Recommendation Assistant",
+    name="Flat Search Assistant",
     description="Assists users in finding the perfect apartment based on their preferences.",
-    instructions="Use the fetch_user_data function to get information about the user. filter_flats function to get"
-                 "recently listed flats. and the function generate_recommendations_call to get recommendations.",
+    instructions="When the user asks for their information, look in the function fetch_user, there you can find"
+                 "information about the current user and in the field apartment_preferences, all the criteria for the "
+                 "flats its looking for. When the user asks if there are new flats available, look into the function"
+                 "fetch_flats. This function already fetches flats that match the current user, and returns also a"
+                 "message with it, explaining why its the best match for him. Both of this functions require a"
+                 "parameter, use the default user_id given.",
     tools=functions,
     model="gpt-3.5-turbo-0125",
 )
 
 function_lookup = {
-    # "generate_recommendations": generate_recommendations_call
-    "fetch_user_data": fetch_user_data,
-    "filter_flats": filter_flats,
-    "generate_recommendations_call": recommend_wg,
+    "fetch_flats": fetch_flats,
+    "fetch_user": fetch_user,
 }
 
 
@@ -158,20 +153,3 @@ def submit_tool_outputs(thread_id, run_id, tools_to_call):
     )
     logging.info(f"Submit tool outputs response: {response}")
     return response
-
-
-def fetch_flats():
-    # return scrape_wg_gesucht(count)
-    base_path = os.path.abspath(os.getcwd())
-    file_path = os.path.join(base_path, 'output.json')
-
-    try:
-        with open(file_path, 'r') as file:
-            flats_data = json.load(file)
-            return flats_data
-    except FileNotFoundError:
-        logging.info(f"File {file_path} not found.")
-        return []
-    except json.decoder.JSONDecodeError:
-        logging.info(f"Error decoding JSON from file {file_path}.")
-        return []
