@@ -293,19 +293,91 @@ def update_address(message, call):
         profile_info(call)
 
 
+def validate_phone_number(phone_number):
+    pattern = re.compile(r'^\+?1?\d{9,15}$')
+    return pattern.match(phone_number)
+
+
+def validate_email(email):
+    pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    return pattern.match(email)
+
+
+def validate_date(date_text):
+    try:
+        datetime.datetime.strptime(date_text, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False
+
+
+def validate_number(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
+def validate_sex_preference(value):
+    return value in ['female', 'male', 'gender_irrelevant', 'divers']
+
+
+def validate_age_list(age_list):
+    try:
+        return all(isinstance(int(age), int) for age in age_list)
+    except ValueError:
+        return False
+
+
+def validate_address(address):
+    match = re.match(r'^(.*?[\s\S]+?)\s+(\d+),\s+(\d+)\s+([\s\S]+)\s+([\s\S]+)$', address)
+    return bool(match)
+
+
 def update_profile(message, field, call):
     # global user
     try:
         user = get_user(message.from_user.id)
         if field == "date_of_birth":
-            date_object = datetime.datetime.strptime(message.text, '%Y-%m-%d').date()
-            setattr(user, field, date_object)
+            if validate_date(message.text):
+                date_object = datetime.datetime.strptime(message.text, '%Y-%m-%d').date()
+                setattr(user, field, date_object)
+                update_user(user)
+                field_display = field.replace('_', ' ').title()
+                bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
+            else:
+                bot.send_message(message.chat.id, "Invalid date format. Please enter the date in 'YYYY-MM-DD' format.")
+        elif field == "phone_number":
+            if validate_phone_number(message.text):
+                setattr(user, field, message.text)
+                update_user(user)
+                field_display = field.replace('_', ' ').title()
+                bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
+            else:
+                bot.send_message(message.chat.id, "Invalid phone number format. Please enter a valid phone number.")
+        elif field == "email":
+            if validate_email(message.text):
+                setattr(user, field, message.text)
+                update_user(user)
+                field_display = field.replace('_', ' ').title()
+                bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
+            else:
+                bot.send_message(message.chat.id, "Invalid email format. Please enter a valid email address.")
+        elif field == "average_monthly_net_income":
+            if validate_number(message.text):
+                setattr(user, field, message.text)
+                update_user(user)
+                field_display = field.replace('_', ' ').title()
+                bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
+            else:
+                bot.send_message(message.chat.id, "Invalid input. Please enter a valid number.")
         else:
             new_value = message.text
             setattr(user, field, new_value)
-        update_user(user)
-        field_display = field.replace('_', ' ').title()
-        bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
+            update_user(user)
+            field_display = field.replace('_', ' ').title()
+            bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
         profile_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update profile: {e}")
@@ -318,14 +390,28 @@ def update_preferences(message, field, call):
     try:
         user = get_user(message.from_user.id)
         if field == "ready_to_move_in":
-            date_object = datetime.datetime.strptime(message.text, '%Y-%m-%d').date()
-            setattr(user.apartment_preferences, field, date_object)
+            if validate_date(message.text):
+                date_object = datetime.datetime.strptime(message.text, '%Y-%m-%d').date()
+                setattr(user.apartment_preferences, field, date_object)
+                update_user(user)
+                field_display = field.replace('_', ' ').title()
+                bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
+            else:
+                bot.send_message(message.chat.id, "Invalid date format. Please enter the date in 'YYYY-MM-DD' format.")
+        elif field == "max_rent" or field == "min_size" or field == "preferred_roommate_num":
+            if validate_number(message.text):
+                setattr(user.apartment_preferences, field, message.text)
+                update_user(user)
+                field_display = field.replace('_', ' ').title()
+                bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
+            else:
+                bot.send_message(message.chat.id, "Invalid input. Please enter a valid number.")
         else:
             new_value = message.text
             setattr(user.apartment_preferences, field, new_value)
-        update_user(user)
-        field_display = field.replace('_', ' ').title()
-        bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
+            update_user(user)
+            field_display = field.replace('_', ' ').title()
+            bot.send_message(message.chat.id, f"Your {field_display} has been updated to: {message.text}")
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update preferences: {e}")
@@ -338,13 +424,22 @@ def update_list(message, field, call):
     try:
         user = get_user(message.from_user.id)
         new_value = [x.strip() for x in message.text.split(',')]
-        if field in ("languages", "additional_info"):
-            setattr(user, field, new_value)
-        elif field in ("preferred_roommate_age", "bezirk"):
-            setattr(user.apartment_preferences, field, new_value)
-        update_user(user)
-        field_display = field.replace('_', ' ').title()
-        bot.send_message(message.chat.id, f"Your {field_display} has been updated.")
+        if field == "preferred_roommate_age":
+            if validate_age_list(new_value):
+                setattr(user.apartment_preferences, field, new_value)
+                update_user(user)
+                field_display = field.replace('_', ' ').title()
+                bot.send_message(message.chat.id, f"Your {field_display} has been updated.")
+            else:
+                bot.send_message(message.chat.id, "Invalid input. Please enter a list of valid ages.")
+        else:
+            if field in ("languages", "additional_info"):
+                setattr(user, field, new_value)
+            elif field in ("bezirk"):
+                setattr(user.apartment_preferences, field, new_value)
+            update_user(user)
+            field_display = field.replace('_', ' ').title()
+            bot.send_message(message.chat.id, f"Your {field_display} has been updated.")
         preferences_info(call)
     except Exception as e:
         logging.error(f"Failed to handle update additional information: {e}")
