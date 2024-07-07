@@ -1,4 +1,6 @@
 import json
+import logging
+import os
 import re
 import time
 
@@ -266,9 +268,19 @@ def scrape_wg_gesucht(entries_count=1):
         time.sleep(2)
     print(json.dumps(json_file, indent=4, ensure_ascii=False))
     driver.quit()
-    with open('output.json', 'w', encoding='utf-8', ) as file:
-        json.dump(json_file, file, ensure_ascii=False, indent=4)
-    return json_file
+    pardir_path = os.path.abspath(os.pardir)
+    file_path = os.path.join(pardir_path, 'BE\\output.json')
+    try:
+        logging.info(f"Writing into JSON file {file_path}")
+        with open(file_path, 'w', encoding='utf-8', ) as file:
+            json.dump(json_file, file, ensure_ascii=False, indent=4)
+        return json_file
+    except FileNotFoundError:
+        logging.info(f"File {file_path} not found.")
+        return []
+    except json.decoder.JSONDecodeError:
+        logging.info(f"Error decoding JSON from file {file_path}.")
+        return []
 
 
 if __name__ == "__main__":
