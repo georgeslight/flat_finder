@@ -29,6 +29,9 @@
 - **Filtering:** Apartments data will be [filtered](src/BE/structural_filtering.py) for the user.
 - **Recommendation:** Deep filtering with non-structural data, generating [recommendation](src/BE/ai_recommendation.py) for user and an example application text.
 - **UI notification:** [Notifying](src/FE/app.py) the user of the recommendation and example application.
+
+## [Experimentation](prompt_experiments.md)
+
 ---
 ## Setup
 
@@ -53,11 +56,3 @@
    3. send **/profile** to set up your profile and preferences.
 
 ### congrats you are ready to go!
-
----
-## Experiments
-
-- Prompt Development:
-  - Prompt Level 1 + Output
-  - Prompt Level 2 + Output
-  - Continued iterations until final prompt.
