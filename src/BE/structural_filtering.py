@@ -16,15 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 def load_apartments():
-    pardir_path = os.path.abspath(os.pardir)
-    file_path = os.path.join(pardir_path, 'FE\\output.json')
-    logging.info(f"Fetching JSON from {file_path}")
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open('output.json', 'r', encoding='utf-8') as file:
             return json.load(file)
     except Exception as e:
         logger.error(f"Error loading apartments: {e}")
         return []
+
 
 
 def turn_user_to_user_model(user):
@@ -60,7 +58,9 @@ def filter_apartments(user_data: User, json_apartments=None):
     for apartment in apartments:
         try:
             gesamtmiete = int(apartment["Gesamtmiete"].replace("€", "").strip())
+            logger.info(f"Apartment {apartment.get('ID')} has Gesamtmiete: {gesamtmiete}")
             zimmergroesse = int(apartment["Zimmergröße"].replace("m²", "").strip())
+            logger.info(f"Apartment {apartment.get('ID')} has Zimmergröße: {zimmergroesse}")
 
             if apartment_matches_preferences(apartment, gesamtmiete, zimmergroesse, user_preferences, user_age):
                 fitting_apartments.append(apartment)
@@ -123,15 +123,15 @@ def reformat_apartment_data(input_data):
 
 
 def apartment_matches_preferences(apartment, gesamtmiete, zimmergroesse, prefs, user_age):
-    rent = gesamtmiete <= prefs.max_rent
-    city = ((apartment["Ort"] in prefs.location) or (apartment["Ort"] == "Berlin") or (apartment["Ort"] == ""))
-    size = zimmergroesse >= prefs.min_size
-    smoking = (prefs.smoking_ok or not apartment["smoking"])
-    gender = (prefs.preferred_roommates_sex == "gender_irrelevant" or prefs.preferred_roommates_sex == apartment[
-        "Mitbewohnern_Geschlecht"])
-    age = (apartment.get("Gesuchte_Alter")[0] <= user_age <= apartment.get("Gesuchte_Alter")[1])
-    age_fit = (prefs.preferred_roommate_age[0] <= apartment["Mitbewohner_Alter"][0] <= prefs.preferred_roommate_age[
-        1] and
-               prefs.preferred_roommate_age[0] <= apartment["Mitbewohner_Alter"][1] <= prefs.preferred_roommate_age[1])
-    res = (rent and city and size and smoking and gender and age and age_fit)
-    return res
+    return (
+            gesamtmiete <= prefs.max_rent and
+            ((apartment["Ort"] in prefs.bezirk) or (apartment["Ort"] == "Berlin") or (apartment["Ort"] == "")) and
+            zimmergroesse >= prefs.min_size and
+            (prefs.smoking_ok or not apartment["smoking"]) and
+            (prefs.preferred_roommates_sex == "gender_irrelevant" or
+             prefs.preferred_roommates_sex == apartment["Mitbewohnern_Geschlecht"]) and
+            # Allow for 3 years of flexibility in age preferences
+            (apartment.get("Gesuchte_Alter")[0] - 3 <= user_age <= apartment.get("Gesuchte_Alter")[1] + 3) and
+            (prefs.preferred_roommate_age[0] - 3 <= apartment["Mitbewohner_Alter"][0]) and
+            (prefs.preferred_roommate_age[1] + 3 >= apartment["Mitbewohner_Alter"][1])
+    )

@@ -89,15 +89,16 @@ def recommend_wg(user: User, apartment):
         # Third API call to generate the application
         application_prompt_content = (
             f"Here are the user Bio and the Information of an shared apartment. I need you to write an example "
-            f"Application for the user. Make sure the Text is no longer then 1000 chars. The Application should be "
+            f"Application for the user. Make sure the Text is no longer then 1000 chars (this is very important!). "
+            f"The Application should be"
             f"written in the name of the user. The Application should include the following information: 1. Introduce "
             f"yourself and your interests. 2. Why you are interested in this apartment. 3. Why you are a good fit for "
             f"this apartment. 4. extra information about you that you think is important. 5. consideration that the "
             f"apartments owner wants to know about (you can find this in the 'tabs_contents') 6. closing sentence "
             f"with user contact information (if you find any). your text mus be max 1000 chars. if you find any "
             f"information that you think is important to include in the application, but if you don't find it in the "
-            f"apartment or the user bio, you should never ever make it up!!!. PS: the application is one Test without "
-            f"numbered points or bullet points  \n\n"
+            f"apartment or the user bio, you should never ever make it up!!!. PS: the application is a single plaintext"
+            f" without numbered points or bullet points,   \n\n"
             f" \n\n"
             f"User: {str(user)}\nApartment: {str(apartment)}"
         )

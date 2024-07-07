@@ -215,11 +215,6 @@ apartments = [
     }
 ]
 ```
-
----
-
-Sure, here is the reformatted experiments documentation with the given format:
-
 ---
 
 ## Experiments

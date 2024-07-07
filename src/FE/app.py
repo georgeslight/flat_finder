@@ -360,8 +360,8 @@ def update_list(message, field, call):
 
 
 def fetch_json():
-    pardir_path = os.path.abspath(os.pardir)
-    file_path = os.path.join(pardir_path, 'FE\\output.json')
+    base_path = os.path.abspath(os.getcwd())
+    file_path = os.path.join(base_path, 'output.json')
     logging.info(f"Fetching JSON from {file_path}")
 
     try:
@@ -381,7 +381,6 @@ def fetch_json():
 def notify_user():
     try:
         apartments = scrape_wg_gesucht(5)
-        apartments = fetch_json()  # only demo use
         for user in get_all_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
@@ -448,7 +447,7 @@ def escape_characters(text, characters_to_escape):
 
 
 def schedule_task():
-    schedule.every(2).minutes.do(notify_user)
+    schedule.every(1).minutes.do(notify_user)
     while True:
         schedule.run_pending()
         time.sleep(1)
