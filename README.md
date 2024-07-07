@@ -23,12 +23,12 @@
 
 ## Workflow
 
-- **Creating User:** User will be created in UI and preferences will be set. ([link](src/FE/app.py))
-- **Scraping:** Collecting data from wg-gesucht. ([link](src/BE/wg_gesucht_scraper.py))
-- **Storage:** Temporary storage in a JSON file. ([link](src/FE/output.json))
-- **Filtering:** Apartments data will be filtered for the user. ([link](src/BE/structural_filtering.py))
-- **Recommendation:** Deep filtering with non-structural data, generating recommendation for user and an example application text. ([link](src/BE/ai_recommendation.py))
-- **UI notification:** Notifying the user of the recommendation and example application. ([link](src/FE/app.py))
+- **Creating User:** User will be created in [UI](src/FE/app.py) and preferences will be set. 
+- **Scraping:** Collecting data from wg-gesucht using [selenium](src/BE/wg_gesucht_scraper.py). 
+- **Storage:** Temporary storage in a [JSON file.](src/FE/output.json)
+- **Filtering:** Apartments data will be [filtered](src/BE/structural_filtering.py) for the user.
+- **Recommendation:** Deep filtering with non-structural data, generating [recommendation](src/BE/ai_recommendation.py) for user and an example application text.
+- **UI notification:** [Notifying](src/FE/app.py) the user of the recommendation and example application.
 ---
 ## Setup
 

@@ -9,3 +9,4 @@ __pycache__/
 
 # Ignore the mongo/__pycache__ directory
 src/mongo/__pycache__/
+output.json
