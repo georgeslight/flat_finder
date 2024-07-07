@@ -9,6 +9,7 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
 from src.BE.ai_recommendation import recommend_wg
+from src.BE.structural_filtering import filter_apartments
 from src.mongo.user_db import handle_date_formating, get_user, User
 
 load_dotenv(dotenv_path=".env")
@@ -41,7 +42,7 @@ def fetch_flats(user_id: str):
 
     filtered_flats = None
     try:
-        filtered_flats = flats  # filter_apartments(user, flats)
+        filtered_flats = filter_apartments(user, flats)
     except Exception as e:
         logging.error(f"An error occurred while filtering apartments: {e}")
 
