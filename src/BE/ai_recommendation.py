@@ -13,8 +13,11 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 
 def load_apartments():
+    pardir_path = os.path.abspath(os.pardir)
+    file_path = os.path.join(pardir_path, 'BE\\output.json')
+    logging.info(f"Fetching JSON from {file_path}")
     try:
-        with open('output.json', 'r', encoding='utf-8') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             return json.load(file)
     except Exception as e:
         print(f"error accrued while loading apartments: {e}")
