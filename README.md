@@ -38,19 +38,20 @@
 1. **Download Telegram on your [Smart phone (IOS)](https://apps.apple.com/us/app/telegram-messenger/id686449807) or [Desktop (windows)](https://apps.microsoft.com/detail/9nztwsqntd0s?launch=true&mode=full&hl=en-gb&gl=de&ocid=bingwebsearch)**
 2. Create an account in Telegram.
 3. setup your **env. file** to the flat finder Folder:
-4. **Install the requirements:**
+4. download the [Google Chrome browser](https://www.google.com/chrome/).
+5. **Install the requirements:**
       ```bash
       pip install -r requirements.txt
       ```
-5. **Run the Agent:**
+6. **Run the Agent:**
       ```python
          python main.py
       ```
-6. **Run the Telegram Bot:**
+7. **Run the Telegram Bot:**
       ```python
         python src/FE/app.py
       ```
-6. **Start the conversation with the [FlatFinderHTWBot](https://t.me/search_flat_bot):**
+8. **Start the conversation with the [FlatFinderHTWBot](https://t.me/search_flat_bot):**
    1. Start a Chat with the bot using this [link](https://t.me/search_flat_bot).
    2. Klick on the start button or send **/start**.
    3. send **/profile** to set up your profile and preferences.
