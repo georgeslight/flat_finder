@@ -138,10 +138,10 @@ def preferences_info(call):
             f"Here are your apartment preferences:\n\n"
             f"Max Rent: {preferences.max_rent if preferences.max_rent else 'Not set'}\n"
             f"Location: {preferences.location if preferences.location else 'Not set'}\n"
-            f"Bezirk: {', '.join(preferences.bezirk) if preferences.bezirk else 'Not set'}\n"
-            f"Min Size: {preferences.min_size if preferences.min_size else 'Not set'}\n"
+            f"District: {', '.join(preferences.bezirk) if preferences.bezirk else 'Not set'}\n"
+            f"Min Room Size: {preferences.min_size if preferences.min_size else 'Not set'}\n"
             f"Ready to Move In: {preferences.ready_to_move_in if preferences.ready_to_move_in else 'Not set'}\n"
-            f"Preferred Roommates Sex: {preferences.preferred_roommates_sex.replace('_', ' ').title() if preferences.preferred_roommates_sex else 'Not set'}\n"
+            f"Preferred Roommates Gender: {preferences.preferred_roommates_sex.replace('_', ' ').title() if preferences.preferred_roommates_sex else 'Not set'}\n"
             f"Preferred Roommate Age: {', '.join(map(str, preferences.preferred_roommate_age)) if preferences.preferred_roommate_age else 'Not set'}\n"
             f"Preferred Roommate Number: {preferences.preferred_roommate_num if preferences.preferred_roommate_num else 'Not set'}\n"
             f"Smoking OK: {preferences.smoking_ok if preferences.smoking_ok else 'False'}\n"
@@ -156,7 +156,7 @@ def preferences_info(call):
             InlineKeyboardButton("Location", callback_data="change_location"),
         )
         markup.row(
-            InlineKeyboardButton("Bezirk", callback_data="change_bezirk"),
+            InlineKeyboardButton("District", callback_data="change_bezirk"),
             InlineKeyboardButton("Min Size", callback_data="change_min_size"),
         )
         markup.row(
@@ -360,8 +360,8 @@ def update_list(message, field, call):
 
 
 def fetch_json():
-    base_path = os.path.abspath(os.getcwd())
-    file_path = os.path.join(base_path, 'output.json')
+    pardir_path = os.path.abspath(os.pardir)
+    file_path = os.path.join(pardir_path, 'FE\\output.json')
     logging.info(f"Fetching JSON from {file_path}")
 
     try:
@@ -381,6 +381,7 @@ def fetch_json():
 def notify_user():
     try:
         apartments = scrape_wg_gesucht(5)
+        # apartments = fetch_json()  # only demo use
         for user in get_all_user():
             user_data = user
             logging.info(f"Checking for new apartments for user: {user_data.id}")
@@ -447,7 +448,7 @@ def escape_characters(text, characters_to_escape):
 
 
 def schedule_task():
-    schedule.every(1).minutes.do(notify_user)
+    schedule.every(2).minutes.do(notify_user)
     while True:
         schedule.run_pending()
         time.sleep(1)

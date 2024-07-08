@@ -11,7 +11,7 @@
 ## Components
 
 - [Selenium scrapper](src/BE/wg_gesucht_scraper.py)
-- [mongoDB](src/BE/mongoDB.py)
+- [mongoDB](src/mongo/user_db.py)
 - [Telegram Bot](src/FE/app.py)
 - [OpenAI Agent](src/setup_assistant/agent.py)
 
