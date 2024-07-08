@@ -454,7 +454,8 @@ def escape_characters(text, characters_to_escape):
 
 
 def schedule_task():
-    schedule.every(2).minutes.do(notify_user)
+    notify_user()
+    schedule.every(60).minutes.do(notify_user)
     while True:
         schedule.run_pending()
         time.sleep(1)
