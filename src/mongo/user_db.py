@@ -3,6 +3,7 @@ import os
 from datetime import date
 from typing import List, Optional
 
+import certifi
 import openai
 from dotenv import load_dotenv
 from pydantic import BaseModel, EmailStr, Field
@@ -20,7 +21,7 @@ mongo_db_data_api_key = os.getenv('MONGO_DB_DATA_API_KEY')
 mongo_index = os.getenv('INDEX_NAME')
 
 uri = os.getenv('MONGO_URI')
-mongo_client = MongoClient(uri, server_api=ServerApi('1'))
+mongo_client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=certifi.where())
 openai_client = openai.OpenAI(api_key=openai_key)
 collection = mongo_client['Flat_Finder_DB']['USER']
 
