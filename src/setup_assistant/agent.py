@@ -22,41 +22,48 @@ collections = mongo_client["Flat_Finder_DB"]["USER"]
 
 def fetch_flats(user_id: str):
     pardir_path = os.path.abspath(os.pardir)
+    logging.info(f"Fetching JSON from {pardir_path}")
     file_path = os.path.join(pardir_path, 'BE\\output.json')
     logging.info(f"Fetching JSON from {file_path}")
     flats = None
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            logging.info(f"Reading JSON from {file_path}")
             flats_data = json.load(file)
+            logging.info(f"JSON loaded.{file_path}")
             flats = flats_data
+            logging.info(f"Flats loaded. {flats}")
     except FileNotFoundError:
         logging.info(f"File {file_path} not found.")
         return []
     except json.decoder.JSONDecodeError:
         logging.info(f"Error decoding JSON from file {file_path}.")
         return []
-
-    user = get_user(user_id)
-    if user is None:
-        raise ValueError(f"No user found with id {user_id}")
-
-    filtered_flats = None
     try:
-        filtered_flats = filter_apartments(user, flats)
+        user = get_user(user_id)
+        if user is None:
+            raise ValueError(f"No user found with id {user_id}")
+
+        filtered_flats = None
+        try:
+            filtered_flats = filter_apartments(user, flats)
+        except Exception as e:
+            logging.error(f"An error occurred while filtering apartments: {e}")
+
+        recommendations = []
+        if filtered_flats:
+            logging.info(f"Found {len(filtered_flats)} apartments.")
+            for apt in filtered_flats:
+                recommendation = recommend_wg(user, apt)
+                if recommendation is not None:
+                    recommendations.append(recommendation)
+        else:
+            return "No new apartments found."
+
+        return recommendations if recommendations else "No new apartments found."
     except Exception as e:
-        logging.error(f"An error occurred while filtering apartments: {e}")
-
-    recommendations = []
-    if filtered_flats:
-        logging.info(f"Found {len(filtered_flats)} apartments.")
-        for apt in filtered_flats:
-            recommendation = recommend_wg(user, apt)
-            if recommendation is not None:
-                recommendations.append(recommendation)
-    else:
-        return "No new apartments found."
-
-    return recommendations if recommendations else "No new apartments found."
+        logging.error(f"An error occurred while fetching flats: {e}")
+        return "An error occurred while fetching flats."
 
 
 def fetch_user(user_id: str) -> dict:

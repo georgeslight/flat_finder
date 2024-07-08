@@ -371,7 +371,7 @@ def fetch_json():
     logging.info(f"Fetching JSON from {file_path}")
 
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             flats_data = json.load(file)
             logging.info("Successfully fetched JSON data.")
             return flats_data

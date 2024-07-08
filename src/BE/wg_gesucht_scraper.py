@@ -272,7 +272,7 @@ def scrape_wg_gesucht(entries_count=1):
     file_path = os.path.join(pardir_path, 'BE\\output.json')
     try:
         logging.info(f"Writing into JSON file {file_path}")
-        with open(file_path, 'w', encoding='utf-8', ) as file:
+        with open(file_path, 'w', encoding='utf-8') as file:
             json.dump(json_file, file, ensure_ascii=False, indent=4)
         return json_file
     except FileNotFoundError:
