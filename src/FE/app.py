@@ -341,13 +341,19 @@ def update_preferences(message, field, call):
 
 
 def update_list(message, field, call):
-    # global user
     try:
         user = get_user(message.from_user.id)
         new_value = [x.strip() for x in message.text.split(',')]
         if field in ("languages", "additional_info"):
             setattr(user, field, new_value)
-        elif field in ("preferred_roommate_age", "bezirk"):
+        elif field in "preferred_roommate_age":
+            if [int(x) for x in new_value if x.isdigit()]:
+                setattr(user.apartment_preferences, field, new_value)
+            else:
+                bot.send_message(message.chat.id, f"Your preferred roommate age has to be a list of numbers, try again!")
+                preferences_info(call)
+                return
+        elif field == "bezirk":
             setattr(user.apartment_preferences, field, new_value)
         update_user(user)
         field_display = field.replace('_', ' ').title()
