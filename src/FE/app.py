@@ -367,7 +367,7 @@ def update_list(message, field, call):
 
 def fetch_json():
     pardir_path = os.path.abspath(os.pardir)
-    file_path = os.path.join(pardir_path, 'FE\\output.json')
+    file_path = os.path.join(pardir_path, 'FE', 'output.json')
     logging.info(f"Fetching JSON from {file_path}")
 
     try:

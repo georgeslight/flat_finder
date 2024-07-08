@@ -269,7 +269,7 @@ def scrape_wg_gesucht(entries_count=1):
     print(json.dumps(json_file, indent=4, ensure_ascii=False))
     driver.quit()
     pardir_path = os.path.abspath(os.pardir)
-    file_path = os.path.join(pardir_path, 'BE\\output.json')
+    file_path = os.path.join(pardir_path, 'BE', 'output.json')
     try:
         logging.info(f"Writing into JSON file {file_path}")
         with open(file_path, 'w', encoding='utf-8') as file:

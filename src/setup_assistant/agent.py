@@ -23,7 +23,7 @@ collections = mongo_client["Flat_Finder_DB"]["USER"]
 def fetch_flats(user_id: str):
     pardir_path = os.path.abspath(os.pardir)
     logging.info(f"Fetching JSON from {pardir_path}")
-    file_path = os.path.join(pardir_path, 'BE\\output.json')
+    file_path = os.path.join(pardir_path, 'BE', 'output.json')
     logging.info(f"Fetching JSON from {file_path}")
     flats = None
     try:
