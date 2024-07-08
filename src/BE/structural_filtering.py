@@ -60,9 +60,7 @@ def filter_apartments(user_data: User, json_apartments=None):
     for apartment in apartments:
         try:
             gesamtmiete = int(apartment["Gesamtmiete"].replace("€", "").strip())
-            logger.info(f"Apartment {apartment.get('ID')} has Gesamtmiete: {gesamtmiete}")
             zimmergroesse = int(apartment["Zimmergröße"].replace("m²", "").strip())
-            logger.info(f"Apartment {apartment.get('ID')} has Zimmergröße: {zimmergroesse}")
 
             if apartment_matches_preferences(apartment, gesamtmiete, zimmergroesse, user_preferences, user_age):
                 fitting_apartments.append(apartment)

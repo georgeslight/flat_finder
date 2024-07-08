@@ -50,8 +50,8 @@
       ```python
         python src/FE/app.py
       ```
-6. **Start the conversation with the [FlatFinderHTWBot](https://t.me/FlatFinderHTWBot):**
-   1. Start a Chat with the bot using this [link](https://t.me/FlatFinderHTWBot).
+6. **Start the conversation with the [FlatFinderHTWBot](https://t.me/search_flat_bot):**
+   1. Start a Chat with the bot using this [link](https://t.me/search_flat_bot).
    2. Klick on the start button or send **/start**.
    3. send **/profile** to set up your profile and preferences.
 
